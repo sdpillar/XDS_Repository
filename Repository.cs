@@ -58,6 +58,7 @@ namespace XdsRepository
             // Create a new instance of the Server
             server = new XdsMtomServer();
 
+
             // Set up server events
             server.ProvideAndRegisterRequestReceived += new RegisterDocumentSetHandler(server_ProvideAndRegisterRequestReceived);
             server.RetrieveRequestReceived += new RetrieveHandler(server_RetrieveRequestReceived);
