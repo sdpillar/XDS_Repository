@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Configuration;
+using System.Text.RegularExpressions;
+using System.Net;
+using System.Net.Sockets;
 
 namespace XdsRepository
 {
@@ -124,6 +127,72 @@ namespace XdsRepository
         private void txtAtnaPort_Leave(object sender, EventArgs e)
         {
             HashChanged();
+            try
+            {
+                string endpoint = txtAtnaPort.Text;
+                string[] endpointSplit = endpoint.Split(':');
+                string ipAddress = endpointSplit[0];
+                string port = endpointSplit[1];
+                bool ipAddressCheck = true;
+
+                if (ipAddress != "localhost")
+                {
+                    IPAddress clientIpAddr;
+                    ipAddressCheck = IPAddress.TryParse(ipAddress, out clientIpAddr);
+
+                    if (ipAddressCheck == false)
+                    {
+                        MessageBox.Show("IP Address entered is not a valid IP Address...");
+                    }
+                }
+                bool portCheck = IsValidPort(port);
+                if (portCheck == false)
+                {
+                    MessageBox.Show("Port entered is not a port...");
+                }
+                if (ipAddressCheck == true && portCheck == true)
+                {
+                    testNotifyEndpoint(ipAddress, port);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ip Address and/or Port is invalid");
+            }
+        }
+
+        private void testNotifyEndpoint(string host, string port)
+        {
+            bool testNotifyEndpoint = testConnection(host, int.Parse(port));
+            if (testNotifyEndpoint == true)
+            {
+                MessageBox.Show("Connectivity established to " + host + ":" + port);
+            }
+            else
+            {
+                MessageBox.Show("Failed to connect to " + host + ":" + port);
+            }
+        }
+
+        private bool testConnection(string host, int port)
+        {
+            string textToSend = DateTime.Now.ToString();
+            TcpClient client = new TcpClient();
+            try
+            {
+                client.Connect(host, port);
+                NetworkStream nwStream = client.GetStream();
+                byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(textToSend);
+                nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                client.Close();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                string exceptionMsg = ex.Message;
+                client.Close();
+                return false;
+            }
         }
 
         private void cmdSaveSettings_Click(object sender, EventArgs e)
@@ -139,6 +208,25 @@ namespace XdsRepository
             Properties.Settings.Default.HashCode = CalcuateHash();
             Properties.Settings.Default.Save();
             cmdSaveSettings.Enabled = false;
+        }
+
+        private bool IsValidPort(string port)
+        {
+            string pattern = @"^[0-9][0-9][0-9][0-9]$";
+            bool valid = false;
+            Regex check = new Regex(pattern);
+            if (port == "")
+            {
+                //no address provided so return false
+                valid = false;
+            }
+            else
+            {
+                //address provided so use the IsMatch Method
+                //of the Regular Expression object
+                valid = check.IsMatch(port, 0);
+            }
+            return valid;
         }
     }
 }

@@ -22,60 +22,86 @@ namespace XdsRepository
         
         public RepositoryForm()
         {
-            InitializeComponent();
-            LogMessageHandler = new Repository.LogMessageHandler(logMessageHandler);
-            this.Text = DateTime.Now.ToString("dd/MM/yyyy") + " - HSS XDS Repository";
-            SetupProperties();
+            try
+            {
+                InitializeComponent();
+                LogMessageHandler = new Repository.LogMessageHandler(logMessageHandler);
+                this.Text = DateTime.Now.ToString("dd/MM/yyyy") + " - HSS XDS Repository";
+                SetupProperties();
+            }
+            catch (Exception ex)
+            {
+                string exceptionMsg = ex.Message;
+                logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": RepositoryForm - " + exceptionMsg + "...\n"));
+            }
         }
 
         private void SetupProperties()
         {
-            Rep.LogMessageEvent -= LogMessageHandler;
-            bool readProperties = Rep.readProperties();
-            if (readProperties == false)
+            try
             {
-                MessageBox.Show("Error in reading properties...", "Error");
+                logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Setting properties...\n"));
+                Rep.LogMessageEvent -= LogMessageHandler;
+                bool readProperties = Rep.readProperties();
+                if (readProperties == false)
+                {
+                    MessageBox.Show("Error in reading properties...", "Error");
+                }
+                else
+                {
+                    Rep.LogMessageEvent += LogMessageHandler;
+                    Rep.StartListen();
+                    logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Authority Domain - " + Rep.authDomain + "...\n"));
+                    logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Store - " + Rep.StoragePath + "...\n"));
+                    logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Log - " + Rep.repositoryLog + "...\n"));
+                    lblRepId.Text = Rep.repositoryId;
+                    lblRepUrl.Text = Rep.repositoryURI;
+                    testConnections();
+                }
+                logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": All properties set...\n"));
             }
-            else
+            catch(Exception ex)
             {
-                Rep.LogMessageEvent += LogMessageHandler;
-                Rep.StartListen();
-                logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Authority Domain - " + Rep.authDomain + "...\n"));
-                logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Store - " + Rep.StoragePath + "...\n"));
-                logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Log - " + Rep.repositoryLog + "...\n"));
-                lblRepId.Text = Rep.repositoryId;
-                lblRepUrl.Text = Rep.repositoryURI;
-                testConnections();
+                string exceptionMsg = ex.Message;
+                logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": SetupProperties - " + exceptionMsg + "...\n"));
             }
         }
 
         private void testConnections()
         {
-            logWindow.AppendText("--- --- ---\n");
-            //test Registry connection
-            //extract hostname
-            int posDoubleSlash = Rep.registryURI.IndexOf("//");
-            if (posDoubleSlash > -1)
+            try
             {
-                //extract port
-                int posRegistryPort = Rep.registryURI.IndexOf(":", posDoubleSlash);
-                if (posRegistryPort > -1)
+                logWindow.AppendText("--- --- ---\n");
+                //test Registry connection
+                //extract hostname
+                int posDoubleSlash = Rep.registryURI.IndexOf("//");
+                if (posDoubleSlash > -1)
                 {
-                    string hostname = Rep.registryURI.Substring(posDoubleSlash + 2, posRegistryPort - (posDoubleSlash + 2));
-                    int registryPort = int.Parse(Rep.registryURI.Substring(posRegistryPort + 1, 4));
-                    bool regConnected = testConnection("Registry", hostname, registryPort);
-                    if (regConnected == true)
+                    //extract port
+                    int posRegistryPort = Rep.registryURI.IndexOf(":", posDoubleSlash);
+                    if (posRegistryPort > -1)
                     {
-                        lblRegUrl.Text = Rep.registryURI;
-                    }
-                    else
-                    {
-                        lblRegUrl.Text = "Not able to connect...";
+                        string hostname = Rep.registryURI.Substring(posDoubleSlash + 2, posRegistryPort - (posDoubleSlash + 2));
+                        int registryPort = int.Parse(Rep.registryURI.Substring(posRegistryPort + 1, 4));
+                        bool regConnected = testConnection("Registry", hostname, registryPort);
+                        if (regConnected == true)
+                        {
+                            lblRegUrl.Text = Rep.registryURI;
+                        }
+                        else
+                        {
+                            lblRegUrl.Text = "Not able to connect...";
+                        }
                     }
                 }
+                //test ATNA connection
+                testConnection("ATNA", Rep.atnaHost, Rep.atnaPort);
             }
-            //test ATNA connection
-            testConnection("ATNA", Rep.atnaHost, Rep.atnaPort);
+            catch (Exception ex)
+            {
+                string exceptionMsg = ex.Message;
+                logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": testConnections - " + exceptionMsg + "...\n"));
+            }
         }
 
         private bool testConnection(string hostname, string host, int port)
@@ -94,7 +120,9 @@ namespace XdsRepository
             }
             catch (Exception ex)
             {
+                string exceptionMsg = ex.Message;
                 logWindow.AppendText(DateTime.Now.ToString("HH:mm:ss.fff") + ": Connection failed to " + hostname + " at " + host + ":" + port + "...\n");
+                logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": " + exceptionMsg + "...\n"));
                 client.Close();
                 return false;
             }
