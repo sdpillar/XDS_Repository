@@ -40,7 +40,7 @@ namespace XdsRepository
         {
             try
             {
-                logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Setting properties...\n"));
+                //logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Setting properties...\n"));
                 Rep.LogMessageEvent -= LogMessageHandler;
                 bool readProperties = Rep.readProperties();
                 if (readProperties == false)
@@ -51,14 +51,15 @@ namespace XdsRepository
                 {
                     Rep.LogMessageEvent += LogMessageHandler;
                     Rep.StartListen();
-                    logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Authority Domain - " + Rep.authDomain + "...\n"));
-                    logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Store - " + Rep.StoragePath + "...\n"));
-                    logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Log - " + Rep.repositoryLog + "...\n"));
+                    //logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Authority Domain - " + Rep.authDomain + "...\n"));
+                    //logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Store - " + Rep.StoragePath + "...\n"));
+                    //logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Log - " + Rep.repositoryLog + "...\n"));
+                    lblAuthDomain.Text = Rep.authDomain;
                     lblRepId.Text = Rep.repositoryId;
                     lblRepUrl.Text = Rep.repositoryURI;
                     testConnections();
                 }
-                logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": All properties set...\n"));
+                //logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": All properties set...\n"));
             }
             catch(Exception ex)
             {

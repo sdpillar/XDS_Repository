@@ -39,6 +39,8 @@
             this.lblRegUrl = new System.Windows.Forms.Label();
             this.tmrRegistryConn = new System.Windows.Forms.Timer(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.lblAuthDomain = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -60,7 +62,7 @@
             this.btnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClose.Location = new System.Drawing.Point(12, 573);
+            this.btnClose.Location = new System.Drawing.Point(12, 607);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(130, 27);
             this.btnClose.TabIndex = 2;
@@ -72,17 +74,17 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(9, 16);
+            this.label1.Location = new System.Drawing.Point(6, 46);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(116, 16);
+            this.label1.Size = new System.Drawing.Size(107, 16);
             this.label1.TabIndex = 9;
-            this.label1.Text = "Repository ID - ";
+            this.label1.Text = "Repository ID:";
             // 
             // lblRepId
             // 
             this.lblRepId.AutoSize = true;
             this.lblRepId.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRepId.Location = new System.Drawing.Point(150, 16);
+            this.lblRepId.Location = new System.Drawing.Point(150, 46);
             this.lblRepId.Name = "lblRepId";
             this.lblRepId.Size = new System.Drawing.Size(0, 16);
             this.lblRepId.TabIndex = 10;
@@ -91,17 +93,17 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(9, 47);
+            this.label2.Location = new System.Drawing.Point(6, 77);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(131, 16);
+            this.label2.Size = new System.Drawing.Size(122, 16);
             this.label2.TabIndex = 11;
-            this.label2.Text = "Repository URL - ";
+            this.label2.Text = "Repository URL:";
             // 
             // lblRepUrl
             // 
             this.lblRepUrl.AutoSize = true;
             this.lblRepUrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRepUrl.Location = new System.Drawing.Point(150, 47);
+            this.lblRepUrl.Location = new System.Drawing.Point(150, 77);
             this.lblRepUrl.Name = "lblRepUrl";
             this.lblRepUrl.Size = new System.Drawing.Size(0, 16);
             this.lblRepUrl.TabIndex = 12;
@@ -110,17 +112,17 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(9, 78);
+            this.label3.Location = new System.Drawing.Point(6, 108);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(113, 16);
+            this.label3.Size = new System.Drawing.Size(104, 16);
             this.label3.TabIndex = 13;
-            this.label3.Text = "Registry URL - ";
+            this.label3.Text = "Registry URL:";
             // 
             // lblRegUrl
             // 
             this.lblRegUrl.AutoSize = true;
             this.lblRegUrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRegUrl.Location = new System.Drawing.Point(150, 78);
+            this.lblRegUrl.Location = new System.Drawing.Point(150, 108);
             this.lblRegUrl.Name = "lblRegUrl";
             this.lblRegUrl.Size = new System.Drawing.Size(0, 16);
             this.lblRegUrl.TabIndex = 14;
@@ -133,6 +135,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.lblAuthDomain);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.lblRepId);
@@ -141,15 +145,34 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(12, 460);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(500, 106);
+            this.groupBox1.Size = new System.Drawing.Size(500, 141);
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(6, 16);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(129, 16);
+            this.label4.TabIndex = 15;
+            this.label4.Text = "Authority Domain:";
+            // 
+            // lblAuthDomain
+            // 
+            this.lblAuthDomain.AutoSize = true;
+            this.lblAuthDomain.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAuthDomain.Location = new System.Drawing.Point(150, 16);
+            this.lblAuthDomain.Name = "lblAuthDomain";
+            this.lblAuthDomain.Size = new System.Drawing.Size(0, 16);
+            this.lblAuthDomain.TabIndex = 16;
             // 
             // RepositoryForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(530, 607);
+            this.ClientSize = new System.Drawing.Size(530, 640);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.logWindow);
@@ -177,6 +200,8 @@
         private System.Windows.Forms.Label lblRegUrl;
         private System.Windows.Forms.Timer tmrRegistryConn;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblAuthDomain;
     }
 }
 
