@@ -7,6 +7,7 @@ using XdsObjects.Enums;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.ServiceModel;
+using System.Security.Cryptography.X509Certificates;
 
 namespace XdsRepository
 {
@@ -29,6 +30,7 @@ namespace XdsRepository
                 repositoryLog = Properties.Settings.Default.RepositoryLog;
                 atnaHost = Properties.Settings.Default.AtnaHost;
                 atnaPort = Properties.Settings.Default.AtnaPort;
+                thumbprint = Properties.Settings.Default.Thumbprint;
                 return true;
             }
             catch(Exception ex)
@@ -52,6 +54,8 @@ namespace XdsRepository
         public string repositoryLog;
         public string atnaHost;
         public int atnaPort;
+        public string thumbprint;
+        public string appId;
         #endregion
 
         internal void StartListen()
@@ -83,13 +87,45 @@ namespace XdsRepository
 
                 xds = new XdsDomain();
                 // Set up the Registry we are going to talk to
-                xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
+                //xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
+                //certificate to reference
+                X509Certificate2 myCert = new X509Certificate2();
+                //myCert = GetCertificateByThumbprint("3d03dd7f2486afe4a857af42c2c3e8d5fd029699", StoreLocation.LocalMachine);
+                myCert = GetCertificateByThumbprint(thumbprint, StoreLocation.LocalMachine);
+                if (myCert == null)
+                {
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Required certificate not found...\n");
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint not created...\n");
+                }
+                else
+                {
+                    xds.RegistryEndpoint = new WebServiceEndpoint(registryURI, myCert);
+                }
+                //xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
             }
             catch(Exception ex)
             {
                 string exceptionMsg = ex.Message;
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": StartListen - " + exceptionMsg + "...\n");
             }
+        }
+
+        private static X509Certificate2 GetCertificateByThumbprint(string certificateThumbPrint, StoreLocation certificateStoreLocation)
+        {
+            X509Certificate2 certificate = null;
+            X509Store certificateStore = new X509Store(certificateStoreLocation);
+            certificateStore.Open(OpenFlags.ReadOnly);
+
+            X509Certificate2Collection certCollection = certificateStore.Certificates;
+            foreach (X509Certificate2 cert in certCollection)
+            {
+                if (cert.Thumbprint != null && cert.Thumbprint.Equals(certificateThumbPrint, StringComparison.OrdinalIgnoreCase))
+                {
+                    certificate = cert;
+                    break;
+                }
+            }
+            return certificate;
         }
 
         internal void StopListen()

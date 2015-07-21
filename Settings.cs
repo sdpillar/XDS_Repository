@@ -10,6 +10,9 @@ using System.Configuration;
 using System.Text.RegularExpressions;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography.X509Certificates;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace XdsRepository
 {
@@ -31,6 +34,10 @@ namespace XdsRepository
             txtRepositoryLog.Text = Properties.Settings.Default.RepositoryLog;
             txtAtnaHost.Text = Properties.Settings.Default.AtnaHost;
             txtAtnaPort.Text = Properties.Settings.Default.AtnaPort.ToString();
+            txtThumbprint.Text = Properties.Settings.Default.Thumbprint;
+            ttpSettings.SetToolTip(txtThumbprint, Properties.Settings.Default.Thumbprint);
+            txtAppId.Text = GetAppId();
+            ttpSettings.SetToolTip(txtAppId, GetAppId());
             Properties.Settings.Default.HashCode = CalcuateHash();
             Properties.Settings.Default.Save();
             this.Location = this.Owner.Location;
@@ -39,6 +46,13 @@ namespace XdsRepository
             cmdSaveSettings.Enabled = false;
             this.txtDomain.SelectionStart = 0;
             this.txtDomain.SelectionLength = 0;
+        }
+
+        private string GetAppId()
+        {
+            object[] attributes = Assembly.GetEntryAssembly().GetCustomAttributes(typeof(GuidAttribute), false);
+            if (attributes.Length == 0) { return String.Empty; }
+            return ((System.Runtime.InteropServices.GuidAttribute)attributes[0]).Value.ToUpper();
         }
 
         private void cmdClose_Click(object sender, EventArgs e)
@@ -55,7 +69,7 @@ namespace XdsRepository
 
         private int CalcuateHash()
         {
-            string[] txtStrings = new string[] { txtDomain.Text, txtRegistryURI.Text, txtRepositoryPath.Text, txtRepositoryId.Text, txtRepositoryURI.Text, txtRepositoryLog.Text, txtAtnaHost.Text, txtAtnaPort.Text };
+            string[] txtStrings = new string[] { txtDomain.Text, txtRegistryURI.Text, txtRepositoryPath.Text, txtRepositoryId.Text, txtRepositoryURI.Text, txtRepositoryLog.Text, txtAtnaHost.Text, txtAtnaPort.Text, txtThumbprint.Text };
             string hashString = String.Concat(txtStrings);
             int hash = hashString.GetHashCode();
             return hash;
@@ -120,6 +134,11 @@ namespace XdsRepository
         }
 
         private void txtAtnaHost_Leave(object sender, EventArgs e)
+        {
+            HashChanged();
+        }
+
+        private void txtThumbprint_Leave(object sender, EventArgs e)
         {
             HashChanged();
         }
@@ -205,6 +224,7 @@ namespace XdsRepository
             Properties.Settings.Default.RepositoryLog = txtRepositoryLog.Text;
             Properties.Settings.Default.AtnaHost = txtAtnaHost.Text;
             Properties.Settings.Default.AtnaPort = int.Parse(txtAtnaPort.Text);
+            Properties.Settings.Default.Thumbprint = txtThumbprint.Text;
             Properties.Settings.Default.HashCode = CalcuateHash();
             Properties.Settings.Default.Save();
             cmdSaveSettings.Enabled = false;

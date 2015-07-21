@@ -130,5 +130,17 @@ namespace XdsRepository.Properties {
                 this["AuthDomain"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3d03dd7f2486afe4a857af42c2c3e8d5fd029698")]
+        public string Thumbprint {
+            get {
+                return ((string)(this["Thumbprint"]));
+            }
+            set {
+                this["Thumbprint"] = value;
+            }
+        }
     }
 }

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.txtRepositoryPath = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.txtRepositoryURI = new System.Windows.Forms.TextBox();
@@ -47,13 +48,20 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.txtRegistryURI = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.txtThumbprint = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.label8 = new System.Windows.Forms.Label();
             this.txtDomain = new System.Windows.Forms.TextBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.txtAppId = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.ttpSettings = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtRepositoryPath
@@ -147,7 +155,7 @@
             // 
             // cmdClose
             // 
-            this.cmdClose.Location = new System.Drawing.Point(240, 362);
+            this.cmdClose.Location = new System.Drawing.Point(240, 445);
             this.cmdClose.Name = "cmdClose";
             this.cmdClose.Size = new System.Drawing.Size(75, 23);
             this.cmdClose.TabIndex = 15;
@@ -158,7 +166,7 @@
             // cmdSaveSettings
             // 
             this.cmdSaveSettings.Enabled = false;
-            this.cmdSaveSettings.Location = new System.Drawing.Point(106, 362);
+            this.cmdSaveSettings.Location = new System.Drawing.Point(106, 445);
             this.cmdSaveSettings.Name = "cmdSaveSettings";
             this.cmdSaveSettings.Size = new System.Drawing.Size(122, 23);
             this.cmdSaveSettings.TabIndex = 16;
@@ -172,7 +180,7 @@
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.txtAtnaHost);
             this.groupBox2.Controls.Add(this.label6);
-            this.groupBox2.Location = new System.Drawing.Point(12, 265);
+            this.groupBox2.Location = new System.Drawing.Point(12, 358);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(303, 81);
             this.groupBox2.TabIndex = 17;
@@ -221,7 +229,7 @@
             this.groupBox3.Controls.Add(this.label1);
             this.groupBox3.Location = new System.Drawing.Point(12, 206);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(303, 53);
+            this.groupBox3.Size = new System.Drawing.Size(303, 55);
             this.groupBox3.TabIndex = 18;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Registry";
@@ -243,6 +251,24 @@
             this.label1.Size = new System.Drawing.Size(70, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "Registry URI:";
+            // 
+            // txtThumbprint
+            // 
+            this.txtThumbprint.Location = new System.Drawing.Point(101, 28);
+            this.txtThumbprint.Name = "txtThumbprint";
+            this.txtThumbprint.Size = new System.Drawing.Size(193, 20);
+            this.txtThumbprint.TabIndex = 5;
+            this.txtThumbprint.Tag = "";
+            this.txtThumbprint.Leave += new System.EventHandler(this.txtThumbprint_Leave);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(10, 28);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(63, 13);
+            this.label9.TabIndex = 4;
+            this.label9.Text = "Thumbprint:";
             // 
             // groupBox4
             // 
@@ -273,11 +299,43 @@
             this.txtDomain.Tag = "";
             this.txtDomain.Leave += new System.EventHandler(this.txtDomain_Leave);
             // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.txtAppId);
+            this.groupBox5.Controls.Add(this.label10);
+            this.groupBox5.Controls.Add(this.txtThumbprint);
+            this.groupBox5.Controls.Add(this.label9);
+            this.groupBox5.Location = new System.Drawing.Point(12, 267);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(303, 85);
+            this.groupBox5.TabIndex = 19;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Certificates";
+            // 
+            // txtAppId
+            // 
+            this.txtAppId.Location = new System.Drawing.Point(100, 54);
+            this.txtAppId.Name = "txtAppId";
+            this.txtAppId.ReadOnly = true;
+            this.txtAppId.Size = new System.Drawing.Size(193, 20);
+            this.txtAppId.TabIndex = 7;
+            this.txtAppId.Tag = "";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(9, 54);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(41, 13);
+            this.label10.TabIndex = 6;
+            this.label10.Text = "App Id:";
+            // 
             // frmSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(328, 395);
+            this.ClientSize = new System.Drawing.Size(327, 477);
+            this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
@@ -297,6 +355,8 @@
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -325,5 +385,11 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txtDomain;
+        private System.Windows.Forms.TextBox txtThumbprint;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.TextBox txtAppId;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.ToolTip ttpSettings;
     }
 }

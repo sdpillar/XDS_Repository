@@ -82,6 +82,10 @@
     <Reference Include="EntityFramework">
       <HintPath>bin\Debug\EntityFramework.dll</HintPath>
     </Reference>
+    <Reference Include="Security.6.40, Version=6.40.0.0, Culture=neutral, PublicKeyToken=f4dc1386f6a89afb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Desktop\XdsObjects.NET_RELEASE_6.40.2.6\Security.6.40.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core">
@@ -138,7 +142,6 @@
       <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
-    <None Include="HSSRepository_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
