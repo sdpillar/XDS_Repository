@@ -89,9 +89,9 @@ namespace XdsRepository
                 // Set up the Registry we are going to talk to
                 //xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
                 //certificate to reference
-                X509Certificate2 myCert = new X509Certificate2();
+                //X509Certificate2 myCert = new X509Certificate2();
                 //myCert = GetCertificateByThumbprint("3d03dd7f2486afe4a857af42c2c3e8d5fd029699", StoreLocation.LocalMachine);
-                myCert = GetCertificateByThumbprint(thumbprint, StoreLocation.LocalMachine);
+                /*myCert = GetCertificateByThumbprint(thumbprint, StoreLocation.LocalMachine);
                 if (myCert == null)
                 {
                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Required certificate not found...\n");
@@ -100,8 +100,8 @@ namespace XdsRepository
                 else
                 {
                     xds.RegistryEndpoint = new WebServiceEndpoint(registryURI, myCert);
-                }
-                //xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
+                }*/
+                xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
             }
             catch(Exception ex)
             {
@@ -506,6 +506,4 @@ namespace XdsRepository
         }
         #endregion
     }
-
-    
 }

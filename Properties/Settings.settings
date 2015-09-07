@@ -9,7 +9,7 @@
       <Value Profile="(Default)">C:\HSSRepository\</Value>
     </Setting>
     <Setting Name="RepositoryId" Type="System.String" Scope="User">
-      <Value Profile="(Default)">1.19.6.24.109.42.1.</Value>
+      <Value Profile="(Default)">1.19.6.24.109.42.1.5</Value>
     </Setting>
     <Setting Name="RepositoryURI" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://localhost:8082/HSSRepository</Value>

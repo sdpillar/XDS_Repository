@@ -1,7 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2012 for Windows Desktop
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSSRepository", "HSSRepository.csproj", "{EFC38E2C-0224-4A27-961D-E3F799CC5B65}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "XDSRepositorySetUp", "..\XDSRepositorySetUp\XDSRepositorySetUp.vdproj", "{D7A23EBD-4522-419B-BA3E-248E338938CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +17,8 @@ Global
 		{EFC38E2C-0224-4A27-961D-E3F799CC5B65}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{EFC38E2C-0224-4A27-961D-E3F799CC5B65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFC38E2C-0224-4A27-961D-E3F799CC5B65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7A23EBD-4522-419B-BA3E-248E338938CD}.Debug|Any CPU.ActiveCfg = Debug
+		{D7A23EBD-4522-419B-BA3E-248E338938CD}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

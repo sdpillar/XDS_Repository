@@ -38,14 +38,86 @@ namespace XdsRepository
             ttpSettings.SetToolTip(txtThumbprint, Properties.Settings.Default.Thumbprint);
             txtAppId.Text = GetAppId();
             ttpSettings.SetToolTip(txtAppId, GetAppId());
-            Properties.Settings.Default.HashCode = CalcuateHash();
+            //Properties.Settings.Default.HashCode = CalcuateHash();
             Properties.Settings.Default.Save();
             this.Location = this.Owner.Location;
             this.Left += this.Owner.ClientSize.Width / 2 - this.Width / 2;
             this.Top += this.Owner.ClientSize.Height / 2 - this.Height / 2;
-            cmdSaveSettings.Enabled = false;
+            cmdSaveSettings.Enabled = false;cmdCancel.Enabled = false;
             this.txtDomain.SelectionStart = 0;
             this.txtDomain.SelectionLength = 0;
+
+            tvwSettings.ExpandAll();
+            tvwSettings.SelectedNode = tvwSettings.Nodes[0].Nodes[0];
+        }
+
+        private void tvwSettings_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            Console.WriteLine(e.Node.Text);
+            if (e.Node.Text != "Settings")
+            {
+                for (int i = 0; i < tvwSettings.Nodes[0].Nodes.Count; i++)
+                {
+                    tvwSettings.Nodes[0].Nodes[i].ForeColor = Color.SlateGray;
+                }
+
+
+                tvwSettings.SelectedNode = e.Node;
+                e.Node.ForeColor = Color.Black;
+                label11.Text = e.Node.Text;
+
+                switch (e.Node.Text)
+                {
+                    case "Repository":
+                        grpRepository.Visible = true;
+                        grpRegistry.Visible = false;
+                        grpAtna.Visible = false;
+                        grpCertificates.Visible = false;
+                        grpDomain.Visible = false;
+                        grpLogging.Visible = false;
+                        break;
+                    case "Registry":
+                        grpRepository.Visible = false;
+                        grpRegistry.Visible = true;
+                        grpAtna.Visible = false;
+                        grpCertificates.Visible = false;
+                        grpDomain.Visible = false;
+                        grpLogging.Visible = false;
+                        break;
+                    case "ATNA":
+                        grpRepository.Visible = false;
+                        grpRegistry.Visible = false;
+                        grpAtna.Visible = true;
+                        grpCertificates.Visible = false;
+                        grpDomain.Visible = false;
+                        grpLogging.Visible = false;
+                        break;
+                    case "Certificates":
+                        grpRepository.Visible = false;
+                        grpRegistry.Visible = false;
+                        grpAtna.Visible = false;
+                        grpCertificates.Visible = true;
+                        grpDomain.Visible = false;
+                        grpLogging.Visible = false;
+                        break;
+                    case "Authority Domain":
+                        grpRepository.Visible = false;
+                        grpRegistry.Visible = false;
+                        grpAtna.Visible = false;
+                        grpCertificates.Visible = false;
+                        grpDomain.Visible = true;
+                        grpLogging.Visible = false;
+                        break;
+                    case "Logging":
+                        grpRepository.Visible = false;
+                        grpRegistry.Visible = false;
+                        grpAtna.Visible = false;
+                        grpCertificates.Visible = false;
+                        grpDomain.Visible = false;
+                        grpLogging.Visible = true;
+                        break;
+                }
+            }
         }
 
         private string GetAppId()
@@ -57,14 +129,30 @@ namespace XdsRepository
 
         private void cmdClose_Click(object sender, EventArgs e)
         {
-            if (cmdSaveSettings.Enabled == true)
+            int currentHash = CalcuateHash();
+            if (currentHash != Properties.Settings.Default.HashCode)
+            {
+                Properties.Settings.Default.AuthDomain = txtDomain.Text;
+                Properties.Settings.Default.RegistryURI = txtRegistryURI.Text;
+                Properties.Settings.Default.RepositoryPath = txtRepositoryPath.Text;
+                Properties.Settings.Default.RepositoryId = txtRepositoryId.Text;
+                Properties.Settings.Default.RepositoryURI = txtRepositoryURI.Text;
+                Properties.Settings.Default.RepositoryLog = txtRepositoryLog.Text;
+                Properties.Settings.Default.AtnaHost = txtAtnaHost.Text;
+                Properties.Settings.Default.AtnaPort = int.Parse(txtAtnaPort.Text);
+                Properties.Settings.Default.Thumbprint = txtThumbprint.Text;
+                Properties.Settings.Default.HashCode = CalcuateHash();
+                Properties.Settings.Default.Save();
+            }
+            this.Close();
+            /*if (cmdSaveSettings.Enabled == true)
             {
                 MessageBox.Show("Save settings before exiting!");
             }
             else
             {
                 this.Close();
-            }
+            }*/
         }
 
         private int CalcuateHash()
@@ -75,9 +163,12 @@ namespace XdsRepository
             return hash;
         }
 
-        private void txtAtnaPort_TextChanged(object sender, EventArgs e)
-        {
-            string portString = txtAtnaPort.Text;
+        //private void txtAtnaPort_TextChanged(object sender, EventArgs e)
+        //{
+            //cmdSaveSettings.Enabled = true;
+            //cmdCancel.Enabled = true;
+
+            /*string portString = txtAtnaPort.Text;
             if (portString.Length > 4)
             {
                 txtAtnaPort.Text = portString.Substring(0, 4);
@@ -90,10 +181,10 @@ namespace XdsRepository
                 {
                     MessageBox.Show("Please insert a valid number");
                 }
-            }
-        }
+            }*/
+        //}
 
-        private void HashChanged()
+        /*private void HashChanged()
         {
             int currentHash = CalcuateHash();
             if (currentHash != Properties.Settings.Default.HashCode)
@@ -178,7 +269,7 @@ namespace XdsRepository
             {
                 MessageBox.Show("Ip Address and/or Port is invalid");
             }
-        }
+        }*/
 
         private void testNotifyEndpoint(string host, string port)
         {
@@ -214,7 +305,7 @@ namespace XdsRepository
             }
         }
 
-        private void cmdSaveSettings_Click(object sender, EventArgs e)
+        /*private void cmdSaveSettings_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.AuthDomain = txtDomain.Text;
             Properties.Settings.Default.RegistryURI = txtRegistryURI.Text;
@@ -225,10 +316,11 @@ namespace XdsRepository
             Properties.Settings.Default.AtnaHost = txtAtnaHost.Text;
             Properties.Settings.Default.AtnaPort = int.Parse(txtAtnaPort.Text);
             Properties.Settings.Default.Thumbprint = txtThumbprint.Text;
-            Properties.Settings.Default.HashCode = CalcuateHash();
+            //Properties.Settings.Default.HashCode = CalcuateHash();
             Properties.Settings.Default.Save();
             cmdSaveSettings.Enabled = false;
-        }
+            cmdCancel.Enabled = false;
+        }*/
 
         private bool IsValidPort(string port)
         {
@@ -247,6 +339,93 @@ namespace XdsRepository
                 valid = check.IsMatch(port, 0);
             }
             return valid;
+        }
+
+        /*private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            txtDomain.Text = Properties.Settings.Default.AuthDomain;
+            txtRegistryURI.Text = Properties.Settings.Default.RegistryURI;
+            txtRepositoryPath.Text = Properties.Settings.Default.RepositoryPath;
+            txtRepositoryId.Text = Properties.Settings.Default.RepositoryId;
+            txtRepositoryURI.Text = Properties.Settings.Default.RepositoryURI;
+            txtRepositoryLog.Text = Properties.Settings.Default.RepositoryLog;
+            txtAtnaHost.Text = Properties.Settings.Default.AtnaHost;
+            txtAtnaPort.Text = Properties.Settings.Default.AtnaPort.ToString();
+            txtThumbprint.Text = Properties.Settings.Default.Thumbprint;
+            cmdSaveSettings.Enabled = false;
+            cmdCancel.Enabled = false;
+        }
+
+        private void txtRegistryURI_TextChanged(object sender, EventArgs e)
+        {
+            cmdSaveSettings.Enabled = true;
+            cmdCancel.Enabled = true;
+        }
+
+        private void txtThumbprint_TextChanged(object sender, EventArgs e)
+        {
+            cmdSaveSettings.Enabled = true;
+            cmdCancel.Enabled = true;
+        }
+
+        private void txtRepositoryURI_TextChanged(object sender, EventArgs e)
+        {
+            cmdSaveSettings.Enabled = true;
+            cmdCancel.Enabled = true;
+        }
+
+        private void txtRepositoryPath_TextChanged(object sender, EventArgs e)
+        {
+            cmdSaveSettings.Enabled = true;
+            cmdCancel.Enabled = true;
+        }
+
+        private void txtRepositoryLog_TextChanged(object sender, EventArgs e)
+        {
+            cmdSaveSettings.Enabled = true;
+            cmdCancel.Enabled = true;
+        }
+
+        private void txtRepositoryId_TextChanged(object sender, EventArgs e)
+        {
+            cmdSaveSettings.Enabled = true;
+            cmdCancel.Enabled = true;
+        }
+
+        private void txtDomain_TextChanged(object sender, EventArgs e)
+        {
+            cmdSaveSettings.Enabled = true;
+            cmdCancel.Enabled = true;
+        }
+
+        private void txtAtnaHost_TextChanged(object sender, EventArgs e)
+        {
+            cmdSaveSettings.Enabled = true;
+            cmdCancel.Enabled = true;
+        }
+
+        private void txtAppId_TextChanged(object sender, EventArgs e)
+        {
+            cmdSaveSettings.Enabled = true;
+            cmdCancel.Enabled = true;
+        }*/
+
+        private void cmdLog_Click(object sender, EventArgs e)
+        {
+            dlgLog.SelectedPath = txtRepositoryLog.Text;
+            if (dlgLog.ShowDialog() == DialogResult.OK)
+            {
+                txtRepositoryLog.Text = dlgLog.SelectedPath;
+            }
+        }
+
+        private void cmdRepository_Click(object sender, EventArgs e)
+        {
+            dlgLog.SelectedPath = txtRepositoryPath.Text;
+            if (dlgLog.ShowDialog() == DialogResult.OK)
+            {
+                txtRepositoryPath.Text = dlgLog.SelectedPath;
+            }
         }
     }
 }
