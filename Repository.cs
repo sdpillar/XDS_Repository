@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+//using System.Linq;
+//using System.Text;
 using XdsObjects;
 using XdsObjects.Enums;
 using System.IO;
-using System.Net.NetworkInformation;
-using System.ServiceModel;
+//using System.Net.NetworkInformation;
+//using System.ServiceModel;
 using System.Security.Cryptography.X509Certificates;
+//using System.Runtime;
 
 namespace XdsRepository
 {
@@ -148,6 +149,7 @@ namespace XdsRepository
         {
             LogMessageEvent("--- --- ---");
             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Provide and Register request received...");
+            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Message Id - " + RequestInfo.Message.Headers.MessageId + "...");
             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet.SourceId - " + SubmissionSet.SourceID);
             XdsRegistryResponse myResponse = new XdsRegistryResponse();
             try
@@ -187,6 +189,7 @@ namespace XdsRepository
                 using (var db = new RepositoryDataBase())
                 {
                     docCount = 0;
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet contains " + SubmissionSet.Documents.Count + " documents...");
                     foreach (XdsDocument document in SubmissionSet.Documents)
                     {
                         docCount++;
@@ -226,6 +229,8 @@ namespace XdsRepository
 
                         document.SetSizeAndHash();
                         bool HashSizeCheck = document.CheckSizeAndHash();
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document size - " + document.Size);
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document hash - " + document.Hash);
                         if (!HashSizeCheck)
                         {
                             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": XDSRepositoryMetadataError - Hash and/or Size atrributes of supplied document are in error...");
@@ -237,11 +242,12 @@ namespace XdsRepository
                         }
 
                         //Save document into the repository store
-                        string currentDate = DateTime.Now.Date.ToString("dd_MM_yyyy");
+                        string currentDate = DateTime.Now.Date.ToString("yyyy_MM_dd");
                         string dir = Path.Combine(StoragePath, currentDate);
                         Directory.CreateDirectory(dir);
                         string location = Path.Combine(dir, document.UniqueID);
                         File.WriteAllBytes(location, document.Data);
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document saved to - " + location + "...");
                         //System.IO.File.WriteAllText(StoragePath + document.UniqueID + ".mime", document.MimeType);
                         //Save document info into repository database
                         db.Documents.Add(new Document()
@@ -258,7 +264,9 @@ namespace XdsRepository
                     }
                 }
 
-                // Pass back the Registry Response
+                // then send whole lot off to the chosen registry (main data will NOT be sent - this is
+                // automatic and internal!)  
+                //Then pass back the response
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Sending SubmissionSet to Registry...");
                 XdsPatient myPatient_2 = new XdsPatient();
                 myPatient_2.CompositeId = SubmissionSet.PatientID;
@@ -315,7 +323,7 @@ namespace XdsRepository
             {
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Error - " + ex.Message);
                 myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                myResponse.AddError(XdsObjects.Enums.XdsErrorCode.GeneralException, ex.Message, "");
+                myResponse.AddError(XdsObjects.Enums.XdsErrorCode.GeneralException, ex.Message, ex.InnerException.ToString());
 
                 string exceptionMsg = ex.Message;
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": server_ProvideAndRegisterRequestReceived_4 - " + exceptionMsg + "...\n");
@@ -324,61 +332,6 @@ namespace XdsRepository
                 XdsAudit.UserAuthentication(atnaTest, false);
                 return myResponse;
             }
-
-            // then send whole lot off to the chosen registry (main data will NOT be sent - this is
-            // automatic and internal!)  
-            //Then pass back the response
-            /*try
-            {
-                // Pass back the Registry Response
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Sending SubmissionSet to Registry...");
-
-                XdsPatient myPatient = new XdsPatient();
-                myPatient.CompositeId = SubmissionSet.PatientID;
-                System.Uri hssRegistry = new System.Uri(registryURI);
-                List<string> StudyUIDList = new List<string>();
-                StudyUIDList.Add(SubmissionSet.UniqueID);
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Export audit event logged...");
-                XdsAudit.PHIExport(atnaTest, hssRegistry, StudyUIDList, myPatient);
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                XdsAudit.UserAuthentication(atnaTest, false);
-
-                return xds.RegisterDocumentSet(SubmissionSet);
-            }
-            catch (NullReferenceException nrEx)
-            {
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Error - NullReferencException");
-                myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSRegistryNotAvailable, SubmissionSet.UniqueID, nrEx.InnerException.Message);
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                XdsAudit.UserAuthentication(atnaTest, false);
-                string exceptionMsg = nrEx.Message;
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": server_ProvideAndRegisterRequestReceived_3 - " + exceptionMsg + "...\n");
-                return myResponse;
-            }
-            catch (EndpointNotFoundException endPointEx)
-            {
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Error - EndPointNotFoundException");
-                myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSRegistryNotAvailable, SubmissionSet.UniqueID, endPointEx.InnerException.Message);
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                XdsAudit.UserAuthentication(atnaTest, false);
-                string exceptionMsg = endPointEx.Message;
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": server_ProvideAndRegisterRequestReceived_4 - " + exceptionMsg + "...\n");
-                return myResponse;
-            }
-            catch (Exception ex)
-            {
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Error - " + ex.InnerException.InnerException.Message);
-                XdsAudit.UserAuthentication(atnaTest, false);
-                myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSRegistryError, SubmissionSet.UniqueID, ex.InnerException.Message);
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                XdsAudit.UserAuthentication(atnaTest, false);
-                string exceptionMsg = ex.Message;
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": server_ProvideAndRegisterRequestReceived_5 - " + exceptionMsg + "...\n");
-                return myResponse;
-            }*/
         }
 
         /// <summary>
@@ -498,7 +451,7 @@ namespace XdsRepository
             catch(Exception ex)
             {
                 response.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                response.AddError(XdsErrorCode.XDSMissingDocument, "", "Unknown error");
+                response.AddError(XdsErrorCode.XDSMissingDocument, ex.Message, ex.InnerException.ToString());
                 string exceptionMsg = ex.Message;
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": server_RetrieveRequestReceived - " + exceptionMsg + "...\n");
                 return response;

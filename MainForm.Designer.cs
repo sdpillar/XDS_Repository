@@ -41,6 +41,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.lblAuthDomain = new System.Windows.Forms.Label();
+            this.cmdStart = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -62,7 +63,7 @@
             this.btnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClose.Location = new System.Drawing.Point(12, 607);
+            this.btnClose.Location = new System.Drawing.Point(5, 607);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(130, 27);
             this.btnClose.TabIndex = 2;
@@ -143,9 +144,9 @@
             this.groupBox1.Controls.Add(this.lblRegUrl);
             this.groupBox1.Controls.Add(this.lblRepUrl);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(12, 460);
+            this.groupBox1.Location = new System.Drawing.Point(5, 460);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(500, 141);
+            this.groupBox1.Size = new System.Drawing.Size(520, 141);
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             // 
@@ -168,11 +169,27 @@
             this.lblAuthDomain.Size = new System.Drawing.Size(0, 16);
             this.lblAuthDomain.TabIndex = 16;
             // 
+            // cmdStart
+            // 
+            this.cmdStart.FlatAppearance.BorderColor = System.Drawing.Color.Red;
+            this.cmdStart.FlatAppearance.BorderSize = 2;
+            this.cmdStart.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.cmdStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmdStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdStart.Location = new System.Drawing.Point(395, 607);
+            this.cmdStart.Name = "cmdStart";
+            this.cmdStart.Size = new System.Drawing.Size(130, 27);
+            this.cmdStart.TabIndex = 16;
+            this.cmdStart.Text = "START";
+            this.cmdStart.UseVisualStyleBackColor = true;
+            this.cmdStart.Click += new System.EventHandler(this.cmdStart_Click);
+            // 
             // RepositoryForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(530, 640);
+            this.Controls.Add(this.cmdStart);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.logWindow);
@@ -202,6 +219,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lblAuthDomain;
+        private System.Windows.Forms.Button cmdStart;
     }
 }
 

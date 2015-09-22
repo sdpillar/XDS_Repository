@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.IO;
-using System.Diagnostics;
-using XdsObjects;
-using XdsObjects.Enums;
-using System.Collections.Generic;
-using Org.BouncyCastle.Crypto.Tls;
-using System.ServiceModel;
+//using System.Diagnostics;
+//using XdsObjects;
+//using XdsObjects.Enums;
+//using System.Collections.Generic;
+//using Org.BouncyCastle.Crypto.Tls;
+//using System.ServiceModel;
 using System.Net.Sockets;
-using System.Net.Security;
-using System.Net;
+//using System.Net.Security;
+//using System.Net;
 using System.Text;
 
 namespace XdsRepository
@@ -26,14 +26,43 @@ namespace XdsRepository
             {
                 InitializeComponent();
                 LogMessageHandler = new Repository.LogMessageHandler(logMessageHandler);
-                this.Text = DateTime.Now.ToString("dd/MM/yyyy") + " - HSS XDS Repository";
-                SetupProperties();
+                this.Text = DateTime.Now.ToString("dd/MM/yyyy") + " - HSS XDS Repository (stopped)";
+                //SetupProperties();
             }
             catch (Exception ex)
             {
                 string exceptionMsg = ex.Message;
                 logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": RepositoryForm - " + exceptionMsg + "...\n"));
             }
+        }
+
+        private void cmdStart_Click(object sender, EventArgs e)
+        {
+            if(cmdStart.Text == "START")
+            {
+                logWindow.AppendText(DateTime.Now.ToString("HH:mm:ss.fff") + ": Starting Repository...\n");
+                SetupProperties();
+                cmdStart.Text = "STOP";
+                cmdStart.FlatStyle = FlatStyle.Popup;
+                logWindow.AppendText(DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository started...\n");
+                logWindow.AppendText("--- --- ---\n");
+                this.Text = DateTime.Now.ToString("dd/MM/yyyy") + " - HSS XDS Repository";
+            }
+            else if (cmdStart.Text == "STOP")
+            {
+                logWindow.AppendText("--- --- ---\n");
+                logWindow.AppendText(DateTime.Now.ToString("HH:mm:ss.fff") + ": Stopping Repository...\n");
+                Rep.StopListen();
+                clearLogWindow();
+                cmdStart.Text = "START";
+                cmdStart.FlatStyle = FlatStyle.Flat;
+                cmdStart.FlatAppearance.BorderSize = 2;
+                cmdStart.FlatAppearance.BorderColor = System.Drawing.Color.Red;
+                logWindow.AppendText(DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository stopped...\n");
+                logWindow.AppendText("--- --- ---\n");
+                this.Text = DateTime.Now.ToString("dd/MM/yyyy") + " - HSS XDS Repository (stopped)";
+            }
+            
         }
 
         private void SetupProperties()
@@ -52,8 +81,8 @@ namespace XdsRepository
                     Rep.LogMessageEvent += LogMessageHandler;
                     Rep.StartListen();
                     //logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Authority Domain - " + Rep.authDomain + "...\n"));
-                    //logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Store - " + Rep.StoragePath + "...\n"));
-                    //logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Log - " + Rep.repositoryLog + "...\n"));
+                    logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Store - " + Rep.StoragePath + "...\n"));
+                    logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Log - " + Rep.repositoryLog + "...\n"));
                     lblAuthDomain.Text = Rep.authDomain;
                     lblRepId.Text = Rep.repositoryId;
                     lblRepUrl.Text = Rep.repositoryURI;

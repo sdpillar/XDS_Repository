@@ -29,19 +29,19 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode43 = new System.Windows.Forms.TreeNode("Repository");
-            System.Windows.Forms.TreeNode treeNode44 = new System.Windows.Forms.TreeNode("Registry");
-            System.Windows.Forms.TreeNode treeNode45 = new System.Windows.Forms.TreeNode("ATNA");
-            System.Windows.Forms.TreeNode treeNode46 = new System.Windows.Forms.TreeNode("Certificates");
-            System.Windows.Forms.TreeNode treeNode47 = new System.Windows.Forms.TreeNode("Authority Domain");
-            System.Windows.Forms.TreeNode treeNode48 = new System.Windows.Forms.TreeNode("Logging");
-            System.Windows.Forms.TreeNode treeNode49 = new System.Windows.Forms.TreeNode("Settings", new System.Windows.Forms.TreeNode[] {
-            treeNode43,
-            treeNode44,
-            treeNode45,
-            treeNode46,
-            treeNode47,
-            treeNode48});
+            System.Windows.Forms.TreeNode treeNode50 = new System.Windows.Forms.TreeNode("Repository");
+            System.Windows.Forms.TreeNode treeNode51 = new System.Windows.Forms.TreeNode("Registry");
+            System.Windows.Forms.TreeNode treeNode52 = new System.Windows.Forms.TreeNode("ATNA");
+            System.Windows.Forms.TreeNode treeNode53 = new System.Windows.Forms.TreeNode("Certificates");
+            System.Windows.Forms.TreeNode treeNode54 = new System.Windows.Forms.TreeNode("Authority Domain");
+            System.Windows.Forms.TreeNode treeNode55 = new System.Windows.Forms.TreeNode("Logging");
+            System.Windows.Forms.TreeNode treeNode56 = new System.Windows.Forms.TreeNode("Settings", new System.Windows.Forms.TreeNode[] {
+            treeNode50,
+            treeNode51,
+            treeNode52,
+            treeNode53,
+            treeNode54,
+            treeNode55});
             this.txtRepositoryPath = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.txtRepositoryURI = new System.Windows.Forms.TextBox();
@@ -49,7 +49,6 @@
             this.txtRepositoryId = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.cmdClose = new System.Windows.Forms.Button();
-            this.cmdSaveSettings = new System.Windows.Forms.Button();
             this.txtRegistryURI = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.txtThumbprint = new System.Windows.Forms.TextBox();
@@ -77,7 +76,6 @@
             this.grpRepository = new System.Windows.Forms.GroupBox();
             this.tvwSettings = new System.Windows.Forms.TreeView();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.cmdCancel = new System.Windows.Forms.Button();
             this.dlgLog = new System.Windows.Forms.FolderBrowserDialog();
             this.cmdRepository = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
@@ -145,23 +143,13 @@
             // 
             // cmdClose
             // 
-            this.cmdClose.Location = new System.Drawing.Point(16, 71);
+            this.cmdClose.Location = new System.Drawing.Point(12, 14);
             this.cmdClose.Name = "cmdClose";
             this.cmdClose.Size = new System.Drawing.Size(122, 23);
             this.cmdClose.TabIndex = 15;
             this.cmdClose.Text = "Close";
             this.cmdClose.UseVisualStyleBackColor = true;
             this.cmdClose.Click += new System.EventHandler(this.cmdClose_Click);
-            // 
-            // cmdSaveSettings
-            // 
-            this.cmdSaveSettings.Enabled = false;
-            this.cmdSaveSettings.Location = new System.Drawing.Point(16, 13);
-            this.cmdSaveSettings.Name = "cmdSaveSettings";
-            this.cmdSaveSettings.Size = new System.Drawing.Size(122, 23);
-            this.cmdSaveSettings.TabIndex = 16;
-            this.cmdSaveSettings.Text = "Save Settings";
-            this.cmdSaveSettings.UseVisualStyleBackColor = true;
             // 
             // txtRegistryURI
             // 
@@ -229,7 +217,7 @@
             this.panel1.Controls.Add(this.panel2);
             this.panel1.Location = new System.Drawing.Point(12, 11);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(534, 286);
+            this.panel1.Size = new System.Drawing.Size(534, 237);
             this.panel1.TabIndex = 20;
             // 
             // panel3
@@ -409,31 +397,31 @@
             // 
             this.tvwSettings.Location = new System.Drawing.Point(6, 12);
             this.tvwSettings.Name = "tvwSettings";
-            treeNode43.BackColor = System.Drawing.Color.Transparent;
-            treeNode43.Checked = true;
-            treeNode43.ForeColor = System.Drawing.Color.Black;
-            treeNode43.Name = "nodRepository";
-            treeNode43.Text = "Repository";
-            treeNode44.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode44.Name = "nodRegistry";
-            treeNode44.Text = "Registry";
-            treeNode45.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode45.Name = "nodAtna";
-            treeNode45.Text = "ATNA";
-            treeNode46.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode46.Name = "nodCertificates";
-            treeNode46.Text = "Certificates";
-            treeNode47.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode47.Name = "nodDomain";
-            treeNode47.Text = "Authority Domain";
-            treeNode48.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode48.Name = "nodLogging";
-            treeNode48.Text = "Logging";
-            treeNode49.Checked = true;
-            treeNode49.Name = "nodSettings";
-            treeNode49.Text = "Settings";
+            treeNode50.BackColor = System.Drawing.Color.Transparent;
+            treeNode50.Checked = true;
+            treeNode50.ForeColor = System.Drawing.Color.Black;
+            treeNode50.Name = "nodRepository";
+            treeNode50.Text = "Repository";
+            treeNode51.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode51.Name = "nodRegistry";
+            treeNode51.Text = "Registry";
+            treeNode52.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode52.Name = "nodAtna";
+            treeNode52.Text = "ATNA";
+            treeNode53.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode53.Name = "nodCertificates";
+            treeNode53.Text = "Certificates";
+            treeNode54.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode54.Name = "nodDomain";
+            treeNode54.Text = "Authority Domain";
+            treeNode55.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode55.Name = "nodLogging";
+            treeNode55.Text = "Logging";
+            treeNode56.Checked = true;
+            treeNode56.Name = "nodSettings";
+            treeNode56.Text = "Settings";
             this.tvwSettings.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode49});
+            treeNode56});
             this.tvwSettings.Size = new System.Drawing.Size(153, 151);
             this.tvwSettings.TabIndex = 18;
             this.tvwSettings.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvwSettings_AfterSelect);
@@ -441,23 +429,11 @@
             // panel2
             // 
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2.Controls.Add(this.cmdCancel);
-            this.panel2.Controls.Add(this.cmdSaveSettings);
             this.panel2.Controls.Add(this.cmdClose);
             this.panel2.Location = new System.Drawing.Point(7, 169);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(152, 107);
+            this.panel2.Size = new System.Drawing.Size(152, 52);
             this.panel2.TabIndex = 17;
-            // 
-            // cmdCancel
-            // 
-            this.cmdCancel.Enabled = false;
-            this.cmdCancel.Location = new System.Drawing.Point(16, 42);
-            this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(122, 23);
-            this.cmdCancel.TabIndex = 17;
-            this.cmdCancel.Text = "Cancel";
-            this.cmdCancel.UseVisualStyleBackColor = true;
             // 
             // dlgLog
             // 
@@ -477,7 +453,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(557, 307);
+            this.ClientSize = new System.Drawing.Size(557, 260);
             this.Controls.Add(this.panel1);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -513,7 +489,6 @@
         private System.Windows.Forms.TextBox txtRepositoryId;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button cmdClose;
-        private System.Windows.Forms.Button cmdSaveSettings;
         private System.Windows.Forms.TextBox txtRegistryURI;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtThumbprint;
@@ -538,7 +513,6 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdLog;
         private System.Windows.Forms.TextBox txtRepositoryLog;
         private System.Windows.Forms.Label label12;

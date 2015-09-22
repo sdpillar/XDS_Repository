@@ -73,16 +73,8 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BouncyCastle.6.40, Version=1.6.1.0, Culture=neutral, PublicKeyToken=bb9456844973d071, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Desktop\XdsObjects.NET_RELEASE_6.40.2.5\BouncyCastle.6.40.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework">
       <HintPath>bin\Debug\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="Security.6.40, Version=6.40.0.0, Culture=neutral, PublicKeyToken=f4dc1386f6a89afb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Desktop\XdsObjects.NET_RELEASE_6.40.2.6\Security.6.40.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -90,6 +82,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -103,7 +96,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="XdsObjects.6.40, Version=6.40.0.0, Culture=neutral, PublicKeyToken=67ef2e827ae64766, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Desktop\XdsObjects.NET_RELEASE_6.40.2.8\XdsObjects.6.40.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\Medical Connections\XdsObjects.NET_RELEASE_6.40.2.8\XdsObjects.6.40.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

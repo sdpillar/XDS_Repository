@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+//using System.Collections.Generic;
+//using System.ComponentModel;
+//using System.Data;
 using System.Drawing;
-using System.Linq;
+//using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Configuration;
+//using System.Configuration;
 using System.Text.RegularExpressions;
 using System.Net;
 using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
+//using System.Security.Cryptography.X509Certificates;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -43,7 +43,6 @@ namespace XdsRepository
             this.Location = this.Owner.Location;
             this.Left += this.Owner.ClientSize.Width / 2 - this.Width / 2;
             this.Top += this.Owner.ClientSize.Height / 2 - this.Height / 2;
-            cmdSaveSettings.Enabled = false;cmdCancel.Enabled = false;
             this.txtDomain.SelectionStart = 0;
             this.txtDomain.SelectionLength = 0;
 
@@ -145,14 +144,6 @@ namespace XdsRepository
                 Properties.Settings.Default.Save();
             }
             this.Close();
-            /*if (cmdSaveSettings.Enabled == true)
-            {
-                MessageBox.Show("Save settings before exiting!");
-            }
-            else
-            {
-                this.Close();
-            }*/
         }
 
         private int CalcuateHash()
@@ -163,80 +154,8 @@ namespace XdsRepository
             return hash;
         }
 
-        //private void txtAtnaPort_TextChanged(object sender, EventArgs e)
-        //{
-            //cmdSaveSettings.Enabled = true;
-            //cmdCancel.Enabled = true;
-
-            /*string portString = txtAtnaPort.Text;
-            if (portString.Length > 4)
-            {
-                txtAtnaPort.Text = portString.Substring(0, 4);
-                MessageBox.Show("Port number cannot be more than 4 digits");
-            }
-
-            for (int i = 0; i < portString.Length; i++)
-            {
-                if (!char.IsNumber(portString[i]))
-                {
-                    MessageBox.Show("Please insert a valid number");
-                }
-            }*/
-        //}
-
-        /*private void HashChanged()
-        {
-            int currentHash = CalcuateHash();
-            if (currentHash != Properties.Settings.Default.HashCode)
-            {
-                currentHashValue = CalcuateHash();
-                cmdSaveSettings.Enabled = true;
-            }
-        }
-
-        private void txtRepositoryPath_Leave(object sender, EventArgs e)
-        {
-            HashChanged();
-        }
-
-        private void txtRepositoryId_Leave(object sender, EventArgs e)
-        {
-            HashChanged();
-        }
-
-        private void txtRepositoryURI_Leave(object sender, EventArgs e)
-        {
-            HashChanged();
-        }
-
-        private void txtRepositoryLog_Leave(object sender, EventArgs e)
-        {
-            HashChanged();
-        }
-
-        private void txtDomain_Leave(object sender, EventArgs e)
-        {
-            HashChanged();
-        }
-
-        private void txtRegistryURI_Leave(object sender, EventArgs e)
-        {
-            HashChanged();
-        }
-
-        private void txtAtnaHost_Leave(object sender, EventArgs e)
-        {
-            HashChanged();
-        }
-
-        private void txtThumbprint_Leave(object sender, EventArgs e)
-        {
-            HashChanged();
-        }
-
         private void txtAtnaPort_Leave(object sender, EventArgs e)
         {
-            HashChanged();
             try
             {
                 string endpoint = txtAtnaPort.Text;
@@ -269,7 +188,7 @@ namespace XdsRepository
             {
                 MessageBox.Show("Ip Address and/or Port is invalid");
             }
-        }*/
+        }
 
         private void testNotifyEndpoint(string host, string port)
         {
@@ -305,23 +224,6 @@ namespace XdsRepository
             }
         }
 
-        /*private void cmdSaveSettings_Click(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.AuthDomain = txtDomain.Text;
-            Properties.Settings.Default.RegistryURI = txtRegistryURI.Text;
-            Properties.Settings.Default.RepositoryPath = txtRepositoryPath.Text;
-            Properties.Settings.Default.RepositoryId = txtRepositoryId.Text;
-            Properties.Settings.Default.RepositoryURI = txtRepositoryURI.Text;
-            Properties.Settings.Default.RepositoryLog = txtRepositoryLog.Text;
-            Properties.Settings.Default.AtnaHost = txtAtnaHost.Text;
-            Properties.Settings.Default.AtnaPort = int.Parse(txtAtnaPort.Text);
-            Properties.Settings.Default.Thumbprint = txtThumbprint.Text;
-            //Properties.Settings.Default.HashCode = CalcuateHash();
-            Properties.Settings.Default.Save();
-            cmdSaveSettings.Enabled = false;
-            cmdCancel.Enabled = false;
-        }*/
-
         private bool IsValidPort(string port)
         {
             string pattern = @"^[0-9][0-9][0-9][0-9]$";
@@ -341,78 +243,10 @@ namespace XdsRepository
             return valid;
         }
 
-        /*private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            txtDomain.Text = Properties.Settings.Default.AuthDomain;
-            txtRegistryURI.Text = Properties.Settings.Default.RegistryURI;
-            txtRepositoryPath.Text = Properties.Settings.Default.RepositoryPath;
-            txtRepositoryId.Text = Properties.Settings.Default.RepositoryId;
-            txtRepositoryURI.Text = Properties.Settings.Default.RepositoryURI;
-            txtRepositoryLog.Text = Properties.Settings.Default.RepositoryLog;
-            txtAtnaHost.Text = Properties.Settings.Default.AtnaHost;
-            txtAtnaPort.Text = Properties.Settings.Default.AtnaPort.ToString();
-            txtThumbprint.Text = Properties.Settings.Default.Thumbprint;
-            cmdSaveSettings.Enabled = false;
-            cmdCancel.Enabled = false;
-        }
-
-        private void txtRegistryURI_TextChanged(object sender, EventArgs e)
-        {
-            cmdSaveSettings.Enabled = true;
-            cmdCancel.Enabled = true;
-        }
-
-        private void txtThumbprint_TextChanged(object sender, EventArgs e)
-        {
-            cmdSaveSettings.Enabled = true;
-            cmdCancel.Enabled = true;
-        }
-
-        private void txtRepositoryURI_TextChanged(object sender, EventArgs e)
-        {
-            cmdSaveSettings.Enabled = true;
-            cmdCancel.Enabled = true;
-        }
-
-        private void txtRepositoryPath_TextChanged(object sender, EventArgs e)
-        {
-            cmdSaveSettings.Enabled = true;
-            cmdCancel.Enabled = true;
-        }
-
-        private void txtRepositoryLog_TextChanged(object sender, EventArgs e)
-        {
-            cmdSaveSettings.Enabled = true;
-            cmdCancel.Enabled = true;
-        }
-
-        private void txtRepositoryId_TextChanged(object sender, EventArgs e)
-        {
-            cmdSaveSettings.Enabled = true;
-            cmdCancel.Enabled = true;
-        }
-
-        private void txtDomain_TextChanged(object sender, EventArgs e)
-        {
-            cmdSaveSettings.Enabled = true;
-            cmdCancel.Enabled = true;
-        }
-
-        private void txtAtnaHost_TextChanged(object sender, EventArgs e)
-        {
-            cmdSaveSettings.Enabled = true;
-            cmdCancel.Enabled = true;
-        }
-
-        private void txtAppId_TextChanged(object sender, EventArgs e)
-        {
-            cmdSaveSettings.Enabled = true;
-            cmdCancel.Enabled = true;
-        }*/
-
         private void cmdLog_Click(object sender, EventArgs e)
         {
             dlgLog.SelectedPath = txtRepositoryLog.Text;
+            dlgLog.Description = "Select the folder in which to store repository logs";
             if (dlgLog.ShowDialog() == DialogResult.OK)
             {
                 txtRepositoryLog.Text = dlgLog.SelectedPath;
@@ -422,6 +256,7 @@ namespace XdsRepository
         private void cmdRepository_Click(object sender, EventArgs e)
         {
             dlgLog.SelectedPath = txtRepositoryPath.Text;
+            dlgLog.Description = "Select the folder in which to store reports and scanned documents";
             if (dlgLog.ShowDialog() == DialogResult.OK)
             {
                 txtRepositoryPath.Text = dlgLog.SelectedPath;
