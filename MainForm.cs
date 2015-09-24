@@ -152,7 +152,7 @@ namespace XdsRepository
             {
                 string exceptionMsg = ex.Message;
                 logWindow.AppendText(DateTime.Now.ToString("HH:mm:ss.fff") + ": Connection failed to " + hostname + " at " + host + ":" + port + "...\n");
-                logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": " + exceptionMsg + "...\n"));
+                logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": testConnection - " + exceptionMsg + "...\n"));
                 client.Close();
                 return false;
             }
