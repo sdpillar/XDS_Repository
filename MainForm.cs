@@ -162,13 +162,10 @@ namespace XdsRepository
         {
             if (keyData == (Keys.Control | Keys.Shift | Keys.S))
             {
-                frmSettings frmSettings = new frmSettings();
-                frmSettings.StartPosition = FormStartPosition.Manual;
-                frmSettings.Owner = this;
-                frmSettings.ShowDialog();
+                UpdateSettings();
                 return true;
             }
-            else if (keyData == (Keys.F4))
+            else if (keyData == (Keys.F4) && cmdStart.Text != "START")
             {
                 Rep.StopListen();
                 logWindow.AppendText("--- --- ---\n");
@@ -221,6 +218,28 @@ namespace XdsRepository
                 currentDate = DateTime.Now;
             }
             testConnections();
+        }
+
+        private void cmdSettings_Click(object sender, EventArgs e)
+        {
+            UpdateSettings();
+        }
+
+        private void UpdateSettings()
+        {
+            frmSettings frmSettings = new frmSettings();
+            frmSettings.StartPosition = FormStartPosition.Manual;
+            frmSettings.Owner = this;
+            frmSettings.ShowDialog();
+
+            Rep.StopListen();
+            logWindow.AppendText("--- --- ---\n");
+            logWindow.AppendText(DateTime.Now.ToString("HH:mm:ss.fff") + ": Refreshing settings...\n");
+            SetupProperties();
+
+            cmdStart.Text = "STOP";
+            cmdStart.FlatStyle = FlatStyle.Popup;
+            this.Text = DateTime.Now.ToString("dd/MM/yyyy") + " - HSS XDS Repository";
         }
     }
 }

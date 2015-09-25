@@ -63,12 +63,13 @@ namespace XdsRepository
 
                 tvwSettings.SelectedNode = e.Node;
                 e.Node.ForeColor = Color.Black;
-                label11.Text = e.Node.Text;
+                //lblRegistry.Text = e.Node.Text;
 
                 switch (e.Node.Text)
                 {
                     case "Repository":
                         grpRepository.Visible = true;
+                        lblRepository.Text = e.Node.Text;
                         grpRegistry.Visible = false;
                         grpAtna.Visible = false;
                         grpCertificates.Visible = false;
@@ -78,6 +79,7 @@ namespace XdsRepository
                     case "Registry":
                         grpRepository.Visible = false;
                         grpRegistry.Visible = true;
+                        lblRegistry.Text = e.Node.Text;
                         grpAtna.Visible = false;
                         grpCertificates.Visible = false;
                         grpDomain.Visible = false;
@@ -87,6 +89,7 @@ namespace XdsRepository
                         grpRepository.Visible = false;
                         grpRegistry.Visible = false;
                         grpAtna.Visible = true;
+                        lblAtna.Text = e.Node.Text;
                         grpCertificates.Visible = false;
                         grpDomain.Visible = false;
                         grpLogging.Visible = false;
@@ -96,6 +99,7 @@ namespace XdsRepository
                         grpRegistry.Visible = false;
                         grpAtna.Visible = false;
                         grpCertificates.Visible = true;
+                        lblCertificates.Text = e.Node.Text;
                         grpDomain.Visible = false;
                         grpLogging.Visible = false;
                         break;
@@ -105,6 +109,7 @@ namespace XdsRepository
                         grpAtna.Visible = false;
                         grpCertificates.Visible = false;
                         grpDomain.Visible = true;
+                        lblDomain.Text = e.Node.Text;
                         grpLogging.Visible = false;
                         break;
                     case "Logging":
@@ -114,6 +119,7 @@ namespace XdsRepository
                         grpCertificates.Visible = false;
                         grpDomain.Visible = false;
                         grpLogging.Visible = true;
+                        lblLogging.Text = e.Node.Text;
                         break;
                 }
             }

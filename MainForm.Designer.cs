@@ -42,6 +42,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.lblAuthDomain = new System.Windows.Forms.Label();
             this.cmdStart = new System.Windows.Forms.Button();
+            this.cmdSettings = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,7 +64,7 @@
             this.btnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClose.Location = new System.Drawing.Point(5, 647);
+            this.btnClose.Location = new System.Drawing.Point(395, 647);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(130, 27);
             this.btnClose.TabIndex = 2;
@@ -176,7 +177,7 @@
             this.cmdStart.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.cmdStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmdStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdStart.Location = new System.Drawing.Point(390, 647);
+            this.cmdStart.Location = new System.Drawing.Point(5, 647);
             this.cmdStart.Name = "cmdStart";
             this.cmdStart.Size = new System.Drawing.Size(130, 27);
             this.cmdStart.TabIndex = 16;
@@ -184,11 +185,27 @@
             this.cmdStart.UseVisualStyleBackColor = true;
             this.cmdStart.Click += new System.EventHandler(this.cmdStart_Click);
             // 
+            // cmdSettings
+            // 
+            this.cmdSettings.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.cmdSettings.FlatAppearance.BorderSize = 5;
+            this.cmdSettings.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
+            this.cmdSettings.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cmdSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdSettings.Location = new System.Drawing.Point(141, 647);
+            this.cmdSettings.Name = "cmdSettings";
+            this.cmdSettings.Size = new System.Drawing.Size(130, 27);
+            this.cmdSettings.TabIndex = 17;
+            this.cmdSettings.Text = "SETTINGS";
+            this.cmdSettings.UseVisualStyleBackColor = true;
+            this.cmdSettings.Click += new System.EventHandler(this.cmdSettings_Click);
+            // 
             // RepositoryForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(530, 678);
+            this.Controls.Add(this.cmdSettings);
             this.Controls.Add(this.cmdStart);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnClose);
@@ -220,6 +237,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lblAuthDomain;
         private System.Windows.Forms.Button cmdStart;
+        private System.Windows.Forms.Button cmdSettings;
     }
 }
 
