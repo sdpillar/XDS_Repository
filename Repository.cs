@@ -198,6 +198,7 @@ namespace XdsRepository
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ").UUID - " + document.UUID + "...");
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet.UUID - " + SubmissionSet.UUID + "...");
 
+                        /*
                         if (document.RepositoryUniqueId == null)
                         {
                             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Id is not present - ");
@@ -216,7 +217,7 @@ namespace XdsRepository
                             myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSUnknownRepositoryId, "", document.RepositoryUniqueId);
                             return myResponse;
                         }
-
+                        */
                         if (document.Data == null)
                         {
                             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Missing document...");
@@ -227,7 +228,9 @@ namespace XdsRepository
                             return myResponse;
                         }
 
+                        document.RepositoryUniqueId = repositoryId;
                         document.SetSizeAndHash();
+
                         bool HashSizeCheck = document.CheckSizeAndHash();
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document size - " + document.Size);
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document hash - " + document.Hash);
@@ -247,6 +250,7 @@ namespace XdsRepository
                         Directory.CreateDirectory(dir);
                         string location = Path.Combine(dir, document.UniqueID);
                         File.WriteAllBytes(location, document.Data);
+                        document.Uri = location;
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document saved to - " + location + "...");
                         //System.IO.File.WriteAllText(StoragePath + document.UniqueID + ".mime", document.MimeType);
                         //Save document info into repository database
@@ -376,6 +380,7 @@ namespace XdsRepository
                         return response;
                     }
 
+                    /*
                     if (item.HomeCommunityID == null)
                     {
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Home Community Id is not present - ");
@@ -394,7 +399,7 @@ namespace XdsRepository
                         response.AddError(XdsErrorCode.XDSUnknownCommunity, "", item.HomeCommunityID);
                         return response;
                     }
-
+                    */
                     string docId = "";
                     string location = "";
                     using (var dbRep = new RepositoryDataBase())
@@ -423,22 +428,10 @@ namespace XdsRepository
                         }
                     }
 
-                    // check the document exists
-                    // in a real world application, the matching could be done in database queries
-                    /*if (!System.IO.File.Exists(StoragePath + item.DocumentUniqueID))
-                    {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Cannot locate - " + StoragePath + item.DocumentUniqueID + "...");
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                        XdsAudit.UserAuthentication(atnaTest, false);
-                        response.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                        response.AddError(XdsErrorCode.XDSMissingDocument, "", item.DocumentUniqueID);
-                        return response;
-                    }*/
-
                     // otherwise just pick up the document and mimetype
                     XdsDocument document = new XdsDocument(location);
                     document.UniqueID = item.DocumentUniqueID;
-                    document.HomeCommunityID = item.HomeCommunityID;
+                    //document.HomeCommunityID = item.HomeCommunityID;
                     document.RepositoryUniqueId = item.RepositoryUniqueID;
 
                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Returning requested document for " + item.DocumentUniqueID);
