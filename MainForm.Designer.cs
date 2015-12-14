@@ -54,7 +54,7 @@
             this.logWindow.Name = "logWindow";
             this.logWindow.ReadOnly = true;
             this.logWindow.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logWindow.Size = new System.Drawing.Size(532, 500);
+            this.logWindow.Size = new System.Drawing.Size(528, 498);
             this.logWindow.TabIndex = 1;
             // 
             // btnClose
@@ -64,7 +64,7 @@
             this.btnClose.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClose.Location = new System.Drawing.Point(395, 647);
+            this.btnClose.Location = new System.Drawing.Point(393, 647);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(130, 27);
             this.btnClose.TabIndex = 2;
@@ -145,7 +145,7 @@
             this.groupBox1.Controls.Add(this.lblRegUrl);
             this.groupBox1.Controls.Add(this.lblRepUrl);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(5, 500);
+            this.groupBox1.Location = new System.Drawing.Point(3, 500);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(520, 141);
             this.groupBox1.TabIndex = 15;
@@ -177,7 +177,7 @@
             this.cmdStart.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.cmdStart.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmdStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdStart.Location = new System.Drawing.Point(5, 647);
+            this.cmdStart.Location = new System.Drawing.Point(3, 647);
             this.cmdStart.Name = "cmdStart";
             this.cmdStart.Size = new System.Drawing.Size(130, 27);
             this.cmdStart.TabIndex = 16;
@@ -192,7 +192,7 @@
             this.cmdSettings.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Silver;
             this.cmdSettings.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.cmdSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdSettings.Location = new System.Drawing.Point(141, 647);
+            this.cmdSettings.Location = new System.Drawing.Point(139, 647);
             this.cmdSettings.Name = "cmdSettings";
             this.cmdSettings.Size = new System.Drawing.Size(130, 27);
             this.cmdSettings.TabIndex = 17;
@@ -204,12 +204,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(530, 678);
+            this.ClientSize = new System.Drawing.Size(527, 679);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.logWindow);
             this.Controls.Add(this.cmdSettings);
             this.Controls.Add(this.cmdStart);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnClose);
-            this.Controls.Add(this.logWindow);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MaximizeBox = false;
             this.Name = "RepositoryForm";
