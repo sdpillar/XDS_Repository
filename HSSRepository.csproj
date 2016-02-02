@@ -76,6 +76,10 @@
     <Reference Include="EntityFramework">
       <HintPath>bin\Debug\EntityFramework.dll</HintPath>
     </Reference>
+    <Reference Include="Security.6.40, Version=6.40.0.0, Culture=neutral, PublicKeyToken=f4dc1386f6a89afb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Desktop\XDS\Medical Connections\XdsObjects.NET_RELEASE_6.40.2.13\Security.6.40.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core">
@@ -96,10 +100,15 @@
     <Reference Include="System.Xml" />
     <Reference Include="XdsObjects.6.40, Version=6.40.0.0, Culture=neutral, PublicKeyToken=67ef2e827ae64766, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Desktop\Medical Connections\XdsObjects.NET_RELEASE_6.40.2.8\XdsObjects.6.40.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\XDS\Medical Connections\XdsObjects.NET_RELEASE_6.40.2.13\XdsObjects.6.40.dll</HintPath>
+    </Reference>
+    <Reference Include="XdsObjects.6.40.XmlSerializers, Version=6.40.0.0, Culture=neutral, PublicKeyToken=67ef2e827ae64766, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Desktop\XDS\Medical Connections\XdsObjects.NET_RELEASE_6.40.2.13\XdsObjects.6.40.XmlSerializers.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ATNA_Messaging.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

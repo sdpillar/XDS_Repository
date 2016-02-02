@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Collections.Generic;
 //using System.Linq;
 //using System.Text;
@@ -9,6 +10,7 @@ using System.IO;
 //using System.ServiceModel;
 using System.Security.Cryptography.X509Certificates;
 //using System.Runtime;
+using System.Net;
 
 namespace XdsRepository
 {
@@ -18,6 +20,7 @@ namespace XdsRepository
         public event LogMessageHandler LogMessageEvent;
         XdsDomain atnaTest = new XdsDomain();
         AuditEndpoint myAudit = new AuditEndpoint();
+        ATNA_Messaging myATNA = new ATNA_Messaging();
 
         public bool readProperties()
         {
@@ -63,7 +66,7 @@ namespace XdsRepository
         {
             try
             {
-                XdsGlobal.LogToFile(repositoryLog, XdsObjects.Enums.LogLevel.All, 60);
+                XdsGlobal.LogToFile(repositoryLog, XdsObjects.Enums.LogLevel.All, 3600);
                 // Create a new instance of the Server
                 server = new XdsMtomServer();
                 // Set up server events
@@ -78,15 +81,18 @@ namespace XdsRepository
                 myAudit.Port = atnaPort;
                 AuditProtocol atnaProtocol = AuditProtocol.Tcp;
                 myAudit.Protocol = atnaProtocol;
+                atnaTest.AuditEnterpriseSiteID = authDomain;
+                atnaTest.AuditSourceID = System.Environment.MachineName;
+                atnaTest.AuditSourceAddress = repositoryId;
                 atnaTest.RegistryEndpoint = new WebServiceEndpoint(registryURI);
                 atnaTest.SubmissionRepositoryEndpoint = new WebServiceEndpoint(repositoryURI);
                 atnaTest.AuditRepositories.Add(myAudit);
-                atnaTest.AuditEnterpriseSiteID = authDomain;
-                atnaTest.ValidateOnSending = true;
-                atnaTest.AuditSchema = XdsDomain.AuditSchemaType.DICOM;
-                XdsAudit.ActorStart(atnaTest);
+                myATNA.ATNA_Application_Start(atnaTest);
 
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Application Start audit event logged...");
                 xds = new XdsDomain();
+                xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
+
                 // Set up the Registry we are going to talk to
                 //xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
                 //certificate to reference
@@ -102,7 +108,6 @@ namespace XdsRepository
                 {
                     xds.RegistryEndpoint = new WebServiceEndpoint(registryURI, myCert);
                 }*/
-                xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
             }
             catch(Exception ex)
             {
@@ -110,6 +115,8 @@ namespace XdsRepository
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": StartListen - " + exceptionMsg + "...\n");
             }
         }
+
+        
 
         private static X509Certificate2 GetCertificateByThumbprint(string certificateThumbPrint, StoreLocation certificateStoreLocation)
         {
@@ -134,6 +141,9 @@ namespace XdsRepository
             if (server != null)
             {
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": " + repositoryURI + " not listening...");
+                myATNA.ATNA_Application_Stop(atnaTest);
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Application Stop audit event logged...");
+                atnaTest.AuditRepositories.Clear();
                 server.UnListenAll();
             }
         }
@@ -153,24 +163,14 @@ namespace XdsRepository
             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet.SourceId - " + SubmissionSet.SourceID);
             XdsRegistryResponse myResponse = new XdsRegistryResponse();
             try
-            {
-                XdsAudit.UserAuthentication(atnaTest, true);
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Login audit event logged...");
-
-                XdsPatient myPatient_1 = new XdsPatient();
-                myPatient_1.CompositeId = SubmissionSet.PatientID;
-                List<string> StudyUIDList_1 = new List<string>();
-                StudyUIDList_1.Add(SubmissionSet.UniqueID);
-                XdsAudit.PHIImport(atnaTest, SubmissionSet.SourceID, StudyUIDList_1, myPatient_1);
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
-
+            {    
                 //count the number of documents in submissionset
                 int docCount = SubmissionSet.Documents.Count;
                 if (docCount == 0) //return failure if there are none
                 {
                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": No document metadata present - ");
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                    XdsAudit.UserAuthentication(atnaTest, false);
+                    myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
                     myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
                     myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSMissingDocumentMetadata, "", "");
                     return myResponse;
@@ -180,7 +180,8 @@ namespace XdsRepository
                 if (SubmissionSet.PatientInfo.ID_Root != authDomain)
                 {
                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Authority Domains do not match...");
-                    XdsAudit.UserAuthentication(atnaTest, false);
+                    myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
                     myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
                     myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSUnknownCommunity, "Authority Domains do not match", "");
                     return myResponse;
@@ -221,8 +222,8 @@ namespace XdsRepository
                         if (document.Data == null)
                         {
                             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Missing document...");
-                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                            XdsAudit.UserAuthentication(atnaTest, false);
+                            myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
+                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
                             myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
                             myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSMissingDocument, "", document.UniqueID);
                             return myResponse;
@@ -237,8 +238,8 @@ namespace XdsRepository
                         if (!HashSizeCheck)
                         {
                             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": XDSRepositoryMetadataError - Hash and/or Size atrributes of supplied document are in error...");
-                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                            XdsAudit.UserAuthentication(atnaTest, false);
+                            myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
+                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
                             myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
                             myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSRepositoryMetadataError, "", "Hash and/or Size atrributes of supplied document are in error");
                             return myResponse;
@@ -268,20 +269,15 @@ namespace XdsRepository
                     }
                 }
 
+                myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, true);
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
+
                 // then send whole lot off to the chosen registry (main data will NOT be sent - this is
                 // automatic and internal!)  
                 //Then pass back the response
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Sending SubmissionSet to Registry...");
-                XdsPatient myPatient_2 = new XdsPatient();
-                myPatient_2.CompositeId = SubmissionSet.PatientID;
-                System.Uri hssRegistry = new System.Uri(registryURI);
-                List<string> StudyUIDList_2 = new List<string>();
-                StudyUIDList_2.Add(SubmissionSet.UniqueID);
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Export audit event logged...");
-                XdsAudit.PHIExport(atnaTest, hssRegistry, StudyUIDList_2, myPatient_2);
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                XdsAudit.UserAuthentication(atnaTest, false);
-
+                myATNA.Repository_Export(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, true);
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Register Document Set Export audit event logged...");
                 return xds.RegisterDocumentSet(SubmissionSet);
             }
             catch (NullReferenceException nrEx)
@@ -293,8 +289,8 @@ namespace XdsRepository
                 string exceptionMsg = nrEx.Message;
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": server_ProvideAndRegisterRequestReceived_1 - " + exceptionMsg + "...\n");
 
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                XdsAudit.UserAuthentication(atnaTest, false);
+                myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
                 return myResponse;
             }
             catch (System.ServiceModel.EndpointNotFoundException endPointEx)
@@ -306,8 +302,8 @@ namespace XdsRepository
                 string exceptionMsg = endPointEx.Message;
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": server_ProvideAndRegisterRequestReceived_2 - " + exceptionMsg + "...\n");
 
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                XdsAudit.UserAuthentication(atnaTest, false);
+                myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
                 return myResponse;
             }
             catch (ArgumentNullException nrExc)
@@ -319,8 +315,8 @@ namespace XdsRepository
                 string exceptionMsg = nrExc.Message;
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": server_ProvideAndRegisterRequestReceived_3 - " + exceptionMsg + "...\n");
 
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                XdsAudit.UserAuthentication(atnaTest, false);
+                myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
                 return myResponse;
             }
             catch (Exception ex)
@@ -330,10 +326,10 @@ namespace XdsRepository
                 myResponse.AddError(XdsObjects.Enums.XdsErrorCode.GeneralException, ex.Message, ex.InnerException.ToString());
 
                 string exceptionMsg = ex.Message;
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": server_ProvideAndRegisterRequestReceived_4 - " + exceptionMsg + "...\n");
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": server_ProvideAndRegisterRequestReceived_4 - " + exceptionMsg + "...\n" + ex.InnerException.ToString());
 
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                XdsAudit.UserAuthentication(atnaTest, false);
+                myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
                 return myResponse;
             }
         }
@@ -351,32 +347,30 @@ namespace XdsRepository
                 LogMessageEvent("--- --- ---");
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Retreive document request received");
                 response.Status = XdsObjects.Enums.RegistryResponseStatus.Success; // gets changed if we have a failure
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Login audit event logged...");
-                XdsAudit.UserAuthentication(atnaTest, true);
                 XdsPatient myPatient = new XdsPatient();
                 XdsRegistryResponse myResponse = new XdsRegistryResponse();
                 WebServiceEndpoint myRepositoryEndPoint = new WebServiceEndpoint(repositoryURI);
-                XdsAudit.RetrieveDocumentSet(atnaTest, "Retrieve Request", myRepositoryEndPoint, myPatient, response, true);
-
+                
                 foreach (XdsRetrieveItem item in Request.Requests)
                 {
+                    
                     if (item.RepositoryUniqueID == null)
                     {
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Id is not present - ");
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                        XdsAudit.UserAuthentication(atnaTest, false);
                         response.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
                         response.AddError(XdsObjects.Enums.XdsErrorCode.XDSUnknownRepositoryId, "", "");
+                        myATNA.Repository_Retrieve(atnaTest, item.DocumentUniqueID, false);
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Retreive Document Set Export audit event logged...");
                         return response;
                     }
                     // check that the stated repository OID really is us (this is an example of how to return an error)
                     else if (item.RepositoryUniqueID != repositoryId)
                     {
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Unknown Repository Id - " + item.RepositoryUniqueID + "...");
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                        XdsAudit.UserAuthentication(atnaTest, false);
                         response.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
                         response.AddError(XdsErrorCode.XDSUnknownRepositoryId, "", item.RepositoryUniqueID);
+                        myATNA.Repository_Retrieve(atnaTest, item.DocumentUniqueID, false);
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Retreive Document Set Export audit event logged...");
                         return response;
                     }
 
@@ -413,10 +407,10 @@ namespace XdsRepository
                                 if (!File.Exists(location))
                                 {
                                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Cannot locate - " + location + "...");
-                                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                                    XdsAudit.UserAuthentication(atnaTest, false);
                                     response.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
                                     response.AddError(XdsErrorCode.XDSMissingDocument, "", item.DocumentUniqueID);
+                                    myATNA.Repository_Retrieve(atnaTest, item.DocumentUniqueID, false);
+                                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Retreive Document Set Export audit event logged...");
                                     return response;
                                 }
                                 else
@@ -434,11 +428,11 @@ namespace XdsRepository
                     //document.HomeCommunityID = item.HomeCommunityID;
                     document.RepositoryUniqueId = item.RepositoryUniqueID;
 
+                    myATNA.Repository_Retrieve(atnaTest, item.DocumentUniqueID, true);
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Retreive Document Set Export audit event logged...");
                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Returning requested document for " + item.DocumentUniqueID);
                     response.Documents.Add(document);
                 }
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                XdsAudit.UserAuthentication(atnaTest, false);
                 return response;
             }
             catch(Exception ex)
