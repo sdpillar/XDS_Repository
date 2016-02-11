@@ -15,7 +15,7 @@ namespace XdsRepository
             // get local IP addresses
             IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
 
-            return localIPs[2].ToString() ;
+            return localIPs[2].ToString();
         }
 
         public void ATNA_Application_Start(XdsDomain atnaDomain)
@@ -27,15 +27,15 @@ namespace XdsRepository
                 appStart.EventIdentification.EventOutcomeIndicator = EventOutcomeIndicator.Success;
                 appStart.EventIdentification.EventActionCode = XdsObjects.XML_InnerObjects.Enums.EventActionCode.E;
                 appStart.EventIdentification.EventDateTime = DateTime.Now; ;
-                appStart.EventIdentification.EventID = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Application Activity", "110100", XdsDomain.AuditSchemaType.DICOM);
-                appStart.EventIdentification.EventTypeCode = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Application Start", "110120", XdsDomain.AuditSchemaType.DICOM);
+                appStart.EventIdentification.EventID = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Application Activity", "110100", atnaDomain.AuditSchema);
+                appStart.EventIdentification.EventTypeCode = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Application Start", "110120", atnaDomain.AuditSchema);
                 //ActiveParticipant1
                 XdsObjects.XML_InnerObjects.ActiveParticipant myParticipant1 = new XdsObjects.XML_InnerObjects.ActiveParticipant();
                 myParticipant1.UserID = atnaDomain.AuditSourceAddress;
                 myParticipant1.UserIsRequestor = true;
                 myParticipant1.NetworkAccessPointTypeCode = XdsObjects.XML_InnerObjects.Enums.NetworkAccessPointTypeCode.IPAddress;
                 myParticipant1.NetworkAccessPointID = getIpAddress();
-                XdsObjects.XML_InnerObjects.CodedValueString myRole1 = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Application", "110150", XdsDomain.AuditSchemaType.DICOM);
+                XdsObjects.XML_InnerObjects.CodedValueString myRole1 = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Application", "110150", atnaDomain.AuditSchema);
                 myParticipant1.RoleIDCodes.Add(myRole1);
                 appStart.ActiveParticipants.Add(myParticipant1);
                 //ActiveParticipant2
@@ -44,7 +44,7 @@ namespace XdsRepository
                 myParticipant2.UserIsRequestor = true;
                 myParticipant2.NetworkAccessPointTypeCode = XdsObjects.XML_InnerObjects.Enums.NetworkAccessPointTypeCode.IPAddress;
                 myParticipant2.NetworkAccessPointID = getIpAddress();
-                XdsObjects.XML_InnerObjects.CodedValueString myRole2 = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Application Launcher", "110151", XdsDomain.AuditSchemaType.DICOM);
+                XdsObjects.XML_InnerObjects.CodedValueString myRole2 = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Application Launcher", "110151", atnaDomain.AuditSchema);
                 myParticipant2.RoleIDCodes.Add(myRole2);
                 appStart.ActiveParticipants.Add(myParticipant2);
                 //AuditSourceIdentification
@@ -69,15 +69,15 @@ namespace XdsRepository
                 appStop.EventIdentification.EventOutcomeIndicator = EventOutcomeIndicator.Success;
                 appStop.EventIdentification.EventActionCode = XdsObjects.XML_InnerObjects.Enums.EventActionCode.E;
                 appStop.EventIdentification.EventDateTime = DateTime.Now; ;
-                appStop.EventIdentification.EventID = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Application Activity", "110100", XdsDomain.AuditSchemaType.DICOM);
-                appStop.EventIdentification.EventTypeCode = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Application Stop", "110121", XdsDomain.AuditSchemaType.DICOM);
+                appStop.EventIdentification.EventID = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Application Activity", "110100", atnaDomain.AuditSchema);
+                appStop.EventIdentification.EventTypeCode = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Application Stop", "110121", atnaDomain.AuditSchema);
                 //ActiveParticipant1
                 XdsObjects.XML_InnerObjects.ActiveParticipant myParticipant1 = new XdsObjects.XML_InnerObjects.ActiveParticipant();
                 myParticipant1.UserID = atnaDomain.AuditSourceAddress;
                 myParticipant1.UserIsRequestor = true;
                 myParticipant1.NetworkAccessPointTypeCode = XdsObjects.XML_InnerObjects.Enums.NetworkAccessPointTypeCode.IPAddress;
                 myParticipant1.NetworkAccessPointID = getIpAddress();
-                XdsObjects.XML_InnerObjects.CodedValueString myRole1 = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Application", "110150", XdsDomain.AuditSchemaType.DICOM);
+                XdsObjects.XML_InnerObjects.CodedValueString myRole1 = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Application", "110150", atnaDomain.AuditSchema);
                 myParticipant1.RoleIDCodes.Add(myRole1);
                 appStop.ActiveParticipants.Add(myParticipant1);
                 //AuditSourceIdentification
@@ -107,8 +107,8 @@ namespace XdsRepository
                     repImport.EventIdentification.EventOutcomeIndicator = EventOutcomeIndicator.MajorFailure; //dependent on presence of errors in Repository?
                 }
                 repImport.EventIdentification.EventActionCode = XdsObjects.XML_InnerObjects.Enums.EventActionCode.C;
-                repImport.EventIdentification.EventID = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Import", "110107", XdsDomain.AuditSchemaType.DICOM);
-                repImport.EventIdentification.EventTypeCode = new XdsObjects.XML_InnerObjects.CodedValueString("IHE Transactions", "Provide and Register Document Set-b", "ITI-41", XdsDomain.AuditSchemaType.DICOM);
+                repImport.EventIdentification.EventID = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Import", "110107", atnaDomain.AuditSchema);
+                repImport.EventIdentification.EventTypeCode = new XdsObjects.XML_InnerObjects.CodedValueString("IHE Transactions", "Provide and Register Document Set-b", "ITI-41", atnaDomain.AuditSchema);
                 //Source
                 XdsObjects.XML_InnerObjects.ActiveParticipant source = new XdsObjects.XML_InnerObjects.ActiveParticipant();
                 source.UserID = "";
@@ -116,7 +116,7 @@ namespace XdsRepository
                 string ipAddress = getIpAddress();
                 source.NetworkAccessPointID = sourceId;
                 source.NetworkAccessPointTypeCode = XdsObjects.XML_InnerObjects.Enums.NetworkAccessPointTypeCode.MachineNameIncludingDNSName;
-                XdsObjects.XML_InnerObjects.CodedValueString sourceRole = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Source", "110153", XdsDomain.AuditSchemaType.DICOM);
+                XdsObjects.XML_InnerObjects.CodedValueString sourceRole = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Source", "110153", atnaDomain.AuditSchema);
                 source.RoleIDCodes.Add(sourceRole);
                 repImport.ActiveParticipants.Add(source);
                 //Destination
@@ -127,7 +127,7 @@ namespace XdsRepository
                 ipAddress = getIpAddress();
                 destination.NetworkAccessPointID = sourceId;
                 destination.NetworkAccessPointTypeCode = XdsObjects.XML_InnerObjects.Enums.NetworkAccessPointTypeCode.MachineNameIncludingDNSName;
-                XdsObjects.XML_InnerObjects.CodedValueString destinationRole = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Destination", "110152", XdsDomain.AuditSchemaType.DICOM);
+                XdsObjects.XML_InnerObjects.CodedValueString destinationRole = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Destination", "110152", atnaDomain.AuditSchema);
                 destination.RoleIDCodes.Add(destinationRole);
                 repImport.ActiveParticipants.Add(destination);
                 //Patient
@@ -135,14 +135,14 @@ namespace XdsRepository
                 patient.ParticipantObjectTypeCode = XdsObjects.XML_InnerObjects.Enums.ParticipantObjectTypeCode.Person;
                 patient.ParticipantObjectTypeCodeRole = XdsObjects.XML_InnerObjects.Enums.ParticipantObjectTypeCodeRole.Patient;
                 patient.ParticipantObjectID = patientId;
-                patient.ParticipantObjectIDTypeCode = new XdsObjects.XML_InnerObjects.CodedValueParticipantObjectIDType("RFC-3881", "Patient Number", XdsObjects.XML_InnerObjects.Enums.ParticipantObjectIDTypeCode.Patient_Number, XdsDomain.AuditSchemaType.DICOM);
+                patient.ParticipantObjectIDTypeCode = new XdsObjects.XML_InnerObjects.CodedValueParticipantObjectIDType("RFC-3881", "Patient Number", XdsObjects.XML_InnerObjects.Enums.ParticipantObjectIDTypeCode.Patient_Number, atnaDomain.AuditSchema);
                 repImport.ParticipantObjectIdentification.Add(patient);
                 //SubmissionSet
                 XdsObjects.XML_InnerObjects.ParticipantObjectIdentification submissionSet = new XdsObjects.XML_InnerObjects.ParticipantObjectIdentification();
                 submissionSet.ParticipantObjectTypeCode = XdsObjects.XML_InnerObjects.Enums.ParticipantObjectTypeCode.System_Object;
                 submissionSet.ParticipantObjectTypeCodeRole = XdsObjects.XML_InnerObjects.Enums.ParticipantObjectTypeCodeRole.Job;
                 submissionSet.ParticipantObjectID = uniqueId;
-                submissionSet.ParticipantObjectIDTypeCode = new XdsObjects.XML_InnerObjects.CodedValueParticipantObjectIDType("IHE XDS Metadata", "submission set classificationNode", XdsObjects.XML_InnerObjects.Enums.ParticipantObjectIDTypeCode.IHE_XDS_Metadata, XdsDomain.AuditSchemaType.DICOM);
+                submissionSet.ParticipantObjectIDTypeCode = new XdsObjects.XML_InnerObjects.CodedValueParticipantObjectIDType("IHE XDS Metadata", "submission set classificationNode", XdsObjects.XML_InnerObjects.Enums.ParticipantObjectIDTypeCode.IHE_XDS_Metadata, atnaDomain.AuditSchema);
                 repImport.ParticipantObjectIdentification.Add(submissionSet);
                 //AuditSourceIdentification
                 XdsObjects.XML_InnerObjects.AuditSourceIdentification myAuditSource = new XdsObjects.XML_InnerObjects.AuditSourceIdentification(atnaDomain.AuditSourceID);
@@ -171,8 +171,8 @@ namespace XdsRepository
                     repExport.EventIdentification.EventOutcomeIndicator = EventOutcomeIndicator.MajorFailure; //dependent on presence of errors in Repository?
                 }
                 repExport.EventIdentification.EventActionCode = XdsObjects.XML_InnerObjects.Enums.EventActionCode.R;
-                repExport.EventIdentification.EventID = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Export", "110106", XdsDomain.AuditSchemaType.DICOM);
-                repExport.EventIdentification.EventTypeCode = new XdsObjects.XML_InnerObjects.CodedValueString("IHE Transactions", "Register Document Set-b", "ITI-42", XdsDomain.AuditSchemaType.DICOM);
+                repExport.EventIdentification.EventID = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Export", "110106", atnaDomain.AuditSchema);
+                repExport.EventIdentification.EventTypeCode = new XdsObjects.XML_InnerObjects.CodedValueString("IHE Transactions", "Register Document Set-b", "ITI-42", atnaDomain.AuditSchema);
                 //Source
                 XdsObjects.XML_InnerObjects.ActiveParticipant source = new XdsObjects.XML_InnerObjects.ActiveParticipant();
                 source.UserID = atnaDomain.RegistryEndpoint.ToString();
@@ -180,7 +180,7 @@ namespace XdsRepository
                 source.UserIsRequestor = true;
                 source.NetworkAccessPointID = atnaDomain.RegistryEndpoint.ToString();
                 source.NetworkAccessPointTypeCode = XdsObjects.XML_InnerObjects.Enums.NetworkAccessPointTypeCode.MachineNameIncludingDNSName;
-                XdsObjects.XML_InnerObjects.CodedValueString sourceRole = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Source", "110153", XdsDomain.AuditSchemaType.DICOM);
+                XdsObjects.XML_InnerObjects.CodedValueString sourceRole = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Source", "110153", atnaDomain.AuditSchema);
                 source.RoleIDCodes.Add(sourceRole);
                 repExport.ActiveParticipants.Add(source);
                 //Destination
@@ -190,7 +190,7 @@ namespace XdsRepository
                 destination.UserIsRequestor = false;
                 destination.NetworkAccessPointID = atnaDomain.RegistryEndpoint.ToString();
                 destination.NetworkAccessPointTypeCode = XdsObjects.XML_InnerObjects.Enums.NetworkAccessPointTypeCode.MachineNameIncludingDNSName;
-                XdsObjects.XML_InnerObjects.CodedValueString destinationRole = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Destination", "110152", XdsDomain.AuditSchemaType.DICOM);
+                XdsObjects.XML_InnerObjects.CodedValueString destinationRole = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Destination", "110152", atnaDomain.AuditSchema);
                 destination.RoleIDCodes.Add(destinationRole);
                 repExport.ActiveParticipants.Add(destination);
                 //Patient
@@ -198,14 +198,14 @@ namespace XdsRepository
                 patient.ParticipantObjectTypeCode = XdsObjects.XML_InnerObjects.Enums.ParticipantObjectTypeCode.Person;
                 patient.ParticipantObjectTypeCodeRole = XdsObjects.XML_InnerObjects.Enums.ParticipantObjectTypeCodeRole.Patient;
                 patient.ParticipantObjectID = patientId;
-                patient.ParticipantObjectIDTypeCode = new XdsObjects.XML_InnerObjects.CodedValueParticipantObjectIDType("RFC-3881", "Patient Number", XdsObjects.XML_InnerObjects.Enums.ParticipantObjectIDTypeCode.Patient_Number, XdsDomain.AuditSchemaType.DICOM);
+                patient.ParticipantObjectIDTypeCode = new XdsObjects.XML_InnerObjects.CodedValueParticipantObjectIDType("RFC-3881", "Patient Number", XdsObjects.XML_InnerObjects.Enums.ParticipantObjectIDTypeCode.Patient_Number, atnaDomain.AuditSchema);
                 repExport.ParticipantObjectIdentification.Add(patient);
                 //SubmissionSet
                 XdsObjects.XML_InnerObjects.ParticipantObjectIdentification submissionSet = new XdsObjects.XML_InnerObjects.ParticipantObjectIdentification();
                 submissionSet.ParticipantObjectTypeCode = XdsObjects.XML_InnerObjects.Enums.ParticipantObjectTypeCode.System_Object;
                 submissionSet.ParticipantObjectTypeCodeRole = XdsObjects.XML_InnerObjects.Enums.ParticipantObjectTypeCodeRole.Job;
                 submissionSet.ParticipantObjectID = uniqueId;
-                submissionSet.ParticipantObjectIDTypeCode = new XdsObjects.XML_InnerObjects.CodedValueParticipantObjectIDType("IHE XDS Metadata", "submission set classificationNode", XdsObjects.XML_InnerObjects.Enums.ParticipantObjectIDTypeCode.IHE_XDS_Metadata, XdsDomain.AuditSchemaType.DICOM);
+                submissionSet.ParticipantObjectIDTypeCode = new XdsObjects.XML_InnerObjects.CodedValueParticipantObjectIDType("IHE XDS Metadata", "submission set classificationNode", XdsObjects.XML_InnerObjects.Enums.ParticipantObjectIDTypeCode.IHE_XDS_Metadata, atnaDomain.AuditSchema);
                 repExport.ParticipantObjectIdentification.Add(submissionSet);
                 //AuditSourceIdentification
                 XdsObjects.XML_InnerObjects.AuditSourceIdentification myAuditSource = new XdsObjects.XML_InnerObjects.AuditSourceIdentification(atnaDomain.AuditSourceID);
@@ -235,8 +235,8 @@ namespace XdsRepository
                 }
                 repRetrieve.EventIdentification.EventOutcomeIndicator = EventOutcomeIndicator.Success; //dependent on presence of errors in Repository?
                 repRetrieve.EventIdentification.EventActionCode = XdsObjects.XML_InnerObjects.Enums.EventActionCode.R;
-                repRetrieve.EventIdentification.EventID = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Export", "110106", XdsDomain.AuditSchemaType.DICOM);
-                repRetrieve.EventIdentification.EventTypeCode = new XdsObjects.XML_InnerObjects.CodedValueString("IHE Transactions", "Retrieve Document Set", "ITI-43", XdsDomain.AuditSchemaType.DICOM);
+                repRetrieve.EventIdentification.EventID = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Export", "110106", atnaDomain.AuditSchema);
+                repRetrieve.EventIdentification.EventTypeCode = new XdsObjects.XML_InnerObjects.CodedValueString("IHE Transactions", "Retrieve Document Set", "ITI-43", atnaDomain.AuditSchema);
                 //Source
                 XdsObjects.XML_InnerObjects.ActiveParticipant source = new XdsObjects.XML_InnerObjects.ActiveParticipant();
                 source.UserID = atnaDomain.SubmissionRepositoryEndpoint.ToString();
@@ -244,7 +244,7 @@ namespace XdsRepository
                 source.UserIsRequestor = false;
                 source.NetworkAccessPointID = atnaDomain.AuditSourceID;
                 source.NetworkAccessPointTypeCode = XdsObjects.XML_InnerObjects.Enums.NetworkAccessPointTypeCode.MachineNameIncludingDNSName;
-                XdsObjects.XML_InnerObjects.CodedValueString sourceRole = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Source", "110153", XdsDomain.AuditSchemaType.DICOM);
+                XdsObjects.XML_InnerObjects.CodedValueString sourceRole = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Source", "110153", atnaDomain.AuditSchema);
                 source.RoleIDCodes.Add(sourceRole);
                 repRetrieve.ActiveParticipants.Add(source);
                 //Destination
@@ -254,14 +254,14 @@ namespace XdsRepository
                 destination.UserIsRequestor = true;
                 destination.NetworkAccessPointID = atnaDomain.RegistryEndpoint.ToString();
                 destination.NetworkAccessPointTypeCode = XdsObjects.XML_InnerObjects.Enums.NetworkAccessPointTypeCode.MachineNameIncludingDNSName;
-                XdsObjects.XML_InnerObjects.CodedValueString destinationRole = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Destination", "110152", XdsDomain.AuditSchemaType.DICOM);
+                XdsObjects.XML_InnerObjects.CodedValueString destinationRole = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Destination", "110152", atnaDomain.AuditSchema);
                 destination.RoleIDCodes.Add(destinationRole);
                 repRetrieve.ActiveParticipants.Add(destination);
                 //Document URI
                 XdsObjects.XML_InnerObjects.ParticipantObjectIdentification document = new XdsObjects.XML_InnerObjects.ParticipantObjectIdentification();
                 document.ParticipantObjectTypeCode = XdsObjects.XML_InnerObjects.Enums.ParticipantObjectTypeCode.System_Object;
                 document.ParticipantObjectTypeCodeRole = XdsObjects.XML_InnerObjects.Enums.ParticipantObjectTypeCodeRole.Report;
-                document.ParticipantObjectIDTypeCode = new XdsObjects.XML_InnerObjects.CodedValueParticipantObjectIDType("RFC-3881", "Report Number", XdsObjects.XML_InnerObjects.Enums.ParticipantObjectIDTypeCode.Report_Number, XdsDomain.AuditSchemaType.DICOM);
+                document.ParticipantObjectIDTypeCode = new XdsObjects.XML_InnerObjects.CodedValueParticipantObjectIDType("RFC-3881", "Report Number", XdsObjects.XML_InnerObjects.Enums.ParticipantObjectIDTypeCode.Report_Number, atnaDomain.AuditSchema);
                 document.ParticipantObjectID = documentUniqueId;
                 XdsObjects.XML_InnerObjects.TypeValuePair objectDetail = new XdsObjects.XML_InnerObjects.TypeValuePair("Repository Unique Id", atnaDomain.AuditSourceAddress);
                 document.ParticipantObjectDetail.Add(objectDetail);

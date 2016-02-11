@@ -76,19 +76,12 @@ namespace XdsRepository
                 server.Listen(repositoryURI);
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": " + repositoryURI + " listening...");
 
-                //set up ATNA
-                myAudit.Host = atnaHost;
-                myAudit.Port = atnaPort;
-                AuditProtocol atnaProtocol = AuditProtocol.Tcp;
-                myAudit.Protocol = atnaProtocol;
-                atnaTest.AuditEnterpriseSiteID = authDomain;
-                atnaTest.AuditSourceID = System.Environment.MachineName;
-                atnaTest.AuditSourceAddress = repositoryId;
-                atnaTest.RegistryEndpoint = new WebServiceEndpoint(registryURI);
-                atnaTest.SubmissionRepositoryEndpoint = new WebServiceEndpoint(repositoryURI);
-                atnaTest.AuditRepositories.Add(myAudit);
+                //atnaTest.AuditMessageGenerated += AtnaTest_AuditMessageGenerated;
+                SetUpAtna();
                 myATNA.ATNA_Application_Start(atnaTest);
 
+                //XdsAudit.ActorStart(atnaTest);
+                //XdsAudit.UserAuthentication(atnaTest, true);
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Application Start audit event logged...");
                 xds = new XdsDomain();
                 xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
@@ -116,7 +109,36 @@ namespace XdsRepository
             }
         }
 
-        
+        /*
+        private bool AtnaTest_AuditMessageGenerated(XdsObjects.XML_InnerObjects.AuditMessage message)
+        {
+            byte[] payLoad;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                XdsObjectSerializer.Serialize(message, ms);
+                payLoad = ms.ToArray();
+            }
+
+            return true; // don't auto-send, i will send later
+            //throw new NotImplementedException();
+        }*/
+
+        private void SetUpAtna()
+        {
+            //set up ATNA
+            myAudit.Host = atnaHost;
+            myAudit.Port = atnaPort;
+            AuditProtocol atnaProtocol = AuditProtocol.Tcp;
+            myAudit.Protocol = atnaProtocol;
+            atnaTest.AuditSchema = XdsDomain.AuditSchemaType.DICOM;
+            atnaTest.AuditSourceTypeCode = AuditSourceTypeCode.Application_Server_Process_Tier;
+            atnaTest.AuditEnterpriseSiteID = authDomain;
+            atnaTest.AuditSourceID = System.Environment.MachineName;
+            atnaTest.AuditSourceAddress = repositoryId;
+            atnaTest.RegistryEndpoint = new WebServiceEndpoint(registryURI);
+            atnaTest.SubmissionRepositoryEndpoint = new WebServiceEndpoint(repositoryURI);
+            atnaTest.AuditRepositories.Add(myAudit);  
+        }
 
         private static X509Certificate2 GetCertificateByThumbprint(string certificateThumbPrint, StoreLocation certificateStoreLocation)
         {
@@ -163,7 +185,7 @@ namespace XdsRepository
             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet.SourceId - " + SubmissionSet.SourceID);
             XdsRegistryResponse myResponse = new XdsRegistryResponse();
             try
-            {    
+            {
                 //count the number of documents in submissionset
                 int docCount = SubmissionSet.Documents.Count;
                 if (docCount == 0) //return failure if there are none
@@ -177,7 +199,7 @@ namespace XdsRepository
                 }
 
                 //check that Authority Domain of patient matches with that of Repository
-                if (SubmissionSet.PatientInfo.ID_Root != authDomain)
+                if (SubmissionSet.PatientInfo.ID_Root.Contains(authDomain)) // != authDomain)
                 {
                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Authority Domains do not match...");
                     myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
@@ -230,6 +252,9 @@ namespace XdsRepository
                         }
 
                         document.RepositoryUniqueId = repositoryId;
+                        //use for pre-connectathon test 11966
+                        //document.Size = 36;
+                        //document.Hash = "e543712c0e10501972de13a5bfcbe826c49feb75";
                         document.SetSizeAndHash();
 
                         bool HashSizeCheck = document.CheckSizeAndHash();
@@ -251,7 +276,8 @@ namespace XdsRepository
                         Directory.CreateDirectory(dir);
                         string location = Path.Combine(dir, document.UniqueID);
                         File.WriteAllBytes(location, document.Data);
-                        document.Uri = location;
+                        //added 'http' for pre-connectathon test
+                        document.Uri = @"http://" + location.Substring(3);
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document saved to - " + location + "...");
                         //System.IO.File.WriteAllText(StoragePath + document.UniqueID + ".mime", document.MimeType);
                         //Save document info into repository database

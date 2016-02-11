@@ -112,7 +112,9 @@ namespace XdsRepository
                     if (posRegistryPort > -1)
                     {
                         string hostname = Rep.registryURI.Substring(posDoubleSlash + 2, posRegistryPort - (posDoubleSlash + 2));
-                        int registryPort = int.Parse(Rep.registryURI.Substring(posRegistryPort + 1, 4));
+                        int posSingleSlash = Rep.registryURI.IndexOf('/', posRegistryPort);
+                        int registryPort = int.Parse(Rep.registryURI.Substring(posRegistryPort + 1, posSingleSlash - (posRegistryPort + 1)));
+                        //int registryPort = int.Parse(Rep.registryURI.Substring(posRegistryPort + 1, 4));
                         bool regConnected = testConnection("Registry", hostname, registryPort);
                         if (regConnected == true)
                         {
