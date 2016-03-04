@@ -5,11 +5,14 @@ using System.Text;
 using XdsObjects;
 using XdsObjects.Enums;
 using System.Net;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace XdsRepository
 {
     class ATNA_Messaging
     {
+        /*
         private string getIpAddress()
         {
             // get local IP addresses
@@ -17,7 +20,22 @@ namespace XdsRepository
 
             return localIPs[2].ToString();
         }
+        */
 
+        private string getIpAddress()
+        {
+            IPHostEntry host;
+            string localIP = "?";
+            host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in host.AddressList)
+            {
+                if (ip.AddressFamily.ToString() == "InterNetwork")
+                {
+                    localIP = ip.ToString();
+                }
+            }
+            return localIP;
+        }
         public void ATNA_Application_Start(XdsDomain atnaDomain)
         {
             try

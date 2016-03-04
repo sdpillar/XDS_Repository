@@ -76,16 +76,30 @@ namespace XdsRepository
                 server.Listen(repositoryURI);
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": " + repositoryURI + " listening...");
 
+                xds = new XdsDomain();
+                xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
+                /*
                 //atnaTest.AuditMessageGenerated += AtnaTest_AuditMessageGenerated;
+                //set up ATNA
+                myAudit.Host = atnaHost;
+                myAudit.Port = atnaPort;
+                AuditProtocol atnaProtocol = AuditProtocol.Tcp;
+                myAudit.Protocol = atnaProtocol;
+                atnaTest.AuditEnterpriseSiteID = authDomain;
+                atnaTest.AuditSourceTypeCode = AuditSourceTypeCode.Application_Server_Process_Tier;
+                atnaTest.AuditSchema = XdsDomain.AuditSchemaType.DICOM;
+
+                atnaTest.AuditSourceID = System.Environment.MachineName;
+                atnaTest.RegistryEndpoint = new WebServiceEndpoint(registryURI);
+                atnaTest.AuditRepositories.Add(myAudit);
+                myATNA.ATNA_Application_Start(atnaTest);
+                */
                 SetUpAtna();
                 myATNA.ATNA_Application_Start(atnaTest);
 
                 //XdsAudit.ActorStart(atnaTest);
                 //XdsAudit.UserAuthentication(atnaTest, true);
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Application Start audit event logged...");
-                xds = new XdsDomain();
-                xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
-
                 // Set up the Registry we are going to talk to
                 //xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
                 //certificate to reference
@@ -234,17 +248,48 @@ namespace XdsRepository
                     errors = true;
                 }
 
+                docCount = 0;
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet contains " + SubmissionSet.Documents.Count + " documents...");
+                foreach (XdsDocument document in SubmissionSet.Documents)
+                {
+                    docCount++;
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Patient Id - " + document.PatientID + "...");
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ") UniqueId - " + document.UniqueID + "...");
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ").UUID - " + document.UUID + "...");
+                    //LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet.UUID - " + SubmissionSet.UUID + "...");
+
+                    document.RepositoryUniqueId = repositoryId;
+                    //use for pre-connectathon test 11966
+                    //document.Size = 36;
+                    //document.Hash = "e543712c0e10501972de13a5bfcbe826c49feb75";
+                    document.SetSizeAndHash();
+
+                    bool HashSizeCheck = document.CheckSizeAndHash();
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document size - " + document.Size);
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document hash - " + document.Hash);
+                    if (!HashSizeCheck)
+                    {
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": XDSRepositoryMetadataError - Hash and/or Size atrributes of supplied document are in error...");
+                        myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
+                        myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
+                        myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSRepositoryMetadataError, "Hash and/or Size atrributes of supplied document are in error", "");
+                        errors = true;
+                    }
+                }
+
+
                 using (var db = new RepositoryDataBase())
                 {
-                    docCount = 0;
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet contains " + SubmissionSet.Documents.Count + " documents...");
+                    //docCount = 0;
+                    //LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet contains " + SubmissionSet.Documents.Count + " documents...");
                     foreach (XdsDocument document in SubmissionSet.Documents)
                     {
-                        docCount++;
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Patient Id - " + document.PatientID + "...");
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ") UniqueId - " + document.UniqueID + "...");
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ").UUID - " + document.UUID + "...");
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet.UUID - " + SubmissionSet.UUID + "...");
+                        //docCount++;
+                        //LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Patient Id - " + document.PatientID + "...");
+                        //LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ") UniqueId - " + document.UniqueID + "...");
+                        //LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ").UUID - " + document.UUID + "...");
+                        //LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet.UUID - " + SubmissionSet.UUID + "...");
 
                         /*
                         if (document.RepositoryUniqueId == null)
@@ -280,12 +325,12 @@ namespace XdsRepository
                             //return myResponse;
                         }
                         */
-                        document.RepositoryUniqueId = repositoryId;
+                        //document.RepositoryUniqueId = repositoryId;
                         //use for pre-connectathon test 11966
                         //document.Size = 36;
                         //document.Hash = "e543712c0e10501972de13a5bfcbe826c49feb75";
+                        /*
                         document.SetSizeAndHash();
-
                         bool HashSizeCheck = document.CheckSizeAndHash();
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document size - " + document.Size);
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document hash - " + document.Hash);
@@ -298,7 +343,7 @@ namespace XdsRepository
                             myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSRepositoryMetadataError, "Hash and/or Size atrributes of supplied document are in error", "");
                             errors = true;
                         }
-
+                        */
                         //Save document into the repository store
                         string currentDate = DateTime.Now.Date.ToString("yyyy_MM_dd");
                         string dir = Path.Combine(StoragePath, currentDate);
@@ -454,6 +499,15 @@ namespace XdsRepository
                     }
 
                     // otherwise just pick up the document and mimetype
+                    if(location == "")
+                    {
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Cannot locate - " + location + "...");
+                        response.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
+                        response.AddError(XdsErrorCode.XDSMissingDocument, "", item.DocumentUniqueID);
+                        myATNA.Repository_Retrieve(atnaTest, item.DocumentUniqueID, false);
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Retreive Document Set Export audit event logged...");
+                        return response;
+                    }
                     XdsDocument document = new XdsDocument(location);
                     document.UniqueID = item.DocumentUniqueID;
                     document.MimeType = mimeType; //this was inserted to pass pre-connectathon test 12345
