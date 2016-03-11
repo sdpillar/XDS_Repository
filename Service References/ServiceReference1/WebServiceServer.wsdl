@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="WebServiceServer" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="CustomBinding_WebServices_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy>
+            <sp:TransportToken>
+              <wsp:Policy>
+                <sp:HttpsToken RequireClientCertificate="false" />
+              </wsp:Policy>
+            </sp:TransportToken>
+            <sp:AlgorithmSuite>
+              <wsp:Policy>
+                <sp:Basic256 />
+              </wsp:Policy>
+            </sp:AlgorithmSuite>
+            <sp:Layout>
+              <wsp:Policy>
+                <sp:Strict />
+              </wsp:Policy>
+            </sp:Layout>
+          </wsp:Policy>
+        </sp:TransportBinding>
+        <wsaw:UsingAddressing />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="https://localhost:8090/HSSRegistry?xsd=xsd0" namespace="http://schemas.microsoft.com/Message" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="WebServices_RegistryStoredQuery_InputMessage">
+    <wsdl:part xmlns:q1="http://schemas.microsoft.com/Message" name="request" type="q1:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_RegistryStoredQuery_OutputMessage">
+    <wsdl:part xmlns:q2="http://schemas.microsoft.com/Message" name="RegistryStoredQueryResult" type="q2:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_RegisterDocumentSet_InputMessage">
+    <wsdl:part xmlns:q3="http://schemas.microsoft.com/Message" name="request" type="q3:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_RegisterDocumentSet_OutputMessage">
+    <wsdl:part xmlns:q4="http://schemas.microsoft.com/Message" name="RegisterDocumentSetResult" type="q4:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_RegisterOnDemandDocumentEntry_InputMessage">
+    <wsdl:part xmlns:q5="http://schemas.microsoft.com/Message" name="request" type="q5:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_RegisterOnDemandDocumentEntry_OutputMessage">
+    <wsdl:part xmlns:q6="http://schemas.microsoft.com/Message" name="RegisterOnDemandDocumentEntryResult" type="q6:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_UpdateDocumentSet_InputMessage">
+    <wsdl:part xmlns:q7="http://schemas.microsoft.com/Message" name="request" type="q7:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_UpdateDocumentSet_OutputMessage">
+    <wsdl:part xmlns:q8="http://schemas.microsoft.com/Message" name="UpdateDocumentSetResult" type="q8:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_DeleteDocumentSet_InputMessage">
+    <wsdl:part xmlns:q9="http://schemas.microsoft.com/Message" name="request" type="q9:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_DeleteDocumentSet_OutputMessage">
+    <wsdl:part xmlns:q10="http://schemas.microsoft.com/Message" name="DeleteDocumentSetResult" type="q10:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_ProvideAndRegisterDocumentSet_InputMessage">
+    <wsdl:part xmlns:q11="http://schemas.microsoft.com/Message" name="request" type="q11:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_ProvideAndRegisterDocumentSet_OutputMessage">
+    <wsdl:part xmlns:q12="http://schemas.microsoft.com/Message" name="ProvideAndRegisterDocumentSetResult" type="q12:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_RetrieveDocumentSet_InputMessage">
+    <wsdl:part xmlns:q13="http://schemas.microsoft.com/Message" name="request" type="q13:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_RetrieveDocumentSet_OutputMessage">
+    <wsdl:part xmlns:q14="http://schemas.microsoft.com/Message" name="RetrieveDocumentSetResult" type="q14:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_PRPA_IN201309UV02_InputMessage">
+    <wsdl:part xmlns:q15="http://schemas.microsoft.com/Message" name="request" type="q15:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_PRPA_IN201309UV02_OutputMessage">
+    <wsdl:part xmlns:q16="http://schemas.microsoft.com/Message" name="PRPA_IN201309UV02Result" type="q16:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_PRPA_IN201301UV02_InputMessage">
+    <wsdl:part xmlns:q17="http://schemas.microsoft.com/Message" name="request" type="q17:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_PRPA_IN201301UV02_OutputMessage">
+    <wsdl:part xmlns:q18="http://schemas.microsoft.com/Message" name="PRPA_IN201301UV02Result" type="q18:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_RetrieveImagingDocumentSet_InputMessage">
+    <wsdl:part xmlns:q19="http://schemas.microsoft.com/Message" name="request" type="q19:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_RetrieveImagingDocumentSet_OutputMessage">
+    <wsdl:part xmlns:q20="http://schemas.microsoft.com/Message" name="RetrieveImagingDocumentSetResult" type="q20:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_CrossGatewayQuery_InputMessage">
+    <wsdl:part xmlns:q21="http://schemas.microsoft.com/Message" name="request" type="q21:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_CrossGatewayQuery_OutputMessage">
+    <wsdl:part xmlns:q22="http://schemas.microsoft.com/Message" name="CrossGatewayQueryResult" type="q22:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_CrossGatewayRetrieve_InputMessage">
+    <wsdl:part xmlns:q23="http://schemas.microsoft.com/Message" name="request" type="q23:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_CrossGatewayRetrieve_OutputMessage">
+    <wsdl:part xmlns:q24="http://schemas.microsoft.com/Message" name="CrossGatewayRetrieveResult" type="q24:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_SubscriptionRequest_InputMessage">
+    <wsdl:part xmlns:q25="http://schemas.microsoft.com/Message" name="request" type="q25:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_SubscriptionRequest_OutputMessage">
+    <wsdl:part xmlns:q26="http://schemas.microsoft.com/Message" name="SubscriptionRequestResult" type="q26:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_UnsubscriptionRequest_InputMessage">
+    <wsdl:part xmlns:q27="http://schemas.microsoft.com/Message" name="request" type="q27:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_UnsubscriptionRequest_OutputMessage">
+    <wsdl:part xmlns:q28="http://schemas.microsoft.com/Message" name="UnsubscriptionRequestResult" type="q28:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_NotifyRequest_InputMessage">
+    <wsdl:part xmlns:q29="http://schemas.microsoft.com/Message" name="request" type="q29:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_CreatePullPointRequest_InputMessage">
+    <wsdl:part xmlns:q30="http://schemas.microsoft.com/Message" name="request" type="q30:MessageBody" />
+  </wsdl:message>
+  <wsdl:message name="WebServices_CreatePullPointRequest_OutputMessage">
+    <wsdl:part xmlns:q31="http://schemas.microsoft.com/Message" name="CreatePullPointRequestResult" type="q31:MessageBody" />
+  </wsdl:message>
+  <wsdl:portType name="WebServices">
+    <wsdl:operation name="RegistryStoredQuery">
+      <wsdl:input wsaw:Action="urn:ihe:iti:2007:RegistryStoredQuery" message="tns:WebServices_RegistryStoredQuery_InputMessage" />
+      <wsdl:output wsaw:Action="urn:ihe:iti:2007:RegistryStoredQueryResponse" message="tns:WebServices_RegistryStoredQuery_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RegisterDocumentSet">
+      <wsdl:input wsaw:Action="urn:ihe:iti:2007:RegisterDocumentSet-b" message="tns:WebServices_RegisterDocumentSet_InputMessage" />
+      <wsdl:output wsaw:Action="urn:ihe:iti:2007:RegisterDocumentSet-bResponse" message="tns:WebServices_RegisterDocumentSet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RegisterOnDemandDocumentEntry">
+      <wsdl:input wsaw:Action="urn:ihe:iti:2010:RegisterOnDemandDocumentEntry" message="tns:WebServices_RegisterOnDemandDocumentEntry_InputMessage" />
+      <wsdl:output wsaw:Action="urn:ihe:iti:2010:RegisterOnDemandDocumentResponse" message="tns:WebServices_RegisterOnDemandDocumentEntry_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateDocumentSet">
+      <wsdl:input wsaw:Action="urn:ihe:iti:2010:UpdateDocumentSet" message="tns:WebServices_UpdateDocumentSet_InputMessage" />
+      <wsdl:output wsaw:Action="urn:ihe:iti:2010:UpdateDocumentSetResponse" message="tns:WebServices_UpdateDocumentSet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteDocumentSet">
+      <wsdl:input wsaw:Action="urn:ihe:iti:2010:DeleteDocumentSet" message="tns:WebServices_DeleteDocumentSet_InputMessage" />
+      <wsdl:output wsaw:Action="urn:ihe:iti:2010:DeleteDocumentSetResponse" message="tns:WebServices_DeleteDocumentSet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ProvideAndRegisterDocumentSet">
+      <wsdl:input wsaw:Action="urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b" message="tns:WebServices_ProvideAndRegisterDocumentSet_InputMessage" />
+      <wsdl:output wsaw:Action="urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse" message="tns:WebServices_ProvideAndRegisterDocumentSet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveDocumentSet">
+      <wsdl:input wsaw:Action="urn:ihe:iti:2007:RetrieveDocumentSet" message="tns:WebServices_RetrieveDocumentSet_InputMessage" />
+      <wsdl:output wsaw:Action="urn:ihe:iti:2007:RetrieveDocumentSetResponse" message="tns:WebServices_RetrieveDocumentSet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="PRPA_IN201309UV02">
+      <wsdl:input wsaw:Action="urn:hl7-org:v3:PRPA_IN201309UV02" message="tns:WebServices_PRPA_IN201309UV02_InputMessage" />
+      <wsdl:output wsaw:Action="urn:hl7-org:v3:PRPA_IN201310UV02" message="tns:WebServices_PRPA_IN201309UV02_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="PRPA_IN201301UV02">
+      <wsdl:input wsaw:Action="urn:hl7-org:v3:PRPA_IN201301UV02" message="tns:WebServices_PRPA_IN201301UV02_InputMessage" />
+      <wsdl:output wsaw:Action="urn:hl7-org:v3:MCCI_IN000002UV01" message="tns:WebServices_PRPA_IN201301UV02_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveImagingDocumentSet">
+      <wsdl:input wsaw:Action="urn:ihe:rad:2009:RetrieveImagingDocumentSet" message="tns:WebServices_RetrieveImagingDocumentSet_InputMessage" />
+      <wsdl:output wsaw:Action="urn:ihe:iti:2007:RetrieveDocumentSetResponse" message="tns:WebServices_RetrieveImagingDocumentSet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CrossGatewayQuery">
+      <wsdl:input wsaw:Action="urn:ihe:iti:2007:CrossGatewayQuery" message="tns:WebServices_CrossGatewayQuery_InputMessage" />
+      <wsdl:output wsaw:Action="urn:ihe:iti:2007:CrossGatewayQueryResponse" message="tns:WebServices_CrossGatewayQuery_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CrossGatewayRetrieve">
+      <wsdl:input wsaw:Action="urn:ihe:iti:2007:CrossGatewayRetrieve" message="tns:WebServices_CrossGatewayRetrieve_InputMessage" />
+      <wsdl:output wsaw:Action="urn:ihe:iti:2007:CrossGatewayRetrieveResponse" message="tns:WebServices_CrossGatewayRetrieve_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SubscriptionRequest">
+      <wsdl:input wsaw:Action="http://docs.oasis-open.org/wsn/bw-2/NotificationProducer/SubscribeRequest" message="tns:WebServices_SubscriptionRequest_InputMessage" />
+      <wsdl:output wsaw:Action="http://docs.oasis-open.org/wsn/bw-2/NotificationProducer/SubscribeResponse" message="tns:WebServices_SubscriptionRequest_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UnsubscriptionRequest">
+      <wsdl:input wsaw:Action="http://docs.oasis-open.org/wsn/bw-2/SubscriptionManager/UnsubscribeRequest" message="tns:WebServices_UnsubscriptionRequest_InputMessage" />
+      <wsdl:output wsaw:Action="http://docs.oasis-open.org/wsn/bw-2/SubscriptionManager/UnsubscribeResponse" message="tns:WebServices_UnsubscriptionRequest_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="NotifyRequest">
+      <wsdl:input wsaw:Action="http://docs.oasis-open.org/wsn/bw-2/NotificationConsumer/Notify" message="tns:WebServices_NotifyRequest_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreatePullPointRequest">
+      <wsdl:input wsaw:Action="http://docs.oasis-open.org/wsn/bw2/PullPoint/CreatePullPointRequest" message="tns:WebServices_CreatePullPointRequest_InputMessage" />
+      <wsdl:output wsaw:Action="http://docs.oasis-open.org/wsn/bw-2/PullPoint/CreatePullPointResponse" message="tns:WebServices_CreatePullPointRequest_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CustomBinding_WebServices" type="tns:WebServices">
+    <wsp:PolicyReference URI="#CustomBinding_WebServices_policy" />
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="RegistryStoredQuery">
+      <soap12:operation soapAction="urn:ihe:iti:2007:RegistryStoredQuery" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterDocumentSet">
+      <soap12:operation soapAction="urn:ihe:iti:2007:RegisterDocumentSet-b" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterOnDemandDocumentEntry">
+      <soap12:operation soapAction="urn:ihe:iti:2010:RegisterOnDemandDocumentEntry" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateDocumentSet">
+      <soap12:operation soapAction="urn:ihe:iti:2010:UpdateDocumentSet" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteDocumentSet">
+      <soap12:operation soapAction="urn:ihe:iti:2010:DeleteDocumentSet" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProvideAndRegisterDocumentSet">
+      <soap12:operation soapAction="urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveDocumentSet">
+      <soap12:operation soapAction="urn:ihe:iti:2007:RetrieveDocumentSet" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PRPA_IN201309UV02">
+      <soap12:operation soapAction="urn:hl7-org:v3:PRPA_IN201309UV02" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PRPA_IN201301UV02">
+      <soap12:operation soapAction="urn:hl7-org:v3:PRPA_IN201301UV02" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RetrieveImagingDocumentSet">
+      <soap12:operation soapAction="urn:ihe:rad:2009:RetrieveImagingDocumentSet" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CrossGatewayQuery">
+      <soap12:operation soapAction="urn:ihe:iti:2007:CrossGatewayQuery" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CrossGatewayRetrieve">
+      <soap12:operation soapAction="urn:ihe:iti:2007:CrossGatewayRetrieve" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SubscriptionRequest">
+      <soap12:operation soapAction="http://docs.oasis-open.org/wsn/bw-2/NotificationProducer/SubscribeRequest" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UnsubscriptionRequest">
+      <soap12:operation soapAction="http://docs.oasis-open.org/wsn/bw-2/SubscriptionManager/UnsubscribeRequest" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="NotifyRequest">
+      <soap12:operation soapAction="http://docs.oasis-open.org/wsn/bw-2/NotificationConsumer/Notify" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="CreatePullPointRequest">
+      <soap12:operation soapAction="http://docs.oasis-open.org/wsn/bw2/PullPoint/CreatePullPointRequest" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WebServiceServer">
+    <wsdl:port name="CustomBinding_WebServices" binding="tns:CustomBinding_WebServices">
+      <soap12:address location="https://localhost:8090/HSSRegistry" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>https://localhost:8090/HSSRegistry</wsa10:Address>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

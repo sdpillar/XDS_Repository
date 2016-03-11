@@ -9,6 +9,8 @@ using System.IO;
 //using System.Net.NetworkInformation;
 //using System.ServiceModel;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Cryptography;
+using System.Net.Security;
 //using System.Runtime;
 using System.Net;
 
@@ -77,7 +79,7 @@ namespace XdsRepository
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": " + repositoryURI + " listening...");
 
                 xds = new XdsDomain();
-                xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
+                //xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
                 /*
                 //atnaTest.AuditMessageGenerated += AtnaTest_AuditMessageGenerated;
                 //set up ATNA
@@ -100,12 +102,15 @@ namespace XdsRepository
                 //XdsAudit.ActorStart(atnaTest);
                 //XdsAudit.UserAuthentication(atnaTest, true);
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Application Start audit event logged...");
+
                 // Set up the Registry we are going to talk to
                 //xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
                 //certificate to reference
-                //X509Certificate2 myCert = new X509Certificate2();
-                //myCert = GetCertificateByThumbprint("3d03dd7f2486afe4a857af42c2c3e8d5fd029699", StoreLocation.LocalMachine);
-                /*myCert = GetCertificateByThumbprint(thumbprint, StoreLocation.LocalMachine);
+                
+                X509Certificate2 myCert = new X509Certificate2();
+                myCert = GetCertificateByThumbprint("2bf0110aa0fb4deb55b63b3deb91ed83751ea81a", StoreLocation.LocalMachine);
+
+                //myCert = GetCertificateByThumbprint(thumbprint, StoreLocation.LocalMachine);
                 if (myCert == null)
                 {
                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Required certificate not found...\n");
@@ -113,15 +118,19 @@ namespace XdsRepository
                 }
                 else
                 {
+                    ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
                     xds.RegistryEndpoint = new WebServiceEndpoint(registryURI, myCert);
-                }*/
+                    //xds.RegistryEndpoint.Security.CheckHostName = true;
+                    //xds.RegistryEndpoint.Security.CheckCRL = true;
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 string exceptionMsg = ex.Message;
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": StartListen - " + exceptionMsg + "...\n");
             }
         }
+
 
         /*
         private bool AtnaTest_AuditMessageGenerated(XdsObjects.XML_InnerObjects.AuditMessage message)
@@ -387,6 +396,10 @@ namespace XdsRepository
                             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Sending SubmissionSet to Registry...");
                             myATNA.Repository_Export(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, true);
                             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Register Document Set Export audit event logged...");
+                            /////////////////////////////////////////////////
+                            //xds.RegistryEndpoint.Security.CheckHostName = true;
+                            //xds.RegistryEndpoint.Security.CheckCRL = true;
+                            /////////////////////////////////////////////////
                             return xds.RegisterDocumentSet(SubmissionSet);
                         }   
                     }
