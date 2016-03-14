@@ -9,7 +9,7 @@ using System.IO;
 //using System.ServiceModel;
 using System.Net.Sockets;
 //using System.Net.Security;
-//using System.Net;
+using System.Net;
 using System.Text;
 
 namespace XdsRepository
@@ -86,7 +86,18 @@ namespace XdsRepository
                     lblAuthDomain.Text = Rep.authDomain;
                     lblRepId.Text = Rep.repositoryId;
                     lblRepUrl.Text = Rep.repositoryURI;
-                    testConnections();
+                    lblRegUrl.Text = Rep.registryURI;
+                    int testConn = Rep.testRegConnection();
+                    if(testConn == 0)
+                    {
+                        lblRegUrl.ForeColor = System.Drawing.Color.Black;
+                    }
+                    else if(testConn == 1)
+                    {
+                        lblRegUrl.ForeColor = System.Drawing.Color.Red;
+                    }
+                    
+                    //testConnections();
                 }
                 //logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": All properties set...\n"));
             }
@@ -115,7 +126,8 @@ namespace XdsRepository
                         int posSingleSlash = Rep.registryURI.IndexOf('/', posRegistryPort);
                         int registryPort = int.Parse(Rep.registryURI.Substring(posRegistryPort + 1, posSingleSlash - (posRegistryPort + 1)));
                         //int registryPort = int.Parse(Rep.registryURI.Substring(posRegistryPort + 1, 4));
-                        bool regConnected = testConnection("Registry", hostname, registryPort);
+                        //bool regConnected = testConnection("Registry", hostname, registryPort);
+                        bool regConnected = testConnection("Registry", Rep.registryURI);
                         if (regConnected == true)
                         {
                             lblRegUrl.Text = Rep.registryURI;
@@ -133,6 +145,37 @@ namespace XdsRepository
             {
                 string exceptionMsg = ex.Message;
                 logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": testConnections - " + exceptionMsg + "...\n"));
+            }
+        }
+
+        private bool testConnection(string hostname,string url)
+        {
+            try
+            {
+                var myRequest = (HttpWebRequest)WebRequest.Create(url);
+
+                var response = (HttpWebResponse)myRequest.GetResponse();
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    //  it's at least in some way responsive
+                    //  but may be internally broken
+                    //  as you could find out if you called one of the methods for real
+                    logWindow.AppendText(DateTime.Now.ToString("HH:mm:ss.fff") + ": Connection open to " + hostname + "...\n");
+                    return true;
+                }
+                else
+                {
+                    //  well, at least it returned...
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                //  not available at all, for some reason
+                logWindow.AppendText(DateTime.Now.ToString("HH:mm:ss.fff") + ": Connection failed to " + hostname + "...\n");
+                //logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": testConnection - " + ex.Message + "...\n"));
+                return false;
             }
         }
 

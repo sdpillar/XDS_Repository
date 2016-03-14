@@ -2,7 +2,7 @@
 using System.Collections.Specialized;
 using System.Collections.Generic;
 //using System.Linq;
-//using System.Text;
+using System.Text;
 using XdsObjects;
 using XdsObjects.Enums;
 using System.IO;
@@ -13,6 +13,7 @@ using System.Security.Cryptography;
 using System.Net.Security;
 //using System.Runtime;
 using System.Net;
+using System.Net.Sockets;
 
 namespace XdsRepository
 {
@@ -108,20 +109,32 @@ namespace XdsRepository
                 //certificate to reference
                 
                 X509Certificate2 myCert = new X509Certificate2();
-                myCert = GetCertificateByThumbprint("2bf0110aa0fb4deb55b63b3deb91ed83751ea81a", StoreLocation.LocalMachine);
-
-                //myCert = GetCertificateByThumbprint(thumbprint, StoreLocation.LocalMachine);
-                if (myCert == null)
+                //myCert = GetCertificateByThumbprint("2bf0110aa0fb4deb55b63b3deb91ed83751ea81a", StoreLocation.LocalMachine);
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": thumbprint - " + thumbprint);
+                if (thumbprint != "")
                 {
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Required certificate not found...\n");
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint not created...\n");
+                    myCert = GetCertificateByThumbprint(thumbprint, StoreLocation.LocalMachine);
+                    if (myCert == null)
+                    {
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Required certificate not found...\n");
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint not created...\n");
+                        xds.RegistryEndpoint = null;
+                    }
+                    else
+                    {
+                        ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
+                        xds.RegistryEndpoint = new WebServiceEndpoint(registryURI, myCert);
+                    }
                 }
                 else
                 {
-                    ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
-                    xds.RegistryEndpoint = new WebServiceEndpoint(registryURI, myCert);
-                    //xds.RegistryEndpoint.Security.CheckHostName = true;
-                    //xds.RegistryEndpoint.Security.CheckCRL = true;
+                    xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
+                    bool connected = testConnection(registryURI);
+                    if(connected == false)
+                    {
+                        xds.RegistryEndpoint = null;
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint not created...\n");
+                    }
                 }
             }
             catch (Exception ex)
@@ -131,7 +144,91 @@ namespace XdsRepository
             }
         }
 
+        public int testRegConnection()
+        {
+            X509Certificate2 myCert = new X509Certificate2();
+            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": thumbprint - " + thumbprint);
+            string urlPrefix = registryURI.Substring(0, registryURI.IndexOf(":")); //is the registry url https or http?
+            if(urlPrefix == "https")
+            {
+                myCert = GetCertificateByThumbprint(thumbprint, StoreLocation.LocalMachine); //attempt to retrieve a certificate with that thumprint
+                if (myCert == null)
+                {
+                    //cannot create registry endpoint
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Required certificate not found...\n");
+                    xds.RegistryEndpoint = null;
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint not created...\n");
+                    return 1;
+                }
+                else
+                {
+                    bool connected = testConnection(registryURI); //test connection to https address - is it open?
+                    if(connected == true)
+                    {
+                        //connection is open
+                        ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
+                        xds.RegistryEndpoint = new WebServiceEndpoint(registryURI, myCert);
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint created...\n");
+                        return 0;
+                    }
+                    else
+                    {
+                        xds.RegistryEndpoint = null;
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint not created...\n");
+                        return 1;
+                    }
+                }
+            }
+            else if(urlPrefix == "http")
+            {
+            //certificate doesn't matter
+                bool connected = testConnection(registryURI); //test connection to http address - is it open?
+                if(connected == true)
+                {
+                    xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint created...\n");
+                    return 0;
+                }
+                else
+                {
+                    xds.RegistryEndpoint = null;
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint not created...\n");
+                    return 1;
+                }
+            }
+            else
+            {
+                return 1; //the url is something other than http or https
+            }
+        }
+        
+        private bool testConnection(string url)
+        {
+            try
+            {
+                //ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return false; };
+                var myRequest = (HttpWebRequest)WebRequest.Create(url);
+                myRequest.Timeout = 5000;
 
+                var response = (HttpWebResponse)myRequest.GetResponse();
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    return true;
+                }
+                else
+                {
+                    //  well, at least it returned...
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                //  not available at all, for some reason
+                return false;
+            }
+        }
+        
         /*
         private bool AtnaTest_AuditMessageGenerated(XdsObjects.XML_InnerObjects.AuditMessage message)
         {
