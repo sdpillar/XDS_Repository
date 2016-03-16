@@ -79,10 +79,10 @@ namespace XdsRepository
                 else
                 {
                     Rep.LogMessageEvent += LogMessageHandler;
-                    Rep.StartListen();
                     //logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Authority Domain - " + Rep.authDomain + "...\n"));
                     logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Store - " + Rep.StoragePath + "...\n"));
                     logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Log - " + Rep.repositoryLog + "...\n"));
+                    Rep.StartListen();
                     lblAuthDomain.Text = Rep.authDomain;
                     lblRepId.Text = Rep.repositoryId;
                     lblRepUrl.Text = Rep.repositoryURI;

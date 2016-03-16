@@ -110,7 +110,7 @@ namespace XdsRepository
                 
                 X509Certificate2 myCert = new X509Certificate2();
                 //myCert = GetCertificateByThumbprint("2bf0110aa0fb4deb55b63b3deb91ed83751ea81a", StoreLocation.LocalMachine);
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": thumbprint - " + thumbprint);
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Cert thumbprint - " + thumbprint);
                 if (thumbprint != "")
                 {
                     myCert = GetCertificateByThumbprint(thumbprint, StoreLocation.LocalMachine);
@@ -122,8 +122,19 @@ namespace XdsRepository
                     }
                     else
                     {
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Picked up certificate...");
                         ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
                         xds.RegistryEndpoint = new WebServiceEndpoint(registryURI, myCert);
+                        bool connected = testConnection(registryURI);
+                        if(connected == false)
+                        {
+                            xds.RegistryEndpoint = null;
+                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint not created...\n");
+                        }
+                        else
+                        {
+                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint created...\n");
+                        }
                     }
                 }
                 else
@@ -134,6 +145,10 @@ namespace XdsRepository
                     {
                         xds.RegistryEndpoint = null;
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint not created...\n");
+                    }
+                    else
+                    {
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint created...\n");
                     }
                 }
             }
@@ -147,7 +162,7 @@ namespace XdsRepository
         public int testRegConnection()
         {
             X509Certificate2 myCert = new X509Certificate2();
-            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": thumbprint - " + thumbprint);
+            //LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Testing connection to registry...");
             string urlPrefix = registryURI.Substring(0, registryURI.IndexOf(":")); //is the registry url https or http?
             if(urlPrefix == "https")
             {
@@ -155,9 +170,7 @@ namespace XdsRepository
                 if (myCert == null)
                 {
                     //cannot create registry endpoint
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Required certificate not found...\n");
                     xds.RegistryEndpoint = null;
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint not created...\n");
                     return 1;
                 }
                 else
@@ -168,13 +181,13 @@ namespace XdsRepository
                         //connection is open
                         ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
                         xds.RegistryEndpoint = new WebServiceEndpoint(registryURI, myCert);
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint created...\n");
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Connected to registry endpoint...\n");
                         return 0;
                     }
                     else
                     {
                         xds.RegistryEndpoint = null;
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint not created...\n");
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Unable to connect to registry endpoint...\n");
                         return 1;
                     }
                 }
@@ -186,13 +199,13 @@ namespace XdsRepository
                 if(connected == true)
                 {
                     xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint created...\n");
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Connected to registry endpoint...\n");
                     return 0;
                 }
                 else
                 {
                     xds.RegistryEndpoint = null;
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint not created...\n");
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Unable to connect to registry endpoint...\n");
                     return 1;
                 }
             }

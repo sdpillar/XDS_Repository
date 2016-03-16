@@ -75,14 +75,14 @@
   <ItemGroup>
     <Reference Include="BouncyCastle.6.40, Version=1.6.1.0, Culture=neutral, PublicKeyToken=bb9456844973d071, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Desktop\XDS\Medical Connections\XdsObjects.NET_PrivateRELEASE_6.40.99.19\BouncyCastle.6.40.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\XDS\Medical Connections\XdsObjects.NET_PrivateRELEASE_6.40.99.22\BouncyCastle.6.40.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework">
       <HintPath>bin\Debug\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Security.6.40, Version=6.40.0.0, Culture=neutral, PublicKeyToken=f4dc1386f6a89afb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Desktop\XDS\Medical Connections\XdsObjects.NET_PrivateRELEASE_6.40.99.19\Security.6.40.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\XDS\Medical Connections\XdsObjects.NET_PrivateRELEASE_6.40.99.22\Security.6.40.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -104,11 +104,11 @@
     <Reference Include="System.Xml" />
     <Reference Include="XdsObjects.6.40, Version=6.40.0.0, Culture=neutral, PublicKeyToken=67ef2e827ae64766, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Desktop\XDS\Medical Connections\XdsObjects.NET_PrivateRELEASE_6.40.99.19\XdsObjects.6.40.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\XDS\Medical Connections\XdsObjects.NET_PrivateRELEASE_6.40.99.22\XdsObjects.6.40.dll</HintPath>
     </Reference>
     <Reference Include="XdsObjects.6.40.XmlSerializers, Version=6.40.0.0, Culture=neutral, PublicKeyToken=67ef2e827ae64766, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Desktop\XDS\Medical Connections\XdsObjects.NET_PrivateRELEASE_6.40.99.19\XdsObjects.6.40.XmlSerializers.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\XDS\Medical Connections\XdsObjects.NET_PrivateRELEASE_6.40.99.22\XdsObjects.6.40.XmlSerializers.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
