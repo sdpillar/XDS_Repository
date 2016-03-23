@@ -13,6 +13,7 @@ using System.Net.Sockets;
 //using System.Security.Cryptography.X509Certificates;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace XdsRepository
 {
@@ -48,6 +49,12 @@ namespace XdsRepository
 
             tvwSettings.ExpandAll();
             tvwSettings.SelectedNode = tvwSettings.Nodes[0].Nodes[0];
+
+            // Get the file version for XdsObjects
+            FileVersionInfo myFileVersionInfo =
+                FileVersionInfo.GetVersionInfo(@"C:\HSS\XDS_Repository\XdsObjects.6.40.dll");
+            string productVersion = myFileVersionInfo.ProductVersion;
+            lblVersion.Text = "XdsObjects Version - " + productVersion;
         }
 
         private void tvwSettings_AfterSelect(object sender, TreeViewEventArgs e)
