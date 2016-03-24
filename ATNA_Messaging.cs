@@ -87,7 +87,7 @@ namespace XdsRepository
                 //EventIdentification
                 appStop.EventIdentification.EventOutcomeIndicator = EventOutcomeIndicator.Success;
                 appStop.EventIdentification.EventActionCode = XdsObjects.XML_InnerObjects.Enums.EventActionCode.E;
-                appStop.EventIdentification.EventDateTime = DateTime.Now; ;
+                appStop.EventIdentification.EventDateTime = DateTime.Now;
                 appStop.EventIdentification.EventID = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Application Activity", "110100", atnaDomain.AuditSchema);
                 appStop.EventIdentification.EventTypeCode = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Application Stop", "110121", atnaDomain.AuditSchema);
                 //ActiveParticipant1
@@ -126,6 +126,7 @@ namespace XdsRepository
                     repImport.EventIdentification.EventOutcomeIndicator = EventOutcomeIndicator.MajorFailure; //dependent on presence of errors in Repository?
                 }
                 repImport.EventIdentification.EventActionCode = XdsObjects.XML_InnerObjects.Enums.EventActionCode.C;
+                repImport.EventIdentification.EventDateTime = DateTime.Now;
                 repImport.EventIdentification.EventID = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Import", "110107", atnaDomain.AuditSchema);
                 repImport.EventIdentification.EventTypeCode = new XdsObjects.XML_InnerObjects.CodedValueString("IHE Transactions", "Provide and Register Document Set-b", "ITI-41", atnaDomain.AuditSchema);
                 //Source
@@ -190,6 +191,7 @@ namespace XdsRepository
                     repExport.EventIdentification.EventOutcomeIndicator = EventOutcomeIndicator.MajorFailure; //dependent on presence of errors in Repository?
                 }
                 repExport.EventIdentification.EventActionCode = XdsObjects.XML_InnerObjects.Enums.EventActionCode.R;
+                repExport.EventIdentification.EventDateTime = DateTime.Now;
                 repExport.EventIdentification.EventID = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Export", "110106", atnaDomain.AuditSchema);
                 repExport.EventIdentification.EventTypeCode = new XdsObjects.XML_InnerObjects.CodedValueString("IHE Transactions", "Register Document Set-b", "ITI-42", atnaDomain.AuditSchema);
                 //Source
@@ -252,8 +254,8 @@ namespace XdsRepository
                 {
                     repRetrieve.EventIdentification.EventOutcomeIndicator = EventOutcomeIndicator.MajorFailure; //dependent on presence of errors in Repository?
                 }
-                repRetrieve.EventIdentification.EventOutcomeIndicator = EventOutcomeIndicator.Success; //dependent on presence of errors in Repository?
                 repRetrieve.EventIdentification.EventActionCode = XdsObjects.XML_InnerObjects.Enums.EventActionCode.R;
+                repRetrieve.EventIdentification.EventDateTime = DateTime.Now;
                 repRetrieve.EventIdentification.EventID = new XdsObjects.XML_InnerObjects.CodedValueString("DCM", "Export", "110106", atnaDomain.AuditSchema);
                 repRetrieve.EventIdentification.EventTypeCode = new XdsObjects.XML_InnerObjects.CodedValueString("IHE Transactions", "Retrieve Document Set", "ITI-43", atnaDomain.AuditSchema);
                 //Source
