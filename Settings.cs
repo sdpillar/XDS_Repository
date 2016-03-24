@@ -20,6 +20,7 @@ namespace XdsRepository
     public partial class frmSettings : Form
     {
         int currentHashValue;
+
         public frmSettings()
         {
             InitializeComponent();
@@ -49,12 +50,6 @@ namespace XdsRepository
 
             tvwSettings.ExpandAll();
             tvwSettings.SelectedNode = tvwSettings.Nodes[0].Nodes[0];
-
-            // Get the file version for XdsObjects
-            FileVersionInfo myFileVersionInfo =
-                FileVersionInfo.GetVersionInfo(@"C:\HSS\XDS_Repository\XdsObjects.6.40.dll");
-            string productVersion = myFileVersionInfo.ProductVersion;
-            lblVersion.Text = "XdsObjects Version - " + productVersion;
         }
 
         private void tvwSettings_AfterSelect(object sender, TreeViewEventArgs e)
@@ -274,6 +269,31 @@ namespace XdsRepository
             {
                 txtRepositoryPath.Text = dlgLog.SelectedPath;
             }
+        }
+
+        private void cmdVersions_Click(object sender, EventArgs e)
+        {
+            // Get the file version for XdsObjects
+            FileVersionInfo xdsObjectsVersionInfo =
+                FileVersionInfo.GetVersionInfo(@"C:\HSS\XDS_Repository\XdsObjects.6.40.dll");
+            string xdsObjects = xdsObjectsVersionInfo.ProductVersion;
+
+            // Get the file version for XdsObjectsSerializer
+            FileVersionInfo xdsObjectsSerilaizerVersionInfo =
+                FileVersionInfo.GetVersionInfo(@"C:\HSS\XDS_Repository\XdsObjects.6.40.XmlSerializers.dll");
+            string xdsObjectsSerializer = xdsObjectsSerilaizerVersionInfo.ProductVersion;
+
+            // Get the file version for Security
+            FileVersionInfo securityVersionInfo =
+                FileVersionInfo.GetVersionInfo(@"C:\HSS\XDS_Repository\Security.6.40.dll");
+            string security = securityVersionInfo.ProductVersion;
+
+            // Get the file version for BouncyCastle
+            FileVersionInfo bouncyCastleVersionInfo =
+                FileVersionInfo.GetVersionInfo(@"C:\HSS\XDS_Repository\BouncyCastle.6.40.dll");
+            string bouncyCastle = bouncyCastleVersionInfo.ProductVersion;
+
+            MessageBox.Show("XdsObjects - " + xdsObjects + "\nXdsObjectsSerializer - " + xdsObjectsSerializer + "\nSecurity - " + security + "\nBouncy Castle - " + bouncyCastle,"Versions");
         }
     }
 }

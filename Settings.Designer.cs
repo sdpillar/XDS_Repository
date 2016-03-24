@@ -88,7 +88,7 @@
             this.pnlRegistry = new System.Windows.Forms.Panel();
             this.lblRegistry = new System.Windows.Forms.Label();
             this.dlgLog = new System.Windows.Forms.FolderBrowserDialog();
-            this.lblVersion = new System.Windows.Forms.Label();
+            this.cmdVersions = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.grpCertificates.SuspendLayout();
             this.pnlCertificates.SuspendLayout();
@@ -222,7 +222,7 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.lblVersion);
+            this.panel1.Controls.Add(this.cmdVersions);
             this.panel1.Controls.Add(this.grpCertificates);
             this.panel1.Controls.Add(this.grpRepository);
             this.panel1.Controls.Add(this.grpAtna);
@@ -576,14 +576,15 @@
             this.dlgLog.RootFolder = System.Environment.SpecialFolder.MyComputer;
             this.dlgLog.SelectedPath = "C:\\HSS";
             // 
-            // lblVersion
+            // cmdVersions
             // 
-            this.lblVersion.AutoSize = true;
-            this.lblVersion.Location = new System.Drawing.Point(175, 183);
-            this.lblVersion.Name = "lblVersion";
-            this.lblVersion.Size = new System.Drawing.Size(35, 13);
-            this.lblVersion.TabIndex = 23;
-            this.lblVersion.Text = "label7";
+            this.cmdVersions.Location = new System.Drawing.Point(393, 184);
+            this.cmdVersions.Name = "cmdVersions";
+            this.cmdVersions.Size = new System.Drawing.Size(122, 23);
+            this.cmdVersions.TabIndex = 23;
+            this.cmdVersions.Text = "Versions";
+            this.cmdVersions.UseVisualStyleBackColor = true;
+            this.cmdVersions.Click += new System.EventHandler(this.cmdVersions_Click);
             // 
             // frmSettings
             // 
@@ -597,7 +598,6 @@
             this.Text = "XDS Repository Settings";
             this.Load += new System.EventHandler(this.frmSettings_Load);
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.grpCertificates.ResumeLayout(false);
             this.grpCertificates.PerformLayout();
             this.pnlCertificates.ResumeLayout(false);
@@ -675,6 +675,6 @@
         private System.Windows.Forms.Label lblLogging;
         private System.Windows.Forms.Panel pnlRepository;
         private System.Windows.Forms.Label lblRepository;
-        private System.Windows.Forms.Label lblVersion;
+        private System.Windows.Forms.Button cmdVersions;
     }
 }
