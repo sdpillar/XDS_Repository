@@ -14,6 +14,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.IO;
 
 namespace XdsRepository
 {
@@ -50,6 +51,22 @@ namespace XdsRepository
 
             tvwSettings.ExpandAll();
             tvwSettings.SelectedNode = tvwSettings.Nodes[0].Nodes[0];
+
+            try
+            {
+                string line = "";
+                StreamReader certsFile = new StreamReader(@"C:\HSS\XDS_Repository\certs.txt");
+                while ((line = certsFile.ReadLine()) != null)
+                {
+                    cmbCertificates.Items.Add(line);
+                }
+                certsFile.Close();
+
+            }
+            catch(IOException ex)
+            {
+                MessageBox.Show(ex.Message, "Certificate File Exception");
+            }
         }
 
         private void tvwSettings_AfterSelect(object sender, TreeViewEventArgs e)

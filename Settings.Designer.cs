@@ -29,19 +29,19 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Repository");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Registry");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("ATNA");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Certificates");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Authority Domain");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Logging");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Settings", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4,
-            treeNode5,
-            treeNode6});
+            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Repository");
+            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Registry");
+            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("ATNA");
+            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Certificates");
+            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Authority Domain");
+            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Logging");
+            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Settings", new System.Windows.Forms.TreeNode[] {
+            treeNode15,
+            treeNode16,
+            treeNode17,
+            treeNode18,
+            treeNode19,
+            treeNode20});
             this.txtRepositoryPath = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.txtRepositoryURI = new System.Windows.Forms.TextBox();
@@ -57,6 +57,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.ttpSettings = new System.Windows.Forms.ToolTip(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
+            this.cmdVersions = new System.Windows.Forms.Button();
             this.grpCertificates = new System.Windows.Forms.GroupBox();
             this.pnlCertificates = new System.Windows.Forms.Panel();
             this.lblCertificates = new System.Windows.Forms.Label();
@@ -88,7 +89,8 @@
             this.pnlRegistry = new System.Windows.Forms.Panel();
             this.lblRegistry = new System.Windows.Forms.Label();
             this.dlgLog = new System.Windows.Forms.FolderBrowserDialog();
-            this.cmdVersions = new System.Windows.Forms.Button();
+            this.cmbCertificates = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.grpCertificates.SuspendLayout();
             this.pnlCertificates.SuspendLayout();
@@ -236,8 +238,20 @@
             this.panel1.Size = new System.Drawing.Size(526, 237);
             this.panel1.TabIndex = 20;
             // 
+            // cmdVersions
+            // 
+            this.cmdVersions.Location = new System.Drawing.Point(393, 184);
+            this.cmdVersions.Name = "cmdVersions";
+            this.cmdVersions.Size = new System.Drawing.Size(122, 23);
+            this.cmdVersions.TabIndex = 23;
+            this.cmdVersions.Text = "Versions";
+            this.cmdVersions.UseVisualStyleBackColor = true;
+            this.cmdVersions.Click += new System.EventHandler(this.cmdVersions_Click);
+            // 
             // grpCertificates
             // 
+            this.grpCertificates.Controls.Add(this.label7);
+            this.grpCertificates.Controls.Add(this.cmbCertificates);
             this.grpCertificates.Controls.Add(this.pnlCertificates);
             this.grpCertificates.Controls.Add(this.txtAppId);
             this.grpCertificates.Controls.Add(this.txtThumbprint);
@@ -390,31 +404,31 @@
             // 
             this.tvwSettings.Location = new System.Drawing.Point(6, 12);
             this.tvwSettings.Name = "tvwSettings";
-            treeNode1.BackColor = System.Drawing.Color.Transparent;
-            treeNode1.Checked = true;
-            treeNode1.ForeColor = System.Drawing.Color.Black;
-            treeNode1.Name = "nodRepository";
-            treeNode1.Text = "Repository";
-            treeNode2.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode2.Name = "nodRegistry";
-            treeNode2.Text = "Registry";
-            treeNode3.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode3.Name = "nodAtna";
-            treeNode3.Text = "ATNA";
-            treeNode4.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode4.Name = "nodCertificates";
-            treeNode4.Text = "Certificates";
-            treeNode5.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode5.Name = "nodDomain";
-            treeNode5.Text = "Authority Domain";
-            treeNode6.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode6.Name = "nodLogging";
-            treeNode6.Text = "Logging";
-            treeNode7.Checked = true;
-            treeNode7.Name = "nodSettings";
-            treeNode7.Text = "Settings";
+            treeNode15.BackColor = System.Drawing.Color.Transparent;
+            treeNode15.Checked = true;
+            treeNode15.ForeColor = System.Drawing.Color.Black;
+            treeNode15.Name = "nodRepository";
+            treeNode15.Text = "Repository";
+            treeNode16.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode16.Name = "nodRegistry";
+            treeNode16.Text = "Registry";
+            treeNode17.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode17.Name = "nodAtna";
+            treeNode17.Text = "ATNA";
+            treeNode18.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode18.Name = "nodCertificates";
+            treeNode18.Text = "Certificates";
+            treeNode19.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode19.Name = "nodDomain";
+            treeNode19.Text = "Authority Domain";
+            treeNode20.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode20.Name = "nodLogging";
+            treeNode20.Text = "Logging";
+            treeNode21.Checked = true;
+            treeNode21.Name = "nodSettings";
+            treeNode21.Text = "Settings";
             this.tvwSettings.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode7});
+            treeNode21});
             this.tvwSettings.Size = new System.Drawing.Size(150, 150);
             this.tvwSettings.TabIndex = 18;
             this.tvwSettings.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvwSettings_AfterSelect);
@@ -576,15 +590,22 @@
             this.dlgLog.RootFolder = System.Environment.SpecialFolder.MyComputer;
             this.dlgLog.SelectedPath = "C:\\HSS";
             // 
-            // cmdVersions
+            // cmbCertificates
             // 
-            this.cmdVersions.Location = new System.Drawing.Point(393, 184);
-            this.cmdVersions.Name = "cmdVersions";
-            this.cmdVersions.Size = new System.Drawing.Size(122, 23);
-            this.cmdVersions.TabIndex = 23;
-            this.cmdVersions.Text = "Versions";
-            this.cmdVersions.UseVisualStyleBackColor = true;
-            this.cmdVersions.Click += new System.EventHandler(this.cmdVersions_Click);
+            this.cmbCertificates.FormattingEnabled = true;
+            this.cmbCertificates.Location = new System.Drawing.Point(102, 97);
+            this.cmbCertificates.Name = "cmbCertificates";
+            this.cmbCertificates.Size = new System.Drawing.Size(193, 21);
+            this.cmbCertificates.TabIndex = 26;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(15, 100);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(62, 13);
+            this.label7.TabIndex = 27;
+            this.label7.Text = "Certificates:";
             // 
             // frmSettings
             // 
@@ -676,5 +697,7 @@
         private System.Windows.Forms.Panel pnlRepository;
         private System.Windows.Forms.Label lblRepository;
         private System.Windows.Forms.Button cmdVersions;
+        private System.Windows.Forms.ComboBox cmbCertificates;
+        private System.Windows.Forms.Label label7;
     }
 }

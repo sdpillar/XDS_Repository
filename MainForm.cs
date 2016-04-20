@@ -8,9 +8,10 @@ using System.IO;
 //using Org.BouncyCastle.Crypto.Tls;
 //using System.ServiceModel;
 using System.Net.Sockets;
-//using System.Net.Security;
+using System.Net.Security;
 using System.Net;
 using System.Text;
+using System.Security.Cryptography.X509Certificates;
 
 namespace XdsRepository
 {
@@ -87,6 +88,7 @@ namespace XdsRepository
                     lblRepId.Text = Rep.repositoryId;
                     lblRepUrl.Text = Rep.repositoryURI;
                     lblRegUrl.Text = Rep.registryURI;
+                    /*
                     int testConn = Rep.testRegConnection();
                     if(testConn == 0)
                     {
@@ -96,7 +98,7 @@ namespace XdsRepository
                     {
                         lblRegUrl.ForeColor = System.Drawing.Color.Red;
                     }
-                    
+                    */
                     //testConnections();
                 }
                 //logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": All properties set...\n"));
