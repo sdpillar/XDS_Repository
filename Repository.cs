@@ -543,17 +543,22 @@ namespace XdsRepository
                 }
                 return xds.RegisterDocumentSet(SubmissionSet);
             }
-            catch (Exception ex)
+            catch(SocketException socEx)
             {
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Error - " + ex.Message);
-                myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                myResponse.AddError(XdsObjects.Enums.XdsErrorCode.GeneralException, ex.Message, ex.InnerException.ToString());
-                //myResponse.AddError(XdsErrorCode.XDSRegistryNotAvailable, "Unable to connect to the Registry to register document", "");
-                string exceptionMsg = ex.Message;
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": server_ProvideAndRegisterRequestReceived - " + exceptionMsg + "...\n" + ex.InnerException.ToString());
-
                 myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Unable to connect to the Registry to register document");
+                myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
+                myResponse.AddError(XdsErrorCode.XDSRegistryNotAvailable, "Unable to connect to the Registry to register document", socEx.Message);
+                return myResponse;
+            }
+            catch (Exception ex)
+            {
+                myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Error - " + ex.Message + " - " + ex.InnerException.ToString());
+                myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
+                myResponse.AddError(XdsObjects.Enums.XdsErrorCode.GeneralException, ex.Message, ex.InnerException.ToString());
                 return myResponse;
             }
         }
