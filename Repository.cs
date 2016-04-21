@@ -399,6 +399,7 @@ namespace XdsRepository
         {
             LogMessageEvent("--- --- ---");
             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Provide and Register request received...");
+            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document Source - " + RequestInfo.RemoteEndpoint.Address + ":" + RequestInfo.RemoteEndpoint.Port + "...");
             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Message Id - " + RequestInfo.Message.Headers.MessageId + "...");
             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet.SourceId - " + SubmissionSet.SourceID);
 
@@ -575,6 +576,7 @@ namespace XdsRepository
             {
                 LogMessageEvent("--- --- ---");
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Retreive document request received");
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document Consumer - " + RequestInfo.RemoteEndpoint.Address + ":" + RequestInfo.RemoteEndpoint.Port + "...");
                 response.Status = XdsObjects.Enums.RegistryResponseStatus.Success; // gets changed if we have a failure
                 XdsPatient myPatient = new XdsPatient();
                 XdsRegistryResponse myResponse = new XdsRegistryResponse();
