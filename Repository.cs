@@ -72,9 +72,7 @@ namespace XdsRepository
             try
             {
                 XdsGlobal.LogToFile(repositoryLog, XdsObjects.Enums.LogLevel.All, 3600);
-
                 XdsGlobal.Log("This is a Test");
-
                 // Create a new instance of the Server
                 server = new XdsMtomServer();
                 // Set up server events
@@ -85,130 +83,14 @@ namespace XdsRepository
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": " + repositoryURI + " listening...");
 
                 xds = new XdsDomain();
-                //xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
-                /*
-                //atnaTest.AuditMessageGenerated += AtnaTest_AuditMessageGenerated;
-                //set up ATNA
-                myAudit.Host = atnaHost;
-                myAudit.Port = atnaPort;
-                AuditProtocol atnaProtocol = AuditProtocol.Tcp;
-                myAudit.Protocol = atnaProtocol;
-                atnaTest.AuditEnterpriseSiteID = authDomain;
-                atnaTest.AuditSourceTypeCode = AuditSourceTypeCode.Application_Server_Process_Tier;
-                atnaTest.AuditSchema = XdsDomain.AuditSchemaType.DICOM;
-
-                atnaTest.AuditSourceID = System.Environment.MachineName;
-                atnaTest.RegistryEndpoint = new WebServiceEndpoint(registryURI);
-                atnaTest.AuditRepositories.Add(myAudit);
-                myATNA.ATNA_Application_Start(atnaTest);
-                */
                 SetUpAtna();
                 myATNA.ATNA_Application_Start(atnaTest);
-
-                //XdsAudit.ActorStart(atnaTest);
-                //XdsAudit.UserAuthentication(atnaTest, true);
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Application Start audit event logged...");
 
-                // Set up the Registry we are going to talk to
-                //xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
-                //certificate to reference
-
-                
                 MedicalConnections.Security.TlsClientBouncyCastle bc = new MedicalConnections.Security.TlsClientBouncyCastle();
-                //TlsClientBouncyCastle bc = new TlsClientBouncyCastle();
-                
                 bc.AddTrustedRoot(File.ReadAllBytes(@"C:\HSS\XDS_Repository\Certificates\643.der"));
                 bc.LoadFromPfx(File.ReadAllBytes(@"C:\HSS\XDS_Repository\Certificates\1606.p12"), "password");
                 xds.RegistryEndpoint = new WebServiceEndpoint(registryURI, bc);
-                
-                /*
-                X509Certificate2 myCert = new X509Certificate2();
-                myCert = GetCertificateByThumbprint(thumbprint, StoreLocation.LocalMachine);
-                ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
-                if (thumbprint != "")
-                {
-                    xds.RegistryEndpoint = new WebServiceEndpoint(registryURI, myCert);
-                }
-                else
-                {
-                    xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
-                }
-                */
-                //X509Certificate2UI.DisplayCertificate(myCert);
-                /*
-                if(thumbprint != "")
-                {
-                    ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
-                    xds.RegistryEndpoint = new WebServiceEndpoint(registryURI, myCert);
-                    bool connected = testConnection(registryURI);
-                    if (connected == false)
-                    {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint not connected...\n");
-                    }
-                    else
-                    {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint connected...\n");
-                    }
-                }
-                else
-                {
-                    xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
-                    bool connected = testConnection(registryURI);
-                    if (connected == false)
-                    {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint not connected...\n");
-                    }
-                    else
-                    {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint connected...\n");
-                    }
-                }
-                */
-                //myCert = GetCertificateByThumbprint("2bf0110aa0fb4deb55b63b3deb91ed83751ea81a", StoreLocation.LocalMachine);
-
-                /*
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Cert thumbprint - " + thumbprint);
-                if (thumbprint != "")
-                {
-                    myCert = GetCertificateByThumbprint(thumbprint, StoreLocation.LocalMachine);
-                    if (myCert == null)
-                    {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Required certificate not found...\n");
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint not created...\n");
-                        xds.RegistryEndpoint = null;
-                    }
-                    else
-                    {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Picked up certificate...");
-                        //ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
-                        xds.RegistryEndpoint = new WebServiceEndpoint(registryURI, myCert);
-                        bool connected = testConnection(registryURI);
-                        if(connected == false)
-                        {
-                            xds.RegistryEndpoint = null;
-                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint not created...\n");
-                        }
-                        else
-                        {
-                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint created...\n");
-                        }
-                    }
-                }
-                else
-                {
-                    xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
-                    bool connected = testConnection(registryURI);
-                    if(connected == false)
-                    {
-                        xds.RegistryEndpoint = null;
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint not created...\n");
-                    }
-                    else
-                    {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry endpoint created...\n");
-                    }
-                }
-                */
             }
             catch (Exception ex)
             {
@@ -273,33 +155,6 @@ namespace XdsRepository
             }
         }
 
-        public bool ConnectathonTest(string url)
-        {
-            try
-            {
-                //ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return false; };
-                var myRequest = (HttpWebRequest)WebRequest.Create(url);
-                myRequest.Timeout = 5000;
-
-                var response = (HttpWebResponse)myRequest.GetResponse();
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    return true;
-                }
-                else
-                {
-                    //  well, at least it returned...
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                //  not available at all, for some reason
-                return false;
-            }
-        }
-
         private bool testConnection(string url)
         {
             try
@@ -326,20 +181,6 @@ namespace XdsRepository
                 return false;
             }
         }
-        
-        /*
-        private bool AtnaTest_AuditMessageGenerated(XdsObjects.XML_InnerObjects.AuditMessage message)
-        {
-            byte[] payLoad;
-            using (MemoryStream ms = new MemoryStream())
-            {
-                XdsObjectSerializer.Serialize(message, ms);
-                payLoad = ms.ToArray();
-            }
-
-            return true; // don't auto-send, i will send later
-            //throw new NotImplementedException();
-        }*/
 
         private void SetUpAtna()
         {
