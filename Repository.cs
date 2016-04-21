@@ -400,9 +400,8 @@ namespace XdsRepository
             LogMessageEvent("--- --- ---");
             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Provide and Register request received...");
             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document Source - " + RequestInfo.RemoteEndpoint.Address + ":" + RequestInfo.RemoteEndpoint.Port + "...");
-            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Message Id - " + RequestInfo.Message.Headers.MessageId + "...");
             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet.SourceId - " + SubmissionSet.SourceID);
-
+            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Message Id - " + RequestInfo.Message.Headers.MessageId + "...");
             myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, true);
             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
 
@@ -464,9 +463,6 @@ namespace XdsRepository
                     //LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet.UUID - " + SubmissionSet.UUID + "...");
 
                     document.RepositoryUniqueId = repositoryId;
-                    //use for pre-connectathon test 11966
-                    //document.Size = 36;
-                    //document.Hash = "e543712c0e10501972de13a5bfcbe826c49feb75";
                     document.SetSizeAndHash();
 
                     bool HashSizeCheck = document.CheckSizeAndHash();
@@ -483,11 +479,8 @@ namespace XdsRepository
                     }
                 }
 
-
                 using (var db = new RepositoryDataBase())
                 {
-                    //docCount = 0;
-                    //LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet contains " + SubmissionSet.Documents.Count + " documents...");
                     foreach (XdsDocument document in SubmissionSet.Documents)
                     {
                         //Save document into the repository store
@@ -499,16 +492,14 @@ namespace XdsRepository
                         //added 'http' for pre-connectathon test
                         document.Uri = @"http://" + location.Substring(3);
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document saved to - " + location + "...");
-                        //System.IO.File.WriteAllText(StoragePath + document.UniqueID + ".mime", document.MimeType);
+
                         //Save document info into repository database
                         db.Documents.Add(new Document()
                         {
-                            DocUUID = document.UUID,
                             DocumentId = document.UniqueID,
-                            MimeType = document.MimeType,
-                            //application/octet-stream
-                            //MimeType = "application/octet-stream",
+                            DocUUID = document.UUID,
                             Location = location,
+                            MimeType = document.MimeType,
                             DocDateTime = document.CreationTime,
                             DocSize = document.Size
                         });
@@ -518,7 +509,6 @@ namespace XdsRepository
                             {
                                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Error in Submission - " + e.ErrorCode);
                             }
-                            //LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Errors in document and/or submission...");
                             myATNA.Repository_Export(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
                             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Register Document Set Export audit event logged...");
                             return myResponse;
@@ -533,14 +523,8 @@ namespace XdsRepository
                             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Sending SubmissionSet to Registry...");
                             myATNA.Repository_Export(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, true);
                             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Register Document Set Export audit event logged...");
-                            /////////////////////////////////////////////////
-                            //xds.RegistryEndpoint.Security.CheckHostName = true;
-                            //xds.RegistryEndpoint.Security.CheckCRL = true;
-                            /////////////////////////////////////////////////
-                            //return xds.RegisterDocumentSet(SubmissionSet);
                         }   
                     }
-                    //return null;
                 }
                 return xds.RegisterDocumentSet(SubmissionSet);
             }
@@ -551,6 +535,14 @@ namespace XdsRepository
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Unable to connect to the Registry to register document");
                 myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
                 myResponse.AddError(XdsErrorCode.XDSRegistryNotAvailable, "Unable to connect to the Registry to register document", socEx.Message);
+                
+                foreach (XdsDocument d in SubmissionSet.Documents)
+                {
+                    //need to remove previously saved database record
+                    RollBackDatabaseSave(d.UniqueID);
+                    //need to remove document from physical store
+                    RemoveDocumentFromStore(d.UniqueID);
+                }
                 return myResponse;
             }
             catch (Exception ex)
@@ -560,7 +552,54 @@ namespace XdsRepository
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Error - " + ex.Message + " - " + ex.InnerException.ToString());
                 myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
                 myResponse.AddError(XdsObjects.Enums.XdsErrorCode.GeneralException, ex.Message, ex.InnerException.ToString());
+                foreach (XdsDocument d in SubmissionSet.Documents)
+                {
+                    //need to remove previously saved database record
+                    RollBackDatabaseSave(d.UniqueID);
+                    //need to remove document from physical store
+                    RemoveDocumentFromStore(d.UniqueID);
+                }
                 return myResponse;
+            }
+        }
+
+        private void RemoveDocumentFromStore(string docUniqueId)
+        {
+            try
+            {
+                string currentDate = DateTime.Now.Date.ToString("yyyy_MM_dd");
+                string dir = Path.Combine(StoragePath, currentDate);
+                string location = Path.Combine(dir, docUniqueId);
+                File.Delete(location);
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Removed document " + docUniqueId + " from " + location + "...");
+            }
+            catch(Exception ex)
+            {
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Error removing record from store - " + ex.Message + " - " + ex.InnerException.ToString());
+            }
+        }
+
+        private void RollBackDatabaseSave(string docUniqueId)
+        {
+            try
+            {
+                using (var db = new RepositoryDataBase())
+                {
+                    foreach (var d in db.Documents)
+                    {
+                        if (d.DocumentId == docUniqueId)
+                        {
+                            db.Documents.Remove(d);
+                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Removed document " + docUniqueId + " from database...");
+                            break;
+                        }
+                    }
+                    db.SaveChanges();
+                }
+            }
+            catch(Exception ex)
+            {
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Error removing record - " + ex.Message + " - " + ex.InnerException.ToString());
             }
         }
 
