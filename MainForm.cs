@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using System.IO;
 //using System.Diagnostics;
-//using XdsObjects;
+using XdsObjects;
 //using XdsObjects.Enums;
 //using System.Collections.Generic;
 //using Org.BouncyCastle.Crypto.Tls;
@@ -63,7 +63,6 @@ namespace XdsRepository
                 logWindow.AppendText("--- --- ---\n");
                 this.Text = DateTime.Now.ToString("dd/MM/yyyy") + " - HSS XDS Repository (stopped)";
             }
-            
         }
 
         private void SetupProperties()
@@ -83,11 +82,13 @@ namespace XdsRepository
                     //logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Authority Domain - " + Rep.authDomain + "...\n"));
                     logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Store - " + Rep.StoragePath + "...\n"));
                     logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Log - " + Rep.repositoryLog + "...\n"));
+                    testConnection("ATNA", Rep.atnaHost, Rep.atnaPort);
                     Rep.StartListen();
                     lblAuthDomain.Text = Rep.authDomain;
                     lblRepId.Text = Rep.repositoryId;
                     lblRepUrl.Text = Rep.repositoryURI;
                     lblRegUrl.Text = Rep.registryURI;
+                    
                     /*
                     int testConn = Rep.testRegConnection();
                     if(testConn == 0)
@@ -199,7 +200,6 @@ namespace XdsRepository
             {
                 string exceptionMsg = ex.Message;
                 logWindow.AppendText(DateTime.Now.ToString("HH:mm:ss.fff") + ": Connection failed to " + hostname + " at " + host + ":" + port + "...\n");
-                logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": testConnection - " + exceptionMsg + "...\n"));
                 client.Close();
                 return false;
             }

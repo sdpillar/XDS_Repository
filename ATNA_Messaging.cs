@@ -21,7 +21,6 @@ namespace XdsRepository
             return localIPs[2].ToString();
         }
         */
-
         private string getIpAddress()
         {
             IPHostEntry host;
@@ -37,7 +36,7 @@ namespace XdsRepository
             return localIP;
         }
 
-        public void ATNA_Application_Start(XdsDomain atnaDomain)
+        public bool ATNA_Application_Start(XdsDomain atnaDomain)
         {
             try
             {
@@ -71,15 +70,20 @@ namespace XdsRepository
                 myAuditSource.AuditEnterpriseSiteID = atnaDomain.AuditEnterpriseSiteID;
                 myAuditSource.Code = "4";
                 appStart.AuditSourceIdentification = myAuditSource;
-                atnaDomain.SendAuditMessage(appStart);
+                int sentSuccess = atnaDomain.SendAuditMessage(appStart);
+                if (sentSuccess == 1)
+                {
+                    return true;
+                }
+                return false;
             }
             catch(Exception ex)
             {
-                throw new Exception("ATNA_Application_Start - " + ex.Message);
+                return false;
             }
         }
 
-        public void ATNA_Application_Stop(XdsDomain atnaDomain)
+        public bool ATNA_Application_Stop(XdsDomain atnaDomain)
         {
             try
             {
@@ -104,15 +108,20 @@ namespace XdsRepository
                 myAuditSource.AuditEnterpriseSiteID = atnaDomain.AuditEnterpriseSiteID;
                 myAuditSource.Code = "4";
                 appStop.AuditSourceIdentification = myAuditSource;
-                atnaDomain.SendAuditMessage(appStop);
+                int sentSuccess = atnaDomain.SendAuditMessage(appStop);
+                if (sentSuccess == 1)
+                {
+                    return true;
+                }
+                return false;
             }
             catch (Exception ex)
             {
-                throw new Exception("ATNA_Application_Stop - " + ex.Message);
+                return false;
             }
         }
 
-        public void Repository_Import(XdsDomain atnaDomain, string patientId, string uniqueId, string sourceId, bool success)
+        public bool Repository_Import(XdsDomain atnaDomain, string patientId, string uniqueId, string sourceId, bool success)
         {
             try
             {
@@ -169,15 +178,20 @@ namespace XdsRepository
                 myAuditSource.AuditEnterpriseSiteID = atnaDomain.AuditEnterpriseSiteID;
                 myAuditSource.Code = "4";
                 repImport.AuditSourceIdentification = myAuditSource;
-                atnaDomain.SendAuditMessage(repImport);
+                int sentSuccess = atnaDomain.SendAuditMessage(repImport);
+                if (sentSuccess == 1)
+                {
+                    return true;
+                }
+                return false;
             }
             catch (Exception ex)
             {
-                throw new Exception("Repository_Import - " + ex.Message);
+                return false;
             }
         }
 
-        public void Repository_Export(XdsDomain atnaDomain, string patientId, string uniqueId, string sourceId, bool success)
+        public bool Repository_Export(XdsDomain atnaDomain, string patientId, string uniqueId, string sourceId, bool success)
         {
             try
             {
@@ -233,15 +247,20 @@ namespace XdsRepository
                 myAuditSource.AuditEnterpriseSiteID = atnaDomain.AuditEnterpriseSiteID;
                 myAuditSource.Code = "4";
                 repExport.AuditSourceIdentification = myAuditSource;
-                atnaDomain.SendAuditMessage(repExport);
+                int sentSuccess = atnaDomain.SendAuditMessage(repExport);
+                if(sentSuccess == 1)
+                {
+                    return true;
+                }
+                return false;
             }
             catch (Exception ex)
             {
-                throw new Exception("Repository_Export - " + ex.Message);
+                return false;
             }
         }
 
-        public void Repository_Retrieve(XdsDomain atnaDomain, string documentUniqueId, bool success)
+        public bool Repository_Retrieve(XdsDomain atnaDomain, string documentUniqueId, bool success)
         {
             try
             {
@@ -292,11 +311,16 @@ namespace XdsRepository
                 myAuditSource.AuditEnterpriseSiteID = atnaDomain.AuditEnterpriseSiteID;
                 myAuditSource.Code = "4";
                 repRetrieve.AuditSourceIdentification = myAuditSource;
-                atnaDomain.SendAuditMessage(repRetrieve);
+                int sentSuccess = atnaDomain.SendAuditMessage(repRetrieve);
+                if (sentSuccess == 1)
+                {
+                    return true;
+                }
+                return false;
             }
             catch (Exception ex)
             {
-                throw new Exception("Repository_Retrieve - " + ex.Message);
+                return false;
             }
         }
     }
