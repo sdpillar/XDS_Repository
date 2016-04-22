@@ -68,6 +68,7 @@ namespace XdsRepository
         bool atnaMessageComplete = false;
         #endregion
 
+        #region "Start and Stop"
         internal void StartListen()
         {
             try
@@ -94,6 +95,7 @@ namespace XdsRepository
                 {
                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Application Start audit event logged...");
                 }
+                //add certificates
                 MedicalConnections.Security.TlsClientBouncyCastle bc = new MedicalConnections.Security.TlsClientBouncyCastle();
                 bc.AddTrustedRoot(File.ReadAllBytes(@"C:\HSS\XDS_Repository\Certificates\643.der"));
                 bc.LoadFromPfx(File.ReadAllBytes(@"C:\HSS\XDS_Repository\Certificates\1606.p12"), "password");
@@ -106,6 +108,43 @@ namespace XdsRepository
             }
         }
 
+        internal void StopListen()
+        {
+            if (server != null)
+            {
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": " + repositoryURI + " not listening...");
+                atnaMessageComplete = myATNA.ATNA_Application_Stop(atnaTest);
+                if (atnaMessageComplete == false)
+                {
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Application Stop audit event failed...");
+                }
+                else
+                {
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Application Stop audit event logged...");
+                }
+                atnaTest.AuditRepositories.Clear();
+                server.UnListenAll();
+            }
+        }
+
+        private void SetUpAtna()
+        {
+            //set up ATNA
+            myAudit.Host = atnaHost;
+            myAudit.Port = atnaPort;
+            AuditProtocol atnaProtocol = AuditProtocol.Tcp;
+            myAudit.Protocol = atnaProtocol;
+            atnaTest.AuditSchema = XdsDomain.AuditSchemaType.DICOM;
+            atnaTest.AuditSourceTypeCode = AuditSourceTypeCode.Application_Server_Process_Tier;
+            atnaTest.AuditEnterpriseSiteID = authDomain;
+            atnaTest.AuditSourceID = System.Environment.MachineName;
+            atnaTest.AuditSourceAddress = repositoryId;
+            atnaTest.RegistryEndpoint = new WebServiceEndpoint(registryURI);
+            atnaTest.SubmissionRepositoryEndpoint = new WebServiceEndpoint(repositoryURI);
+            atnaTest.AuditRepositories.Add(myAudit);
+        }
+        #endregion
+        /*
         public int testRegConnection()
         {
             X509Certificate2 myCert = new X509Certificate2();
@@ -188,24 +227,9 @@ namespace XdsRepository
                 return false;
             }
         }
-
-        private void SetUpAtna()
-        {
-            //set up ATNA
-            myAudit.Host = atnaHost;
-            myAudit.Port = atnaPort;
-            AuditProtocol atnaProtocol = AuditProtocol.Tcp;
-            myAudit.Protocol = atnaProtocol;
-            atnaTest.AuditSchema = XdsDomain.AuditSchemaType.DICOM;
-            atnaTest.AuditSourceTypeCode = AuditSourceTypeCode.Application_Server_Process_Tier;
-            atnaTest.AuditEnterpriseSiteID = authDomain;
-            atnaTest.AuditSourceID = System.Environment.MachineName;
-            atnaTest.AuditSourceAddress = repositoryId;
-            atnaTest.RegistryEndpoint = new WebServiceEndpoint(registryURI);
-            atnaTest.SubmissionRepositoryEndpoint = new WebServiceEndpoint(repositoryURI);
-            atnaTest.AuditRepositories.Add(myAudit);  
-        }
-
+        */
+        
+        /*
         private static X509Certificate2 GetCertificateByThumbprint(string certificateThumbPrint, StoreLocation certificateStoreLocation)
         {
             X509Certificate2 certificate = null;
@@ -223,25 +247,8 @@ namespace XdsRepository
             }
             return certificate;
         }
-
-        internal void StopListen()
-        {
-            if (server != null)
-            {
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": " + repositoryURI + " not listening...");
-                atnaMessageComplete = myATNA.ATNA_Application_Stop(atnaTest);
-                if (atnaMessageComplete == false)
-                {
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Application Stop audit event failed...");
-                }
-                else
-                {
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Application Stop audit event logged...");
-                }
-                atnaTest.AuditRepositories.Clear();
-                server.UnListenAll();
-            }
-        }
+        */
+        
 
         #region "Server Events"
         /// <summary>
@@ -342,15 +349,13 @@ namespace XdsRepository
                     docCount++;
                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Patient Id - " + document.PatientID + "...");
                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ") UniqueId - " + document.UniqueID + "...");
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ").UUID - " + document.UUID + "...");
-                    //LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet.UUID - " + SubmissionSet.UUID + "...");
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ") UUID - " + document.UUID + "...");
 
                     document.RepositoryUniqueId = repositoryId;
                     document.SetSizeAndHash();
-
                     bool HashSizeCheck = document.CheckSizeAndHash();
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document size - " + document.Size);
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document hash - " + document.Hash);
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ") size - " + document.Size);
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ") hash - " + document.Hash);
                     if (!HashSizeCheck)
                     {
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": XDSRepositoryMetadataError - Hash and/or Size atrributes of supplied document are in error...");
@@ -430,7 +435,24 @@ namespace XdsRepository
                         }   
                     }
                 }
-                return xds.RegisterDocumentSet(SubmissionSet);
+                //metadata sent to registry
+                myResponse = xds.RegisterDocumentSet(SubmissionSet);
+                //were there errors in the registry?
+                if (myResponse.Errors.ErrorList.Count > 0)
+                {
+                    foreach(var e in myResponse.Errors.ErrorList)
+                    {
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Registry error returned - " + e.ErrorCode + " - " + e.CodeContext);
+                    }
+                    foreach (XdsDocument d in SubmissionSet.Documents)
+                    {
+                        //need to remove previously saved database record
+                        RollBackDatabaseSave(d.UniqueID);
+                        //need to remove document from physical store
+                        RemoveDocumentFromStore(d.UniqueID);
+                    }
+                }
+                return myResponse;
             }
             catch(SocketException socEx)
             {
