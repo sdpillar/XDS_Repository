@@ -40,6 +40,9 @@ namespace XdsRepository
                 atnaHost = Properties.Settings.Default.AtnaHost;
                 atnaPort = Properties.Settings.Default.AtnaPort;
                 thumbprint = Properties.Settings.Default.Thumbprint;
+                rootCertificate = Properties.Settings.Default.RootCertificate;
+                serverCertificate = Properties.Settings.Default.ServerCertificate;
+                serverCertPassword = Properties.Settings.Default.ServerCertPassword;
                 return true;
             }
             catch(Exception ex)
@@ -65,6 +68,9 @@ namespace XdsRepository
         public int atnaPort;
         public string thumbprint;
         public string appId;
+        public string rootCertificate;
+        public string serverCertificate;
+        public string serverCertPassword;
         bool atnaMessageComplete = false;
         #endregion
 
@@ -97,8 +103,11 @@ namespace XdsRepository
                 }
                 //add certificates
                 MedicalConnections.Security.TlsClientBouncyCastle bc = new MedicalConnections.Security.TlsClientBouncyCastle();
-                bc.AddTrustedRoot(File.ReadAllBytes(@"C:\HSS\XDS_Repository\Certificates\643.der"));
-                bc.LoadFromPfx(File.ReadAllBytes(@"C:\HSS\XDS_Repository\Certificates\1606.p12"), "password");
+                bc.AddTrustedRoot(File.ReadAllBytes(rootCertificate));
+                bc.LoadFromPfx(File.ReadAllBytes(serverCertificate), serverCertPassword);
+                //bc.AddTrustedRoot(File.ReadAllBytes(@"C:\HSS\XDS_Repository\Certificates\643.der"));
+                //bc.LoadFromPfx(File.ReadAllBytes(@"C:\HSS\XDS_Repository\Certificates\1606.p12"), "password");
+
                 xds.RegistryEndpoint = new WebServiceEndpoint(registryURI, bc);
             }
             catch (Exception ex)
@@ -144,111 +153,6 @@ namespace XdsRepository
             atnaTest.AuditRepositories.Add(myAudit);
         }
         #endregion
-        /*
-        public int testRegConnection()
-        {
-            X509Certificate2 myCert = new X509Certificate2();
-            //LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Testing connection to registry...");
-            string urlPrefix = registryURI.Substring(0, registryURI.IndexOf(":")); //is the registry url https or http?
-            if(urlPrefix == "https")
-            {
-                myCert = GetCertificateByThumbprint(thumbprint, StoreLocation.LocalMachine); //attempt to retrieve a certificate with that thumprint
-                if (myCert == null)
-                {
-                    //cannot create registry endpoint
-                    xds.RegistryEndpoint = null;
-                    return 1;
-                }
-                else
-                {
-                    bool connected = testConnection(registryURI); //test connection to https address - is it open?
-                    if(connected == true)
-                    {
-                        //connection is open
-                        ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
-                        xds.RegistryEndpoint = new WebServiceEndpoint(registryURI, myCert);
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Connected to registry endpoint...\n");
-                        return 0;
-                    }
-                    else
-                    {
-                        xds.RegistryEndpoint = null;
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Unable to connect to registry endpoint...\n");
-                        return 1;
-                    }
-                }
-            }
-            else if(urlPrefix == "http")
-            {
-            //certificate doesn't matter
-                bool connected = testConnection(registryURI); //test connection to http address - is it open?
-                if(connected == true)
-                {
-                    xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Connected to registry endpoint...\n");
-                    return 0;
-                }
-                else
-                {
-                    xds.RegistryEndpoint = null;
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Unable to connect to registry endpoint...\n");
-                    return 1;
-                }
-            }
-            else
-            {
-                return 1; //the url is something other than http or https
-            }
-        }
-
-        private bool testConnection(string url)
-        {
-            try
-            {
-                //ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return false; };
-                var myRequest = (HttpWebRequest)WebRequest.Create(url);
-                myRequest.Timeout = 5000;
-
-                var response = (HttpWebResponse)myRequest.GetResponse();
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    return true;
-                }
-                else
-                {
-                    //  well, at least it returned...
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                //  not available at all, for some reason
-                return false;
-            }
-        }
-        */
-        
-        /*
-        private static X509Certificate2 GetCertificateByThumbprint(string certificateThumbPrint, StoreLocation certificateStoreLocation)
-        {
-            X509Certificate2 certificate = null;
-            X509Store certificateStore = new X509Store(certificateStoreLocation);
-            certificateStore.Open(OpenFlags.ReadOnly);
-
-            X509Certificate2Collection certCollection = certificateStore.Certificates;
-            foreach (X509Certificate2 cert in certCollection)
-            {
-                if (cert.Thumbprint != null && cert.Thumbprint.Equals(certificateThumbPrint, StringComparison.OrdinalIgnoreCase))
-                {
-                    certificate = cert;
-                    break;
-                }
-            }
-            return certificate;
-        }
-        */
-        
 
         #region "Server Events"
         /// <summary>
@@ -275,6 +179,8 @@ namespace XdsRepository
             }
 
             XdsRegistryResponse myResponse = new XdsRegistryResponse();
+            //rather than sending an error response the first error encountered, 
+            //errors are added to the response when encountered and the response sent once all checks are complete
             bool errors = false;
             try
             {
@@ -295,7 +201,8 @@ namespace XdsRepository
                     } 
                     myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
                     myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSMissingDocumentMetadata, "No document metadata present", "");
-                    return myResponse;
+                    //return myResponse;
+                    errors = true;
                 }
                 else
                 {
@@ -306,7 +213,8 @@ namespace XdsRepository
                 //for each ExtrinsicDocument object, is the actual base64 encoded document present?
                 foreach (XdsDocument document in SubmissionSet.Documents)
                 {
-                    if(document.Data == null)
+                    document.UniqueID = "0.0.0.1.6.6.4.0.4.3.2";
+                    if (document.Data == null)
                     {
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Missing document...");
                         atnaMessageComplete = myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
@@ -320,10 +228,15 @@ namespace XdsRepository
                         }
                         myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
                         myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSMissingDocument, "Missing document", "");
-                        return myResponse;
+                        //return myResponse;
+                        errors = true;
                     }
                 }
 
+                ///////////////////////////////////////////////
+                //not sure if the Repository should care about the Authority Domain. That is up to the Registry????
+                ///////////////////////////////////////////////
+                /*
                 //check that Authority Domain of patient matches with that of Repository
                 if (!SubmissionSet.PatientInfo.ID_Root.Contains(authDomain)) // != authDomain)
                 {
@@ -341,6 +254,7 @@ namespace XdsRepository
                     myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSUnknownCommunity, "Authority Domains do not match", "");
                     errors = true;
                 }
+                */
 
                 docCount = 0;
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet contains " + SubmissionSet.Documents.Count + " documents...");
@@ -350,8 +264,10 @@ namespace XdsRepository
                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Patient Id - " + document.PatientID + "...");
                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ") UniqueId - " + document.UniqueID + "...");
                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ") UUID - " + document.UUID + "...");
-
+                    //insert repository unique id
                     document.RepositoryUniqueId = repositoryId;
+                    //calcultate size and hash
+                    //if different from any values contained in submission from source reject
                     document.SetSizeAndHash();
                     bool HashSizeCheck = document.CheckSizeAndHash();
                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ") size - " + document.Size);
@@ -374,10 +290,40 @@ namespace XdsRepository
                     }
                 }
 
+                //IHE requirment for the repository to validate the uniqueness of the XDSDocumentEntry.uniqueId
                 using (var db = new RepositoryDataBase())
                 {
                     foreach (XdsDocument document in SubmissionSet.Documents)
                     {
+                        string docId = document.UniqueID;
+                        foreach(var d in db.Documents)
+                        {
+                            if(docId == d.DocumentId)
+                            {
+                                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": XDSDocumentUniqueIdError - Document Unique Id already exists within Repository...");
+                                atnaMessageComplete = myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
+                                if (atnaMessageComplete == false)
+                                {
+                                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event failed...");
+                                }
+                                else
+                                {
+                                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
+                                }
+                                myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
+                                myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSDocumentUniqueIdError, "Document Unique Id already exists within Repository", "");
+                                errors = true;
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                using (var db = new RepositoryDataBase())
+                {
+                    foreach (XdsDocument document in SubmissionSet.Documents)
+                    {
+                        /*
                         //Save document into the repository store
                         string currentDate = DateTime.Now.Date.ToString("yyyy_MM_dd");
                         string dir = Path.Combine(StoragePath, currentDate);
@@ -398,9 +344,11 @@ namespace XdsRepository
                             DocDateTime = document.CreationTime,
                             DocSize = document.Size
                         });
+                        */
+                        //if there have been any metadata issues picked up the repository then report them here and return error response
                         if (errors == true)
                         {
-                            foreach(var e in myResponse.Errors.ErrorList)
+                            foreach (var e in myResponse.Errors.ErrorList)
                             {
                                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Error in Submission - " + e.ErrorCode);
                             }
@@ -415,8 +363,30 @@ namespace XdsRepository
                             }
                             return myResponse;
                         }
+                        //else 
+                        //save document in store
+                        //Save document info into repository database
                         else
                         {
+                            //Save document into the repository store
+                            string currentDate = DateTime.Now.Date.ToString("yyyy_MM_dd");
+                            string dir = Path.Combine(StoragePath, currentDate);
+                            Directory.CreateDirectory(dir);
+                            string location = Path.Combine(dir, document.UniqueID);
+                            File.WriteAllBytes(location, document.Data);
+                            //added 'http' for pre-connectathon test
+                            document.Uri = @"http://" + location.Substring(3);
+                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document saved to - " + location + "...");
+                            db.Documents.Add(new Document()
+                            {
+                                DocumentId = document.UniqueID,
+                                DocUUID = document.UUID,
+                                Location = location,
+                                MimeType = document.MimeType,
+                                DocDateTime = document.CreationTime,
+                                DocSize = document.Size
+                            });
+
                             // then send whole lot off to the chosen registry (main data will NOT be sent - this is
                             // automatic and internal!)  
                             //Then pass back the response
@@ -431,8 +401,8 @@ namespace XdsRepository
                             else
                             {
                                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Register Document Set Export audit event logged...");
-                            } 
-                        }   
+                            }
+                        }
                     }
                 }
                 //metadata sent to registry

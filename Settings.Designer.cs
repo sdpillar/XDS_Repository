@@ -29,19 +29,19 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Repository");
-            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Registry");
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("ATNA");
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Certificates");
-            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Authority Domain");
-            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Logging");
-            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Settings", new System.Windows.Forms.TreeNode[] {
-            treeNode15,
-            treeNode16,
-            treeNode17,
-            treeNode18,
-            treeNode19,
-            treeNode20});
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Repository");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Registry");
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("ATNA");
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Certificates");
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Authority Domain");
+            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Logging");
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Settings", new System.Windows.Forms.TreeNode[] {
+            treeNode8,
+            treeNode9,
+            treeNode10,
+            treeNode11,
+            treeNode12,
+            treeNode13});
             this.txtRepositoryPath = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.txtRepositoryURI = new System.Windows.Forms.TextBox();
@@ -57,14 +57,27 @@
             this.label10 = new System.Windows.Forms.Label();
             this.ttpSettings = new System.Windows.Forms.ToolTip(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
+            this.grpCertsBC = new System.Windows.Forms.GroupBox();
+            this.txtPassword = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.cmdServer = new System.Windows.Forms.Button();
+            this.cmdRoot = new System.Windows.Forms.Button();
+            this.pnlBouncyCastle = new System.Windows.Forms.Panel();
+            this.lblBouncyCastle = new System.Windows.Forms.Label();
+            this.txtServer = new System.Windows.Forms.TextBox();
+            this.txtRoot = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
             this.cmdVersions = new System.Windows.Forms.Button();
-            this.grpCertificates = new System.Windows.Forms.GroupBox();
-            this.pnlCertificates = new System.Windows.Forms.Panel();
-            this.lblCertificates = new System.Windows.Forms.Label();
             this.grpRepository = new System.Windows.Forms.GroupBox();
             this.pnlRepository = new System.Windows.Forms.Panel();
             this.lblRepository = new System.Windows.Forms.Label();
             this.cmdRepository = new System.Windows.Forms.Button();
+            this.grpCertificates = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.cmbCertificates = new System.Windows.Forms.ComboBox();
+            this.pnlCertificates = new System.Windows.Forms.Panel();
+            this.lblCertificates = new System.Windows.Forms.Label();
             this.grpAtna = new System.Windows.Forms.GroupBox();
             this.pnlAtna = new System.Windows.Forms.Panel();
             this.lblAtna = new System.Windows.Forms.Label();
@@ -89,13 +102,14 @@
             this.pnlRegistry = new System.Windows.Forms.Panel();
             this.lblRegistry = new System.Windows.Forms.Label();
             this.dlgLog = new System.Windows.Forms.FolderBrowserDialog();
-            this.cmbCertificates = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
+            this.openCertificate = new System.Windows.Forms.OpenFileDialog();
             this.panel1.SuspendLayout();
-            this.grpCertificates.SuspendLayout();
-            this.pnlCertificates.SuspendLayout();
+            this.grpCertsBC.SuspendLayout();
+            this.pnlBouncyCastle.SuspendLayout();
             this.grpRepository.SuspendLayout();
             this.pnlRepository.SuspendLayout();
+            this.grpCertificates.SuspendLayout();
+            this.pnlCertificates.SuspendLayout();
             this.grpAtna.SuspendLayout();
             this.pnlAtna.SuspendLayout();
             this.grpDomain.SuspendLayout();
@@ -224,9 +238,10 @@
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.grpCertsBC);
             this.panel1.Controls.Add(this.cmdVersions);
-            this.panel1.Controls.Add(this.grpCertificates);
             this.panel1.Controls.Add(this.grpRepository);
+            this.panel1.Controls.Add(this.grpCertificates);
             this.panel1.Controls.Add(this.grpAtna);
             this.panel1.Controls.Add(this.tvwSettings);
             this.panel1.Controls.Add(this.grpDomain);
@@ -238,6 +253,115 @@
             this.panel1.Size = new System.Drawing.Size(526, 237);
             this.panel1.TabIndex = 20;
             // 
+            // grpCertsBC
+            // 
+            this.grpCertsBC.Controls.Add(this.txtPassword);
+            this.grpCertsBC.Controls.Add(this.label11);
+            this.grpCertsBC.Controls.Add(this.cmdServer);
+            this.grpCertsBC.Controls.Add(this.cmdRoot);
+            this.grpCertsBC.Controls.Add(this.pnlBouncyCastle);
+            this.grpCertsBC.Controls.Add(this.txtServer);
+            this.grpCertsBC.Controls.Add(this.txtRoot);
+            this.grpCertsBC.Controls.Add(this.label14);
+            this.grpCertsBC.Controls.Add(this.label15);
+            this.grpCertsBC.Location = new System.Drawing.Point(165, 12);
+            this.grpCertsBC.Name = "grpCertsBC";
+            this.grpCertsBC.Size = new System.Drawing.Size(350, 150);
+            this.grpCertsBC.TabIndex = 23;
+            this.grpCertsBC.TabStop = false;
+            this.grpCertsBC.Visible = false;
+            // 
+            // txtPassword
+            // 
+            this.txtPassword.Location = new System.Drawing.Point(102, 97);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.PasswordChar = '*';
+            this.txtPassword.Size = new System.Drawing.Size(193, 20);
+            this.txtPassword.TabIndex = 29;
+            this.txtPassword.Tag = "";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(15, 97);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(90, 13);
+            this.label11.TabIndex = 28;
+            this.label11.Text = "Server Password:";
+            // 
+            // cmdServer
+            // 
+            this.cmdServer.Location = new System.Drawing.Point(301, 71);
+            this.cmdServer.Name = "cmdServer";
+            this.cmdServer.Size = new System.Drawing.Size(29, 22);
+            this.cmdServer.TabIndex = 27;
+            this.cmdServer.UseVisualStyleBackColor = true;
+            this.cmdServer.Click += new System.EventHandler(this.cmdServer_Click);
+            // 
+            // cmdRoot
+            // 
+            this.cmdRoot.Location = new System.Drawing.Point(301, 45);
+            this.cmdRoot.Name = "cmdRoot";
+            this.cmdRoot.Size = new System.Drawing.Size(29, 22);
+            this.cmdRoot.TabIndex = 26;
+            this.cmdRoot.UseVisualStyleBackColor = true;
+            this.cmdRoot.Click += new System.EventHandler(this.cmdRoot_Click);
+            // 
+            // pnlBouncyCastle
+            // 
+            this.pnlBouncyCastle.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.pnlBouncyCastle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlBouncyCastle.Controls.Add(this.lblBouncyCastle);
+            this.pnlBouncyCastle.Location = new System.Drawing.Point(0, 0);
+            this.pnlBouncyCastle.Name = "pnlBouncyCastle";
+            this.pnlBouncyCastle.Size = new System.Drawing.Size(350, 25);
+            this.pnlBouncyCastle.TabIndex = 25;
+            // 
+            // lblBouncyCastle
+            // 
+            this.lblBouncyCastle.AutoSize = true;
+            this.lblBouncyCastle.BackColor = System.Drawing.Color.Transparent;
+            this.lblBouncyCastle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblBouncyCastle.Location = new System.Drawing.Point(2, 2);
+            this.lblBouncyCastle.Name = "lblBouncyCastle";
+            this.lblBouncyCastle.Size = new System.Drawing.Size(67, 20);
+            this.lblBouncyCastle.TabIndex = 23;
+            this.lblBouncyCastle.Text = "label15";
+            // 
+            // txtServer
+            // 
+            this.txtServer.Location = new System.Drawing.Point(102, 71);
+            this.txtServer.Name = "txtServer";
+            this.txtServer.Size = new System.Drawing.Size(193, 20);
+            this.txtServer.TabIndex = 7;
+            this.txtServer.Tag = "";
+            // 
+            // txtRoot
+            // 
+            this.txtRoot.Location = new System.Drawing.Point(102, 45);
+            this.txtRoot.Name = "txtRoot";
+            this.txtRoot.Size = new System.Drawing.Size(193, 20);
+            this.txtRoot.TabIndex = 5;
+            this.txtRoot.Tag = "";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(15, 71);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(63, 13);
+            this.label14.TabIndex = 6;
+            this.label14.Text = "Server Cert:";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(15, 45);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(55, 13);
+            this.label15.TabIndex = 4;
+            this.label15.Text = "Root Cert:";
+            // 
             // cmdVersions
             // 
             this.cmdVersions.Location = new System.Drawing.Point(393, 184);
@@ -247,43 +371,6 @@
             this.cmdVersions.Text = "Versions";
             this.cmdVersions.UseVisualStyleBackColor = true;
             this.cmdVersions.Click += new System.EventHandler(this.cmdVersions_Click);
-            // 
-            // grpCertificates
-            // 
-            this.grpCertificates.Controls.Add(this.label7);
-            this.grpCertificates.Controls.Add(this.cmbCertificates);
-            this.grpCertificates.Controls.Add(this.pnlCertificates);
-            this.grpCertificates.Controls.Add(this.txtAppId);
-            this.grpCertificates.Controls.Add(this.txtThumbprint);
-            this.grpCertificates.Controls.Add(this.label10);
-            this.grpCertificates.Controls.Add(this.label9);
-            this.grpCertificates.Location = new System.Drawing.Point(165, 12);
-            this.grpCertificates.Name = "grpCertificates";
-            this.grpCertificates.Size = new System.Drawing.Size(350, 150);
-            this.grpCertificates.TabIndex = 22;
-            this.grpCertificates.TabStop = false;
-            this.grpCertificates.Visible = false;
-            // 
-            // pnlCertificates
-            // 
-            this.pnlCertificates.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.pnlCertificates.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlCertificates.Controls.Add(this.lblCertificates);
-            this.pnlCertificates.Location = new System.Drawing.Point(0, 0);
-            this.pnlCertificates.Name = "pnlCertificates";
-            this.pnlCertificates.Size = new System.Drawing.Size(350, 25);
-            this.pnlCertificates.TabIndex = 25;
-            // 
-            // lblCertificates
-            // 
-            this.lblCertificates.AutoSize = true;
-            this.lblCertificates.BackColor = System.Drawing.Color.Transparent;
-            this.lblCertificates.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCertificates.Location = new System.Drawing.Point(2, 2);
-            this.lblCertificates.Name = "lblCertificates";
-            this.lblCertificates.Size = new System.Drawing.Size(67, 20);
-            this.lblCertificates.TabIndex = 23;
-            this.lblCertificates.Text = "label15";
             // 
             // grpRepository
             // 
@@ -330,6 +417,60 @@
             this.cmdRepository.TabIndex = 8;
             this.cmdRepository.UseVisualStyleBackColor = true;
             this.cmdRepository.Click += new System.EventHandler(this.cmdRepository_Click);
+            // 
+            // grpCertificates
+            // 
+            this.grpCertificates.Controls.Add(this.label7);
+            this.grpCertificates.Controls.Add(this.cmbCertificates);
+            this.grpCertificates.Controls.Add(this.pnlCertificates);
+            this.grpCertificates.Controls.Add(this.txtAppId);
+            this.grpCertificates.Controls.Add(this.txtThumbprint);
+            this.grpCertificates.Controls.Add(this.label10);
+            this.grpCertificates.Controls.Add(this.label9);
+            this.grpCertificates.Location = new System.Drawing.Point(165, 12);
+            this.grpCertificates.Name = "grpCertificates";
+            this.grpCertificates.Size = new System.Drawing.Size(350, 150);
+            this.grpCertificates.TabIndex = 22;
+            this.grpCertificates.TabStop = false;
+            this.grpCertificates.Visible = false;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(15, 100);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(62, 13);
+            this.label7.TabIndex = 27;
+            this.label7.Text = "Certificates:";
+            // 
+            // cmbCertificates
+            // 
+            this.cmbCertificates.FormattingEnabled = true;
+            this.cmbCertificates.Location = new System.Drawing.Point(102, 97);
+            this.cmbCertificates.Name = "cmbCertificates";
+            this.cmbCertificates.Size = new System.Drawing.Size(193, 21);
+            this.cmbCertificates.TabIndex = 26;
+            // 
+            // pnlCertificates
+            // 
+            this.pnlCertificates.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.pnlCertificates.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlCertificates.Controls.Add(this.lblCertificates);
+            this.pnlCertificates.Location = new System.Drawing.Point(0, 0);
+            this.pnlCertificates.Name = "pnlCertificates";
+            this.pnlCertificates.Size = new System.Drawing.Size(350, 25);
+            this.pnlCertificates.TabIndex = 25;
+            // 
+            // lblCertificates
+            // 
+            this.lblCertificates.AutoSize = true;
+            this.lblCertificates.BackColor = System.Drawing.Color.Transparent;
+            this.lblCertificates.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCertificates.Location = new System.Drawing.Point(2, 2);
+            this.lblCertificates.Name = "lblCertificates";
+            this.lblCertificates.Size = new System.Drawing.Size(67, 20);
+            this.lblCertificates.TabIndex = 23;
+            this.lblCertificates.Text = "label15";
             // 
             // grpAtna
             // 
@@ -404,31 +545,31 @@
             // 
             this.tvwSettings.Location = new System.Drawing.Point(6, 12);
             this.tvwSettings.Name = "tvwSettings";
-            treeNode15.BackColor = System.Drawing.Color.Transparent;
-            treeNode15.Checked = true;
-            treeNode15.ForeColor = System.Drawing.Color.Black;
-            treeNode15.Name = "nodRepository";
-            treeNode15.Text = "Repository";
-            treeNode16.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode16.Name = "nodRegistry";
-            treeNode16.Text = "Registry";
-            treeNode17.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode17.Name = "nodAtna";
-            treeNode17.Text = "ATNA";
-            treeNode18.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode18.Name = "nodCertificates";
-            treeNode18.Text = "Certificates";
-            treeNode19.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode19.Name = "nodDomain";
-            treeNode19.Text = "Authority Domain";
-            treeNode20.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode20.Name = "nodLogging";
-            treeNode20.Text = "Logging";
-            treeNode21.Checked = true;
-            treeNode21.Name = "nodSettings";
-            treeNode21.Text = "Settings";
+            treeNode8.BackColor = System.Drawing.Color.Transparent;
+            treeNode8.Checked = true;
+            treeNode8.ForeColor = System.Drawing.Color.Black;
+            treeNode8.Name = "nodRepository";
+            treeNode8.Text = "Repository";
+            treeNode9.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode9.Name = "nodRegistry";
+            treeNode9.Text = "Registry";
+            treeNode10.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode10.Name = "nodAtna";
+            treeNode10.Text = "ATNA";
+            treeNode11.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode11.Name = "nodCertificates";
+            treeNode11.Text = "Certificates";
+            treeNode12.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode12.Name = "nodDomain";
+            treeNode12.Text = "Authority Domain";
+            treeNode13.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode13.Name = "nodLogging";
+            treeNode13.Text = "Logging";
+            treeNode14.Checked = true;
+            treeNode14.Name = "nodSettings";
+            treeNode14.Text = "Settings";
             this.tvwSettings.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode21});
+            treeNode14});
             this.tvwSettings.Size = new System.Drawing.Size(150, 150);
             this.tvwSettings.TabIndex = 18;
             this.tvwSettings.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvwSettings_AfterSelect);
@@ -590,28 +731,15 @@
             this.dlgLog.RootFolder = System.Environment.SpecialFolder.MyComputer;
             this.dlgLog.SelectedPath = "C:\\HSS";
             // 
-            // cmbCertificates
+            // openCertificate
             // 
-            this.cmbCertificates.FormattingEnabled = true;
-            this.cmbCertificates.Location = new System.Drawing.Point(102, 97);
-            this.cmbCertificates.Name = "cmbCertificates";
-            this.cmbCertificates.Size = new System.Drawing.Size(193, 21);
-            this.cmbCertificates.TabIndex = 26;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(15, 100);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(62, 13);
-            this.label7.TabIndex = 27;
-            this.label7.Text = "Certificates:";
+            this.openCertificate.InitialDirectory = "C:\\HSS\\XDS_Repository\\Certificates";
             // 
             // frmSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(549, 257);
+            this.ClientSize = new System.Drawing.Size(550, 259);
             this.Controls.Add(this.panel1);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -619,14 +747,18 @@
             this.Text = "XDS Repository Settings";
             this.Load += new System.EventHandler(this.frmSettings_Load);
             this.panel1.ResumeLayout(false);
-            this.grpCertificates.ResumeLayout(false);
-            this.grpCertificates.PerformLayout();
-            this.pnlCertificates.ResumeLayout(false);
-            this.pnlCertificates.PerformLayout();
+            this.grpCertsBC.ResumeLayout(false);
+            this.grpCertsBC.PerformLayout();
+            this.pnlBouncyCastle.ResumeLayout(false);
+            this.pnlBouncyCastle.PerformLayout();
             this.grpRepository.ResumeLayout(false);
             this.grpRepository.PerformLayout();
             this.pnlRepository.ResumeLayout(false);
             this.pnlRepository.PerformLayout();
+            this.grpCertificates.ResumeLayout(false);
+            this.grpCertificates.PerformLayout();
+            this.pnlCertificates.ResumeLayout(false);
+            this.pnlCertificates.PerformLayout();
             this.grpAtna.ResumeLayout(false);
             this.grpAtna.PerformLayout();
             this.pnlAtna.ResumeLayout(false);
@@ -699,5 +831,17 @@
         private System.Windows.Forms.Button cmdVersions;
         private System.Windows.Forms.ComboBox cmbCertificates;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.GroupBox grpCertsBC;
+        private System.Windows.Forms.Panel pnlBouncyCastle;
+        private System.Windows.Forms.Label lblBouncyCastle;
+        private System.Windows.Forms.TextBox txtServer;
+        private System.Windows.Forms.TextBox txtRoot;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Button cmdServer;
+        private System.Windows.Forms.Button cmdRoot;
+        private System.Windows.Forms.OpenFileDialog openCertificate;
+        private System.Windows.Forms.TextBox txtPassword;
+        private System.Windows.Forms.Label label11;
     }
 }

@@ -32,5 +32,14 @@
     <Setting Name="Thumbprint" Type="System.String" Scope="User">
       <Value Profile="(Default)">3d03dd7f2486afe4a857af42c2c3e8d5fd029698</Value>
     </Setting>
+    <Setting Name="RootCertificate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\HSS\XDS_Repository\Certificates\643.der</Value>
+    </Setting>
+    <Setting Name="ServerCertificate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\HSS\XDS_Repository\Certificates\1606.p12</Value>
+    </Setting>
+    <Setting Name="ServerCertPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">password</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

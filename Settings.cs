@@ -38,6 +38,9 @@ namespace XdsRepository
             txtAtnaHost.Text = Properties.Settings.Default.AtnaHost;
             txtAtnaPort.Text = Properties.Settings.Default.AtnaPort.ToString();
             txtThumbprint.Text = Properties.Settings.Default.Thumbprint;
+            txtRoot.Text = Properties.Settings.Default.RootCertificate;
+            txtServer.Text = Properties.Settings.Default.ServerCertificate;
+            txtPassword.Text = Properties.Settings.Default.ServerCertPassword;
             ttpSettings.SetToolTip(txtThumbprint, Properties.Settings.Default.Thumbprint);
             txtAppId.Text = GetAppId();
             ttpSettings.SetToolTip(txtAppId, GetAppId());
@@ -92,6 +95,7 @@ namespace XdsRepository
                         grpRegistry.Visible = false;
                         grpAtna.Visible = false;
                         grpCertificates.Visible = false;
+                        grpCertsBC.Visible = false;
                         grpDomain.Visible = false;
                         grpLogging.Visible = false;
                         break;
@@ -101,6 +105,7 @@ namespace XdsRepository
                         lblRegistry.Text = e.Node.Text;
                         grpAtna.Visible = false;
                         grpCertificates.Visible = false;
+                        grpCertsBC.Visible = false;
                         grpDomain.Visible = false;
                         grpLogging.Visible = false;
                         break;
@@ -110,6 +115,7 @@ namespace XdsRepository
                         grpAtna.Visible = true;
                         lblAtna.Text = e.Node.Text;
                         grpCertificates.Visible = false;
+                        grpCertsBC.Visible = false;
                         grpDomain.Visible = false;
                         grpLogging.Visible = false;
                         break;
@@ -117,8 +123,9 @@ namespace XdsRepository
                         grpRepository.Visible = false;
                         grpRegistry.Visible = false;
                         grpAtna.Visible = false;
-                        grpCertificates.Visible = true;
-                        lblCertificates.Text = e.Node.Text;
+                        grpCertificates.Visible = false;
+                        grpCertsBC.Visible = true;
+                        lblBouncyCastle.Text = e.Node.Text;
                         grpDomain.Visible = false;
                         grpLogging.Visible = false;
                         break;
@@ -127,6 +134,7 @@ namespace XdsRepository
                         grpRegistry.Visible = false;
                         grpAtna.Visible = false;
                         grpCertificates.Visible = false;
+                        grpCertsBC.Visible = false;
                         grpDomain.Visible = true;
                         lblDomain.Text = e.Node.Text;
                         grpLogging.Visible = false;
@@ -136,6 +144,7 @@ namespace XdsRepository
                         grpRegistry.Visible = false;
                         grpAtna.Visible = false;
                         grpCertificates.Visible = false;
+                        grpCertsBC.Visible = false;
                         grpDomain.Visible = false;
                         grpLogging.Visible = true;
                         lblLogging.Text = e.Node.Text;
@@ -165,15 +174,18 @@ namespace XdsRepository
                 Properties.Settings.Default.AtnaHost = txtAtnaHost.Text;
                 Properties.Settings.Default.AtnaPort = int.Parse(txtAtnaPort.Text);
                 Properties.Settings.Default.Thumbprint = txtThumbprint.Text;
+                Properties.Settings.Default.RootCertificate = txtRoot.Text;
+                Properties.Settings.Default.ServerCertificate = txtServer.Text;
+                Properties.Settings.Default.ServerCertPassword = txtPassword.Text;
                 Properties.Settings.Default.HashCode = CalcuateHash();
                 Properties.Settings.Default.Save();
             }
             this.Close();
         }
-
+        
         private int CalcuateHash()
         {
-            string[] txtStrings = new string[] { txtDomain.Text, txtRegistryURI.Text, txtRepositoryPath.Text, txtRepositoryId.Text, txtRepositoryURI.Text, txtRepositoryLog.Text, txtAtnaHost.Text, txtAtnaPort.Text, txtThumbprint.Text };
+            string[] txtStrings = new string[] { txtDomain.Text, txtRegistryURI.Text, txtRepositoryPath.Text, txtRepositoryId.Text, txtRepositoryURI.Text, txtRepositoryLog.Text, txtAtnaHost.Text, txtAtnaPort.Text, txtThumbprint.Text, txtRoot.Text, txtServer.Text, txtPassword.Text };
             string hashString = String.Concat(txtStrings);
             int hash = hashString.GetHashCode();
             return hash;
@@ -305,12 +317,38 @@ namespace XdsRepository
                 FileVersionInfo.GetVersionInfo(@"C:\HSS\XDS_Repository\Security.6.40.dll");
             string security = securityVersionInfo.ProductVersion;
 
-            // Get the file version for BouncyCastle
+            // Get the file version for BouncyCastlesdvsvs
             FileVersionInfo bouncyCastleVersionInfo =
                 FileVersionInfo.GetVersionInfo(@"C:\HSS\XDS_Repository\BouncyCastle.6.40.dll");
             string bouncyCastle = bouncyCastleVersionInfo.ProductVersion;
 
             MessageBox.Show("XdsObjects - " + xdsObjects + "\nXdsObjectsSerializer - " + xdsObjectsSerializer + "\nSecurity - " + security + "\nBouncy Castle - " + bouncyCastle,"Versions");
+        }
+
+        private void cmdRoot_Click(object sender, EventArgs e)
+        {
+            string filename = "";
+            string path = "";
+            DialogResult result = openCertificate.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                filename = Path.GetFileName(openCertificate.FileName);
+                path = Path.GetDirectoryName(openCertificate.FileName);
+            }
+            txtRoot.Text = path + "\\" + filename;
+        }
+
+        private void cmdServer_Click(object sender, EventArgs e)
+        {
+            string filename = "";
+            string path = "";
+            DialogResult result = openCertificate.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                filename = Path.GetFileName(openCertificate.FileName);
+                path = Path.GetDirectoryName(openCertificate.FileName);
+            }
+            txtServer.Text = path + "\\" + filename;
         }
     }
 }

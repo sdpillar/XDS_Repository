@@ -142,5 +142,41 @@ namespace XdsRepository.Properties {
                 this["Thumbprint"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\HSS\\XDS_Repository\\Certificates\\643.der")]
+        public string RootCertificate {
+            get {
+                return ((string)(this["RootCertificate"]));
+            }
+            set {
+                this["RootCertificate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\HSS\\XDS_Repository\\Certificates\\1606.p12")]
+        public string ServerCertificate {
+            get {
+                return ((string)(this["ServerCertificate"]));
+            }
+            set {
+                this["ServerCertificate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("password")]
+        public string ServerCertPassword {
+            get {
+                return ((string)(this["ServerCertPassword"]));
+            }
+            set {
+                this["ServerCertPassword"] = value;
+            }
+        }
     }
 }
