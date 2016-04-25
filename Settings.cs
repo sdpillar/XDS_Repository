@@ -39,7 +39,7 @@ namespace XdsRepository
             txtAtnaPort.Text = Properties.Settings.Default.AtnaPort.ToString();
             txtThumbprint.Text = Properties.Settings.Default.Thumbprint;
             txtRoot.Text = Properties.Settings.Default.RootCertificate;
-            txtServer.Text = Properties.Settings.Default.ServerCertificate;
+            txtClient.Text = Properties.Settings.Default.ServerCertificate;
             txtPassword.Text = Properties.Settings.Default.ServerCertPassword;
             ttpSettings.SetToolTip(txtThumbprint, Properties.Settings.Default.Thumbprint);
             txtAppId.Text = GetAppId();
@@ -175,7 +175,7 @@ namespace XdsRepository
                 Properties.Settings.Default.AtnaPort = int.Parse(txtAtnaPort.Text);
                 Properties.Settings.Default.Thumbprint = txtThumbprint.Text;
                 Properties.Settings.Default.RootCertificate = txtRoot.Text;
-                Properties.Settings.Default.ServerCertificate = txtServer.Text;
+                Properties.Settings.Default.ServerCertificate = txtClient.Text;
                 Properties.Settings.Default.ServerCertPassword = txtPassword.Text;
                 Properties.Settings.Default.HashCode = CalcuateHash();
                 Properties.Settings.Default.Save();
@@ -185,7 +185,7 @@ namespace XdsRepository
         
         private int CalcuateHash()
         {
-            string[] txtStrings = new string[] { txtDomain.Text, txtRegistryURI.Text, txtRepositoryPath.Text, txtRepositoryId.Text, txtRepositoryURI.Text, txtRepositoryLog.Text, txtAtnaHost.Text, txtAtnaPort.Text, txtThumbprint.Text, txtRoot.Text, txtServer.Text, txtPassword.Text };
+            string[] txtStrings = new string[] { txtDomain.Text, txtRegistryURI.Text, txtRepositoryPath.Text, txtRepositoryId.Text, txtRepositoryURI.Text, txtRepositoryLog.Text, txtAtnaHost.Text, txtAtnaPort.Text, txtThumbprint.Text, txtRoot.Text, txtClient.Text, txtPassword.Text };
             string hashString = String.Concat(txtStrings);
             int hash = hashString.GetHashCode();
             return hash;
@@ -348,7 +348,7 @@ namespace XdsRepository
                 filename = Path.GetFileName(openCertificate.FileName);
                 path = Path.GetDirectoryName(openCertificate.FileName);
             }
-            txtServer.Text = path + "\\" + filename;
+            txtClient.Text = path + "\\" + filename;
         }
     }
 }

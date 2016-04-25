@@ -29,19 +29,19 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Repository");
-            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Registry");
-            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("ATNA");
-            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Certificates");
-            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Authority Domain");
-            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Logging");
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Settings", new System.Windows.Forms.TreeNode[] {
-            treeNode8,
-            treeNode9,
-            treeNode10,
-            treeNode11,
-            treeNode12,
-            treeNode13});
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Repository");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Registry");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("ATNA");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Certificates");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Authority Domain");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Logging");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Settings", new System.Windows.Forms.TreeNode[] {
+            treeNode1,
+            treeNode2,
+            treeNode3,
+            treeNode4,
+            treeNode5,
+            treeNode6});
             this.txtRepositoryPath = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.txtRepositoryURI = new System.Windows.Forms.TextBox();
@@ -60,11 +60,11 @@
             this.grpCertsBC = new System.Windows.Forms.GroupBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
-            this.cmdServer = new System.Windows.Forms.Button();
+            this.cmdClient = new System.Windows.Forms.Button();
             this.cmdRoot = new System.Windows.Forms.Button();
             this.pnlBouncyCastle = new System.Windows.Forms.Panel();
             this.lblBouncyCastle = new System.Windows.Forms.Label();
-            this.txtServer = new System.Windows.Forms.TextBox();
+            this.txtClient = new System.Windows.Forms.TextBox();
             this.txtRoot = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
@@ -257,10 +257,10 @@
             // 
             this.grpCertsBC.Controls.Add(this.txtPassword);
             this.grpCertsBC.Controls.Add(this.label11);
-            this.grpCertsBC.Controls.Add(this.cmdServer);
+            this.grpCertsBC.Controls.Add(this.cmdClient);
             this.grpCertsBC.Controls.Add(this.cmdRoot);
             this.grpCertsBC.Controls.Add(this.pnlBouncyCastle);
-            this.grpCertsBC.Controls.Add(this.txtServer);
+            this.grpCertsBC.Controls.Add(this.txtClient);
             this.grpCertsBC.Controls.Add(this.txtRoot);
             this.grpCertsBC.Controls.Add(this.label14);
             this.grpCertsBC.Controls.Add(this.label15);
@@ -273,10 +273,10 @@
             // 
             // txtPassword
             // 
-            this.txtPassword.Location = new System.Drawing.Point(102, 97);
+            this.txtPassword.Location = new System.Drawing.Point(76, 97);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '*';
-            this.txtPassword.Size = new System.Drawing.Size(193, 20);
+            this.txtPassword.Size = new System.Drawing.Size(131, 20);
             this.txtPassword.TabIndex = 29;
             this.txtPassword.Tag = "";
             // 
@@ -285,22 +285,22 @@
             this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(15, 97);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(90, 13);
+            this.label11.Size = new System.Drawing.Size(56, 13);
             this.label11.TabIndex = 28;
-            this.label11.Text = "Server Password:";
+            this.label11.Text = "Password:";
             // 
-            // cmdServer
+            // cmdClient
             // 
-            this.cmdServer.Location = new System.Drawing.Point(301, 71);
-            this.cmdServer.Name = "cmdServer";
-            this.cmdServer.Size = new System.Drawing.Size(29, 22);
-            this.cmdServer.TabIndex = 27;
-            this.cmdServer.UseVisualStyleBackColor = true;
-            this.cmdServer.Click += new System.EventHandler(this.cmdServer_Click);
+            this.cmdClient.Location = new System.Drawing.Point(315, 71);
+            this.cmdClient.Name = "cmdClient";
+            this.cmdClient.Size = new System.Drawing.Size(29, 22);
+            this.cmdClient.TabIndex = 27;
+            this.cmdClient.UseVisualStyleBackColor = true;
+            this.cmdClient.Click += new System.EventHandler(this.cmdServer_Click);
             // 
             // cmdRoot
             // 
-            this.cmdRoot.Location = new System.Drawing.Point(301, 45);
+            this.cmdRoot.Location = new System.Drawing.Point(315, 45);
             this.cmdRoot.Name = "cmdRoot";
             this.cmdRoot.Size = new System.Drawing.Size(29, 22);
             this.cmdRoot.TabIndex = 26;
@@ -328,19 +328,19 @@
             this.lblBouncyCastle.TabIndex = 23;
             this.lblBouncyCastle.Text = "label15";
             // 
-            // txtServer
+            // txtClient
             // 
-            this.txtServer.Location = new System.Drawing.Point(102, 71);
-            this.txtServer.Name = "txtServer";
-            this.txtServer.Size = new System.Drawing.Size(193, 20);
-            this.txtServer.TabIndex = 7;
-            this.txtServer.Tag = "";
+            this.txtClient.Location = new System.Drawing.Point(76, 71);
+            this.txtClient.Name = "txtClient";
+            this.txtClient.Size = new System.Drawing.Size(233, 20);
+            this.txtClient.TabIndex = 7;
+            this.txtClient.Tag = "";
             // 
             // txtRoot
             // 
-            this.txtRoot.Location = new System.Drawing.Point(102, 45);
+            this.txtRoot.Location = new System.Drawing.Point(76, 45);
             this.txtRoot.Name = "txtRoot";
-            this.txtRoot.Size = new System.Drawing.Size(193, 20);
+            this.txtRoot.Size = new System.Drawing.Size(233, 20);
             this.txtRoot.TabIndex = 5;
             this.txtRoot.Tag = "";
             // 
@@ -349,9 +349,9 @@
             this.label14.AutoSize = true;
             this.label14.Location = new System.Drawing.Point(15, 71);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(63, 13);
+            this.label14.Size = new System.Drawing.Size(58, 13);
             this.label14.TabIndex = 6;
-            this.label14.Text = "Server Cert:";
+            this.label14.Text = "Client Cert:";
             // 
             // label15
             // 
@@ -545,31 +545,31 @@
             // 
             this.tvwSettings.Location = new System.Drawing.Point(6, 12);
             this.tvwSettings.Name = "tvwSettings";
-            treeNode8.BackColor = System.Drawing.Color.Transparent;
-            treeNode8.Checked = true;
-            treeNode8.ForeColor = System.Drawing.Color.Black;
-            treeNode8.Name = "nodRepository";
-            treeNode8.Text = "Repository";
-            treeNode9.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode9.Name = "nodRegistry";
-            treeNode9.Text = "Registry";
-            treeNode10.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode10.Name = "nodAtna";
-            treeNode10.Text = "ATNA";
-            treeNode11.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode11.Name = "nodCertificates";
-            treeNode11.Text = "Certificates";
-            treeNode12.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode12.Name = "nodDomain";
-            treeNode12.Text = "Authority Domain";
-            treeNode13.ForeColor = System.Drawing.Color.SlateGray;
-            treeNode13.Name = "nodLogging";
-            treeNode13.Text = "Logging";
-            treeNode14.Checked = true;
-            treeNode14.Name = "nodSettings";
-            treeNode14.Text = "Settings";
+            treeNode1.BackColor = System.Drawing.Color.Transparent;
+            treeNode1.Checked = true;
+            treeNode1.ForeColor = System.Drawing.Color.Black;
+            treeNode1.Name = "nodRepository";
+            treeNode1.Text = "Repository";
+            treeNode2.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode2.Name = "nodRegistry";
+            treeNode2.Text = "Registry";
+            treeNode3.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode3.Name = "nodAtna";
+            treeNode3.Text = "ATNA";
+            treeNode4.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode4.Name = "nodCertificates";
+            treeNode4.Text = "Certificates";
+            treeNode5.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode5.Name = "nodDomain";
+            treeNode5.Text = "Authority Domain";
+            treeNode6.ForeColor = System.Drawing.Color.SlateGray;
+            treeNode6.Name = "nodLogging";
+            treeNode6.Text = "Logging";
+            treeNode7.Checked = true;
+            treeNode7.Name = "nodSettings";
+            treeNode7.Text = "Settings";
             this.tvwSettings.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode14});
+            treeNode7});
             this.tvwSettings.Size = new System.Drawing.Size(150, 150);
             this.tvwSettings.TabIndex = 18;
             this.tvwSettings.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvwSettings_AfterSelect);
@@ -834,11 +834,11 @@
         private System.Windows.Forms.GroupBox grpCertsBC;
         private System.Windows.Forms.Panel pnlBouncyCastle;
         private System.Windows.Forms.Label lblBouncyCastle;
-        private System.Windows.Forms.TextBox txtServer;
+        private System.Windows.Forms.TextBox txtClient;
         private System.Windows.Forms.TextBox txtRoot;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.Button cmdServer;
+        private System.Windows.Forms.Button cmdClient;
         private System.Windows.Forms.Button cmdRoot;
         private System.Windows.Forms.OpenFileDialog openCertificate;
         private System.Windows.Forms.TextBox txtPassword;

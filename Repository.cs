@@ -101,14 +101,22 @@ namespace XdsRepository
                 {
                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Application Start audit event logged...");
                 }
-                //add certificates
-                MedicalConnections.Security.TlsClientBouncyCastle bc = new MedicalConnections.Security.TlsClientBouncyCastle();
-                bc.AddTrustedRoot(File.ReadAllBytes(rootCertificate));
-                bc.LoadFromPfx(File.ReadAllBytes(serverCertificate), serverCertPassword);
-                //bc.AddTrustedRoot(File.ReadAllBytes(@"C:\HSS\XDS_Repository\Certificates\643.der"));
-                //bc.LoadFromPfx(File.ReadAllBytes(@"C:\HSS\XDS_Repository\Certificates\1606.p12"), "password");
 
-                xds.RegistryEndpoint = new WebServiceEndpoint(registryURI, bc);
+                bool httpsRegistry = registryURI.Contains("https");
+                if (httpsRegistry == true)
+                {
+                    //add certificates
+                    MedicalConnections.Security.TlsClientBouncyCastle bc = new MedicalConnections.Security.TlsClientBouncyCastle();
+                    bc.AddTrustedRoot(File.ReadAllBytes(rootCertificate));
+                    bc.LoadFromPfx(File.ReadAllBytes(serverCertificate), serverCertPassword);
+                    //bc.AddTrustedRoot(File.ReadAllBytes(@"C:\HSS\XDS_Repository\Certificates\643.der"));
+                    //bc.LoadFromPfx(File.ReadAllBytes(@"C:\HSS\XDS_Repository\Certificates\1606.p12"), "password");
+                    xds.RegistryEndpoint = new WebServiceEndpoint(registryURI, bc);
+                }
+                else
+                {
+                    xds.RegistryEndpoint = new WebServiceEndpoint(registryURI);
+                }
             }
             catch (Exception ex)
             {
@@ -213,7 +221,6 @@ namespace XdsRepository
                 //for each ExtrinsicDocument object, is the actual base64 encoded document present?
                 foreach (XdsDocument document in SubmissionSet.Documents)
                 {
-                    document.UniqueID = "0.0.0.1.6.6.4.0.4.3.2";
                     if (document.Data == null)
                     {
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Missing document...");
