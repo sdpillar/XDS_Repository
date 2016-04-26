@@ -190,40 +190,18 @@ namespace XdsRepository
             //rather than sending an error response the first error encountered, 
             //errors are added to the response when encountered and the response sent once all checks are complete
             bool errors = false;
-            try
-            {
-                //the incoming submission is rejected outright if error encountered here
-                //How many ExtrinsicDocument objects are there?
-                int docCount = SubmissionSet.Documents.Count;
-                if (docCount == 0) //return failure if there are none
-                {
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": No document metadata present - ");
-                    atnaMessageComplete = myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
-                    if (atnaMessageComplete == false)
-                    {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event failed...");
-                    }
-                    else
-                    {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
-                    } 
-                    myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                    myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSMissingDocumentMetadata, "No document metadata present", "");
-                    //return myResponse;
-                    errors = true;
-                }
-                else
-                {
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": No of documents in submission - " + docCount);
-                }
 
-                //the incoming submission is rejected outright if error encountered here
-                //for each ExtrinsicDocument object, is the actual base64 encoded document present?
+            //if there are ExtrinsicDocument objects present then there should be matching Documents
+            //that is if not checked here it may result in an error when the document(?) is saved in store
+            // if not then send error response straight back
+            if(SubmissionSet.Documents.Count > 0)
+            {
+                int docCount = 0;
                 foreach (XdsDocument document in SubmissionSet.Documents)
                 {
                     if (document.Data == null)
                     {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Missing document...");
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Missing document - " + document.UniqueID + "...");
                         atnaMessageComplete = myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
                         if (atnaMessageComplete == false)
                         {
@@ -234,103 +212,68 @@ namespace XdsRepository
                             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
                         }
                         myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                        myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSMissingDocument, "Missing document", "");
-                        //return myResponse;
+                        myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSMissingDocument, "Missing document", "Document unique id - " + document.UniqueID);
                         errors = true;
-                    }
-                }
-
-                ///////////////////////////////////////////////
-                //not sure if the Repository should care about the Authority Domain. That is up to the Registry????
-                ///////////////////////////////////////////////
-                /*
-                //check that Authority Domain of patient matches with that of Repository
-                if (!SubmissionSet.PatientInfo.ID_Root.Contains(authDomain)) // != authDomain)
-                {
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Authority Domains do not match...");
-                    atnaMessageComplete = myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
-                    if (atnaMessageComplete == false)
-                    {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event failed...");
                     }
                     else
                     {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
-                    }
-                    myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                    myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSUnknownCommunity, "Authority Domains do not match", "");
-                    errors = true;
-                }
-                */
-
-                docCount = 0;
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet contains " + SubmissionSet.Documents.Count + " documents...");
-                foreach (XdsDocument document in SubmissionSet.Documents)
-                {
-                    docCount++;
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Patient Id - " + document.PatientID + "...");
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ") UniqueId - " + document.UniqueID + "...");
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ") UUID - " + document.UUID + "...");
-                    //insert repository unique id
-                    document.RepositoryUniqueId = repositoryId;
-                    //calcultate size and hash
-                    //if different from any values contained in submission from source reject
-                    document.SetSizeAndHash();
-                    bool HashSizeCheck = document.CheckSizeAndHash();
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ") size - " + document.Size);
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ") hash - " + document.Hash);
-                    if (!HashSizeCheck)
-                    {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": XDSRepositoryMetadataError - Hash and/or Size atrributes of supplied document are in error...");
-                        atnaMessageComplete = myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
-                        if (atnaMessageComplete == false)
+                        //IHE requirement for repository to add repository uniqueId, document size and document hash attributes
+                        docCount++;
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Patient Id - " + document.PatientID + "...");
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ") UniqueId - " + document.UniqueID + "...");
+                        //insert repository unique id
+                        document.RepositoryUniqueId = repositoryId;
+                        //calculate size and hash
+                        //if different from any values contained in submission from source reject
+                        document.SetSizeAndHash();
+                        bool HashSizeCheck = document.CheckSizeAndHash();
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ") size - " + document.Size);
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document(" + docCount + ") hash - " + document.Hash);
+                        if (!HashSizeCheck)
                         {
-                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event failed...");
-                        }
-                        else
-                        {
-                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
-                        }
-                        myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                        myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSRepositoryMetadataError, "Hash and/or Size atrributes of supplied document are in error", "");
-                        errors = true;
-                    }
-                }
-
-                //IHE requirment for the repository to validate the uniqueness of the XDSDocumentEntry.uniqueId
-                using (var db = new RepositoryDataBase())
-                {
-                    foreach (XdsDocument document in SubmissionSet.Documents)
-                    {
-                        string docId = document.UniqueID;
-                        foreach(var d in db.Documents)
-                        {
-                            if(docId == d.DocumentId)
+                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": XDSRepositoryMetadataError - Hash and/or Size atrributes of supplied document are in error...");
+                            atnaMessageComplete = myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
+                            if (atnaMessageComplete == false)
                             {
-                                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": XDSDocumentUniqueIdError - Document Unique Id already exists within Repository...");
-                                atnaMessageComplete = myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
-                                if (atnaMessageComplete == false)
-                                {
-                                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event failed...");
-                                }
-                                else
-                                {
-                                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
-                                }
-                                myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                                myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSDocumentUniqueIdError, "Document Unique Id already exists within Repository", "");
-                                errors = true;
+                                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event failed...");
                             }
-                            break;
+                            else
+                            {
+                                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": ProvideAndRegister Import audit event logged...");
+                            }
+                            myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
+                            myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSRepositoryMetadataError, "Hash and/or Size atrributes of supplied document are in error", "");
+                            errors = true;
                         }
                     }
                 }
+            }
 
+            //if there have been any metadata issues picked up the repository will report them here and return error response
+            if (errors == true)
+            {
+                foreach (var e in myResponse.Errors.ErrorList)
+                {
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Error in Submission - " + e.ErrorCode);
+                }
+                atnaMessageComplete = myATNA.Repository_Export(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
+                if (atnaMessageComplete == false)
+                {
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Register Document Set Export audit event failed...");
+                }
+                else
+                {
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Register Document Set Export audit event logged...");
+                }
+                return myResponse;
+            }
+
+            try
+            {
                 using (var db = new RepositoryDataBase())
                 {
                     foreach (XdsDocument document in SubmissionSet.Documents)
                     {
-                        /*
                         //Save document into the repository store
                         string currentDate = DateTime.Now.Date.ToString("yyyy_MM_dd");
                         string dir = Path.Combine(StoragePath, currentDate);
@@ -340,75 +283,25 @@ namespace XdsRepository
                         //added 'http' for pre-connectathon test
                         document.Uri = @"http://" + location.Substring(3);
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document saved to - " + location + "...");
-
-                        //Save document info into repository database
+                        //document details saved to database
                         db.Documents.Add(new Document()
                         {
                             DocumentId = document.UniqueID,
-                            DocUUID = document.UUID,
                             Location = location,
                             MimeType = document.MimeType,
-                            DocDateTime = document.CreationTime,
-                            DocSize = document.Size
+                            DocDateTime = document.CreationTime
                         });
-                        */
-                        //if there have been any metadata issues picked up the repository then report them here and return error response
-                        if (errors == true)
+                        db.SaveChanges();
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document details saved in db...");
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Sending SubmissionSet to Registry...");
+                        atnaMessageComplete = myATNA.Repository_Export(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, true);
+                        if (atnaMessageComplete == false)
                         {
-                            foreach (var e in myResponse.Errors.ErrorList)
-                            {
-                                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Error in Submission - " + e.ErrorCode);
-                            }
-                            atnaMessageComplete = myATNA.Repository_Export(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
-                            if (atnaMessageComplete == false)
-                            {
-                                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Register Document Set Export audit event failed...");
-                            }
-                            else
-                            {
-                                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Register Document Set Export audit event logged...");
-                            }
-                            return myResponse;
+                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Register Document Set Export audit event failed...");
                         }
-                        //else 
-                        //save document in store
-                        //Save document info into repository database
                         else
                         {
-                            //Save document into the repository store
-                            string currentDate = DateTime.Now.Date.ToString("yyyy_MM_dd");
-                            string dir = Path.Combine(StoragePath, currentDate);
-                            Directory.CreateDirectory(dir);
-                            string location = Path.Combine(dir, document.UniqueID);
-                            File.WriteAllBytes(location, document.Data);
-                            //added 'http' for pre-connectathon test
-                            document.Uri = @"http://" + location.Substring(3);
-                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document saved to - " + location + "...");
-                            db.Documents.Add(new Document()
-                            {
-                                DocumentId = document.UniqueID,
-                                DocUUID = document.UUID,
-                                Location = location,
-                                MimeType = document.MimeType,
-                                DocDateTime = document.CreationTime,
-                                DocSize = document.Size
-                            });
-
-                            // then send whole lot off to the chosen registry (main data will NOT be sent - this is
-                            // automatic and internal!)  
-                            //Then pass back the response
-                            db.SaveChanges();
-                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document details saved in db...");
-                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Sending SubmissionSet to Registry...");
-                            atnaMessageComplete = myATNA.Repository_Export(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, true);
-                            if (atnaMessageComplete == false)
-                            {
-                                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Register Document Set Export audit event failed...");
-                            }
-                            else
-                            {
-                                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Register Document Set Export audit event logged...");
-                            }
+                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Register Document Set Export audit event logged...");
                         }
                     }
                 }
@@ -429,8 +322,10 @@ namespace XdsRepository
                         RemoveDocumentFromStore(d.UniqueID);
                     }
                 }
+                //return response to source
                 return myResponse;
             }
+            //registry address was not reachable etc
             catch(SocketException socEx)
             {
                 atnaMessageComplete = myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);
@@ -455,6 +350,7 @@ namespace XdsRepository
                 }
                 return myResponse;
             }
+            //any other error
             catch (Exception ex)
             {
                 atnaMessageComplete = myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, false);

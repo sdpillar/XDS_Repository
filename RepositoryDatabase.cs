@@ -11,18 +11,17 @@ namespace XdsRepository
     public class RepositoryDataBase : DbContext
     {
         public DbSet<Document> Documents { get; set; }
-
     }
 
     public class Document
     {
-        public string DocUUID { get; set; }
+        //public string DocUUID { get; set; }
         [Key]
         public string DocumentId { get; set; }
         public string Location { get; set; }
         public string MimeType { get; set; }
         public DateTime DocDateTime { get; set; }
-        public int DocSize { get; set; }
+        //public int DocSize { get; set; }
     }
 
 
