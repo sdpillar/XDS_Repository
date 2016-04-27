@@ -423,26 +423,45 @@ namespace XdsRepository
         /// <returns>XdsRetrieveResponse which carries matching documents</returns>
         XdsRetrieveResponse server_RetrieveRequestReceived(XdsRetrieveRequest Request, XdsRequestInfo RequestInfo)
         {
-            XdsRetrieveResponse response = new XdsRetrieveResponse();
             string itemId = "";
+            //rather than sending an error response the first error encountered, 
+            //errors are added to the response when encountered and the response sent once all checks are complete
+            bool errors = false;
+            XdsRetrieveResponse myResponse = new XdsRetrieveResponse();
             try
             {
                 LogMessageEvent("--- --- ---");
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Retreive document request received");
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Retrieve document request received");
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document Consumer - " + RequestInfo.RemoteEndpoint.Address + ":" + RequestInfo.RemoteEndpoint.Port + "...");
-                response.Status = XdsObjects.Enums.RegistryResponseStatus.Success; // gets changed if we have a failure
+                //response.Status = XdsObjects.Enums.RegistryResponseStatus.Success; // gets changed if we have a failure
                 XdsPatient myPatient = new XdsPatient();
-                XdsRegistryResponse myResponse = new XdsRegistryResponse();
                 WebServiceEndpoint myRepositoryEndPoint = new WebServiceEndpoint(repositoryURI);
                 
                 foreach (XdsRetrieveItem item in Request.Requests)
                 {
-                    itemId = item.DocumentUniqueID;
+                    //check for documentUniqueId in request
+                    if(item.DocumentUniqueID == null)
+                    {
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": DocumentUniqueID is not present in retrieval request");
+                        myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
+                        myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSRepositoryError, "DocumentUniqueID is not present in retrieval request", "");
+                        atnaMessageComplete = myATNA.Repository_Retrieve(atnaTest, "Not Present", false);
+                        if (atnaMessageComplete == false)
+                        {
+                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Retrieve Document Set Export audit event failed...");
+                        }
+                        else
+                        {
+                            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Retrieve Document Set Export audit event logged...");
+                        }
+                        errors = true;
+                    }
+                    //check for repositoryUniqueId in request
                     if (item.RepositoryUniqueID == null)
                     {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository Id is not present - ");
-                        response.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                        response.AddError(XdsObjects.Enums.XdsErrorCode.XDSUnknownRepositoryId, "", "");
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Repository UniqueId is not present in retrieval request");
+                        myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
+                        myResponse.AddError(XdsObjects.Enums.XdsErrorCode.XDSUnknownRepositoryId, "Repository UniqueId is not present in retrieval request", "");
                         atnaMessageComplete = myATNA.Repository_Retrieve(atnaTest, item.DocumentUniqueID, false);
                         if (atnaMessageComplete == false)
                         {
@@ -452,14 +471,14 @@ namespace XdsRepository
                         {
                             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Retrieve Document Set Export audit event logged...");
                         }
-                        return response;
+                        errors = true;
                     }
-                    // check that the stated repository OID really is us (this is an example of how to return an error)
+                    //check that the stated repositoryUniqueId really is us
                     else if (item.RepositoryUniqueID != repositoryId)
                     {
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Unknown Repository Id - " + item.RepositoryUniqueID + "...");
-                        response.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                        response.AddError(XdsErrorCode.XDSUnknownRepositoryId, "", item.RepositoryUniqueID);
+                        myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
+                        myResponse.AddError(XdsErrorCode.XDSUnknownRepositoryId, "", item.RepositoryUniqueID);
                         atnaMessageComplete = myATNA.Repository_Retrieve(atnaTest, item.DocumentUniqueID, false);
                         if (atnaMessageComplete == false)
                         {
@@ -469,46 +488,34 @@ namespace XdsRepository
                         {
                             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Retrieve Document Set Export audit event logged...");
                         }
-                        return response;
+                        errors = true;
                     }
 
-                    /*
-                    if (item.HomeCommunityID == null)
+                    //if there have been any issues in the retrieval request will report them here and return error response
+                    if (errors == true)
                     {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Home Community Id is not present - ");
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                        XdsAudit.UserAuthentication(atnaTest, false);
-                        response.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                        response.AddError(XdsObjects.Enums.XdsErrorCode.XDSUnknownCommunity, "", "");
-                        return response;
+                        return myResponse;
                     }
-                    else if (item.HomeCommunityID != authDomain)
-                    {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Unknown Home Community Id - " + item.HomeCommunityID + "...");
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": User Logout audit event logged...");
-                        XdsAudit.UserAuthentication(atnaTest, false);
-                        response.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                        response.AddError(XdsErrorCode.XDSUnknownCommunity, "", item.HomeCommunityID);
-                        return response;
-                    }
-                    */
-                    string docId = "";
+
                     string location = "";
                     string mimeType = "";
+                    //does document database record exist?
                     using (var dbRep = new RepositoryDataBase())
                     {
                         foreach (var doc in dbRep.Documents)
                         {
-                            docId = doc.DocumentId;
-                            if (docId == item.DocumentUniqueID)
+                            if (doc.DocumentId == item.DocumentUniqueID)
                             {
+                                //locate mimeType and location from database
+                                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Located document database record for - " + item.DocumentUniqueID + "...");
                                 location = doc.Location;
                                 mimeType = doc.MimeType; //this was inserted to pass pre-connectathon test 12345
+                                //ensure document exists in repository store
                                 if (!File.Exists(location))
                                 {
-                                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Cannot locate - " + location + "...");
-                                    response.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                                    response.AddError(XdsErrorCode.XDSMissingDocument, "", item.DocumentUniqueID);
+                                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Cannot locate document in repository store - " + location);
+                                    myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
+                                    myResponse.AddError(XdsErrorCode.XDSMissingDocument, "Cannot locate document in repository store", "");
                                     atnaMessageComplete = myATNA.Repository_Retrieve(atnaTest, item.DocumentUniqueID, false);
                                     if (atnaMessageComplete == false)
                                     {
@@ -518,23 +525,23 @@ namespace XdsRepository
                                     {
                                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Retrieve Document Set Export audit event logged...");
                                     }
-                                    return response;
+                                    return myResponse;
                                 }
                                 else
                                 {
-                                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Located document - " + docId + "...");
+                                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Located physical document - " + doc.Location + "...");
                                 }
                                 break;
                             }
                         }
                     }
 
-                    // otherwise just pick up the document and mimetype
+                    //if no record of document found
                     if(location == "")
                     {
-                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Cannot locate - " + location + "...");
-                        response.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                        response.AddError(XdsErrorCode.XDSMissingDocument, "", item.DocumentUniqueID);
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": No record of document " +  item.DocumentUniqueID + " found ...");
+                        myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
+                        myResponse.AddError(XdsErrorCode.XDSMissingDocument, "No record of document " +  item.DocumentUniqueID + " found", "");
                         atnaMessageComplete = myATNA.Repository_Retrieve(atnaTest, item.DocumentUniqueID, false);
                         if (atnaMessageComplete == false)
                         {
@@ -544,12 +551,12 @@ namespace XdsRepository
                         {
                             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Retrieve Document Set Export audit event logged...");
                         }
-                        return response;
+                        return myResponse;
                     }
+
                     XdsDocument document = new XdsDocument(location);
                     document.UniqueID = item.DocumentUniqueID;
                     document.MimeType = mimeType; //this was inserted to pass pre-connectathon test 12345
-                    //document.HomeCommunityID = item.HomeCommunityID;
                     document.RepositoryUniqueId = item.RepositoryUniqueID;
                     atnaMessageComplete = myATNA.Repository_Retrieve(atnaTest, item.DocumentUniqueID, true);
                     if (atnaMessageComplete == false)
@@ -561,9 +568,9 @@ namespace XdsRepository
                         LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Retrieve Document Set Export audit event logged...");
                     }
                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Returning requested document for " + item.DocumentUniqueID);
-                    response.Documents.Add(document);
+                    myResponse.Documents.Add(document);
                 }
-                return response;
+                return myResponse;
             }
             catch(Exception ex)
             {
@@ -576,11 +583,11 @@ namespace XdsRepository
                 {
                     LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Retrieve Document Set Export audit event logged...");
                 }
-                response.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
-                response.AddError(XdsErrorCode.XDSMissingDocument, ex.Message, ex.InnerException.ToString());
+                myResponse.Status = XdsObjects.Enums.RegistryResponseStatus.Failure;
+                myResponse.AddError(XdsErrorCode.XDSMissingDocument, "Error retrieving document", ex.Message);
                 string exceptionMsg = ex.Message;
                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Error retrieving document - " + exceptionMsg + "...\n");
-                return response;
+                return myResponse;
             }
         }
         #endregion
