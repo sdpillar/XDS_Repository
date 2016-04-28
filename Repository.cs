@@ -173,8 +173,8 @@ namespace XdsRepository
         {
             LogMessageEvent("--- --- ---");
             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Provide and Register request received...");
-            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document Source - " + RequestInfo.RemoteEndpoint.Address + ":" + RequestInfo.RemoteEndpoint.Port + "...");
-            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": SubmissionSet.SourceId - " + SubmissionSet.SourceID);
+            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document Source SourceId - " + SubmissionSet.SourceID + "...");
+            LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Document Source host:port - " + RequestInfo.RemoteEndpoint.Address + ":" + RequestInfo.RemoteEndpoint.Port + "...");
             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Message Id - " + RequestInfo.Message.Headers.MessageId + "...");
             atnaMessageComplete = myATNA.Repository_Import(atnaTest, SubmissionSet.PatientID, SubmissionSet.UniqueID, SubmissionSet.SourceID, true);
             if (atnaMessageComplete == false)
