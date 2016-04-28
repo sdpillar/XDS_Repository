@@ -111,6 +111,7 @@ namespace XdsRepository
             }
         }
 
+        /*
         private void testConnections()
         {
             try
@@ -150,7 +151,9 @@ namespace XdsRepository
                 logWindow.AppendText((DateTime.Now.ToString("HH:mm:ss.fff") + ": testConnections - " + exceptionMsg + "...\n"));
             }
         }
+        */
 
+        /*
         private bool testConnection(string hostname,string url)
         {
             try
@@ -181,6 +184,7 @@ namespace XdsRepository
                 return false;
             }
         }
+        */
 
         private bool testConnection(string hostname, string host, int port)
         {
@@ -205,6 +209,7 @@ namespace XdsRepository
             }
         }
 
+        /*
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == (Keys.Control | Keys.Shift | Keys.S))
@@ -221,7 +226,8 @@ namespace XdsRepository
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
-        
+        */
+
         void logMessageHandler(string msg)
         {
             if (InvokeRequired)
@@ -264,7 +270,7 @@ namespace XdsRepository
                 SetupProperties();
                 currentDate = DateTime.Now;
             }
-            testConnections();
+            //testConnections();
         }
 
         private void cmdSettings_Click(object sender, EventArgs e)

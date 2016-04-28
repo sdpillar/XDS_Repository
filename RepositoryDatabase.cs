@@ -15,13 +15,11 @@ namespace XdsRepository
 
     public class Document
     {
-        //public string DocUUID { get; set; }
         [Key]
-        public string DocumentId { get; set; }
+        public string DocUniqueId { get; set; }
         public string Location { get; set; }
         public string MimeType { get; set; }
         public DateTime DocDateTime { get; set; }
-        //public int DocSize { get; set; }
     }
 
 

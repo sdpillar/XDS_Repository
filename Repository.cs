@@ -286,7 +286,7 @@ namespace XdsRepository
                         //document details saved to database
                         db.Documents.Add(new Document()
                         {
-                            DocumentId = document.UniqueID,
+                            DocUniqueId = document.UniqueID,
                             Location = location,
                             MimeType = document.MimeType,
                             DocDateTime = document.CreationTime
@@ -400,7 +400,7 @@ namespace XdsRepository
                 {
                     foreach (var d in db.Documents)
                     {
-                        if (d.DocumentId == docUniqueId)
+                        if (d.DocUniqueId == docUniqueId)
                         {
                             db.Documents.Remove(d);
                             LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Removed document " + docUniqueId + " from database...");
@@ -504,7 +504,7 @@ namespace XdsRepository
                     {
                         foreach (var doc in dbRep.Documents)
                         {
-                            if (doc.DocumentId == item.DocumentUniqueID)
+                            if (doc.DocUniqueId == item.DocumentUniqueID)
                             {
                                 //locate mimeType and location from database
                                 LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Located document database record for - " + item.DocumentUniqueID + "...");
