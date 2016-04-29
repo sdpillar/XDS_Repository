@@ -22,7 +22,6 @@ namespace XdsRepository
         public DateTime DocDateTime { get; set; }
     }
 
-
     //public class ContextInitializer : DropCreateDatabaseAlways<XdsDataBase>
     public class ContextInitializer : CreateDatabaseIfNotExists<RepositoryDataBase>
     {
