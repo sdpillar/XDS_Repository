@@ -128,20 +128,28 @@ namespace XdsRepository
 
         internal void StopListen()
         {
-            if (server != null)
+            try
             {
-                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": " + repositoryURI + " not listening...");
-                atnaMessageComplete = myATNA.ATNA_Application_Stop(atnaTest);
-                if (atnaMessageComplete == false)
+                if (server != null)
                 {
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Application Stop audit event failed...");
+                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": " + repositoryURI + " not listening...");
+                    atnaMessageComplete = myATNA.ATNA_Application_Stop(atnaTest);
+                    if (atnaMessageComplete == false)
+                    {
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Application Stop audit event failed...");
+                    }
+                    else
+                    {
+                        LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Application Stop audit event logged...");
+                    }
+                    atnaTest.AuditRepositories.Clear();
+                    server.UnListenAll();
                 }
-                else
-                {
-                    LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": Application Stop audit event logged...");
-                }
-                atnaTest.AuditRepositories.Clear();
-                server.UnListenAll();
+            }
+            catch(Exception ex)
+            {
+                string exceptionMsg = ex.Message;
+                LogMessageEvent(DateTime.Now.ToString("HH:mm:ss.fff") + ": StopListen - " + exceptionMsg + "...\n");
             }
         }
 
